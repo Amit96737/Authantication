@@ -27,3 +27,17 @@ def send_otp_to_phone(username,phone_number):
         Hello {username} from Authentication system ! Your one-time password (OTP) is: {otp}. It will expire in 10 minutes. Do not share this code with anyone.
         """
     send_sms.delay(phone_number, sms_body)
+
+def send_forget_password_otp(username, user_email):
+    otp = random.randint(100000, 999999)
+    print("forgot_otp", otp)
+
+    html_message = render_to_string('mail/otp_verification.html', {
+        'username': username.title(),
+        'otp': otp,
+        "year": str(datetime.now().year)
+    })
+
+    cache.set(f"forget_otp_{user_email}", otp, 60*10)
+    subject = 'Forgot password email verification'
+    auth_mail_send.delay(subject, html_message, user_email)
