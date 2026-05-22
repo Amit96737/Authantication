@@ -3,9 +3,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from users.serializers.user_signup import UserSignUpSerializer, OtpVerificationSerializer, SMSOTPVerificationSerializer
 from rest_framework import status
-from users.serializers.users import UserSerializer
+from users.serializers.users import UserSerializer, ChangePasswordSerializer, ForgotPasswordsSerializer, ForgotOtpVerificationSerializer
 from users.helper.response import success_response, error_response, response_not_found, create_unique_username
-from users.services.send_otp_verification import send_otp_to_mail, send_otp_to_phone
+from users.services.send_otp_verification import send_otp_to_mail, send_otp_to_phone, send_forget_password_otp
 from users.models import User
 from django.core.cache import cache
 from users.serializers.auth import UserSignInSerializer
@@ -160,3 +160,64 @@ class UserProfileAPIView(APIView):
         user = request.user
         user.delete()
         return success_response(message="User account delete successfully", status_code=status.HTTP_200_OK)
+
+
+class UserChangePasswordAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serialize = ChangePasswordSerializer(data = request.data)
+        if serialize.is_valid(raise_exception=True):
+            if request.user.check_password(serialize.validated_data["current_password"]):
+                user = request.user
+                user.set_password(serialize.validated_data["new_password"])
+                user.save()
+                return success_response(message="Password change successfully", status_code=status.HTTP_200_OK)
+            return error_response(message="Incorrect current password", status_code=status.HTTP_400_BAD_REQUEST)
+
+
+class UserRequestForgotPasswordAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serialize = ForgotPasswordsSerializer(data = request.data)
+        if serialize.is_valid(raise_exception=True):
+            user = serialize.validated_data['user']
+
+            send_forget_password_otp(username=f'{user.username}', user_email=user.email)
+
+            return success_response(message="Forgot password verification mail sent successfully", status_code=status.HTTP_200_OK)
+
+
+class ValidateForgetPasswordOtpAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serialize = ForgotOtpVerificationSerializer(data = request.data)
+        if serialize.is_valid(raise_exception=True):
+            user = serialize.validated_data['user']
+
+            resend = request.query_params.get('resend')
+
+            if str(resend).lower() == 'true':
+                send_forget_password_otp(username=user.username, user_email=user.email)
+                return success_response(message="OTP resent successfully")
+
+            cache_otp = cache.get(f"forget_otp_{user.email}")
+
+            if cache_otp is None:
+                return error_response(
+                    message="OTP expired, please resend",
+                    status_code=status.HTTP_400_BAD_REQUEST
+                )
+
+            if str(cache_otp) == str(serialize.validated_data['otp']):
+                return success_response(
+                    message="OTP verified successfully",
+                    status_code=status.HTTP_200_OK
+                )
+
+            return error_response(
+                message="Invalid OTP please check your mail",
+                status_code=status.HTTP_400_BAD_REQUEST
+            )
