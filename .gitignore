@@ -10,3 +10,5 @@ venv
 /.env
 
 firebase_config.json
+
+tasks
