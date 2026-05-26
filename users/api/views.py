@@ -10,6 +10,8 @@ from users.models import User
 from django.core.cache import cache
 from users.serializers.auth import UserSignInSerializer
 from notification.models.fcm import FCMToken
+from users.serializers.follow_serializers import UserFollowSerializer
+from users.models.follow import Follow
 
 
 class SignUpAPIView(APIView):
@@ -272,3 +274,47 @@ class DeleteAccountAPIView(APIView):
         user = request.user
         user.delete()
         return success_response(message="user account delete successfully", status_code=status.HTTP_200_OK)
+
+
+class UserFollowAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serialize = UserFollowSerializer(data=request.data)
+        if serialize.is_valid(raise_exception=True):
+            following_user = serialize.validated_data['following']
+            user = request.user
+
+            if user == following_user:
+                return error_response(message='you can not follow yourself', status_code=status.HTTP_400_BAD_REQUEST)
+
+            follow = Follow.objects.filter(follower=request.user, following=following_user)
+
+            if follow.exists():
+                follow.delete()
+                return success_response(message='Unfollow successfully', status_code=status.HTTP_200_OK)
+
+            Follow.objects.create(follower=user, following=following_user)
+
+            return success_response(message='follow successfully', status_code=status.HTTP_200_OK)
+
+
+class UserFollowListAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+
+        followers = Follow.objects.filter(following=user)
+        following = Follow.objects.filter(follower=user)
+
+        return success_response(
+            message='follow fetched successfully',
+            data={
+                "followers_count": followers.count(),
+                "following_count": following.count(),
+                "followers": UserFollowSerializer(followers, many=True).data,
+                "following": UserFollowSerializer(following, many=True).data,
+            },
+            status_code=status.HTTP_200_OK
+        )
