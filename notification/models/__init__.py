@@ -1,0 +1,1 @@
+from notification.models.fcm import FCMToken

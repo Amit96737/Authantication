@@ -57,3 +57,24 @@ class ForgotOtpVerificationSerializer(CustomSerializer, serializers.Serializer):
             raise serializers.ValidationError({"email": "email does not exists"})
 
         return attrs
+
+class ResetPasswordSerializer(CustomSerializer, serializers.Serializer):
+    email = serializers.EmailField()
+    new_password = serializers.CharField()
+    confirm_password = serializers.CharField()
+
+    def validate(self, attrs):
+        email = attrs.get('email')
+        user = User.objects.filter(email=email)
+
+        if user.exists() is False:
+            raise serializers.ValidationError('We could not  find an account associated with this email.')
+
+        new_password = attrs.get('new_password')
+        confirm_password = attrs.get('confirm_password')
+
+        if new_password != confirm_password:
+            raise serializers.ValidationError('new_password and confirm_password does not match')
+
+        attrs['user'] = user.first()
+        return attrs
