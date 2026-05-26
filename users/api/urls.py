@@ -19,4 +19,8 @@ urlpatterns = [
     path('verify-forgot-password/', views.ValidateForgetPasswordOtpAPIView.as_view(), name='verify_forgot_password'),
     path('reset-password/', views.ResetPasswordAPIView.as_view(), name='reset_password'),
     path('delete-account/', views.DeleteAccountAPIView.as_view(), name='delete_account'),
+
+    # user follower & following api
+    path('user-follow/', views.UserFollowAPIView.as_view(), name='user_follow'),
+    path('user-follow-list/', views.UserFollowListAPIView.as_view(), name='user_follow_list'),
 ]
