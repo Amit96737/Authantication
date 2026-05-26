@@ -3,12 +3,13 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.views import APIView
 from users.serializers.user_signup import UserSignUpSerializer, OtpVerificationSerializer, SMSOTPVerificationSerializer
 from rest_framework import status
-from users.serializers.users import UserSerializer, ChangePasswordSerializer, ForgotPasswordsSerializer, ForgotOtpVerificationSerializer
+from users.serializers.users import UserSerializer, ChangePasswordSerializer, ForgotPasswordsSerializer, ForgotOtpVerificationSerializer, ResetPasswordSerializer
 from users.helper.response import success_response, error_response, response_not_found, create_unique_username
 from users.services.send_otp_verification import send_otp_to_mail, send_otp_to_phone, send_forget_password_otp
 from users.models import User
 from django.core.cache import cache
 from users.serializers.auth import UserSignInSerializer
+from notification.models.fcm import FCMToken
 
 
 class SignUpAPIView(APIView):
@@ -128,6 +129,21 @@ class VerifySMSOtpAPIView(APIView):
 class SignInAPIView(APIView):
     permission_classes = [AllowAny]
 
+    def handle_fcm_token_generate(self, user, fcm_data):
+
+        # FCMToken.objects.filter(user=user).delete()
+
+        FCMToken.objects.update_or_create(
+            user=user,
+            defaults = {
+                "token": fcm_data.get('token'),
+                "device_type": fcm_data.get('device_type'),
+                "os": fcm_data.get('os'),
+                "browser": fcm_data.get('browser')
+        }
+        )
+
+
     def post(self, request, *args, **kwargs):
         serializer = UserSignInSerializer(data=request.data)
 
@@ -136,11 +152,23 @@ class SignInAPIView(APIView):
 
             refresh = RefreshToken.for_user(user)
 
+            if serializer.validated_data.get('fcm'):
+                self.handle_fcm_token_generate(user, serializer.validated_data.get("fcm"))
+
             return success_response(message="login successful", data={
                                         "refresh": str(refresh),
                                         "access": str(refresh.access_token),
                                         "user": UserSerializer(user).data
             },status_code=status.HTTP_200_OK)
+
+
+class SignOUTAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        fcm_tokens = FCMToken.objects.filter(user=request.user)
+        fcm_tokens.delete()
+        return success_response(message='logout successfully', status_code=status.HTTP_200_OK)
 
 
 class UserProfileAPIView(APIView):
@@ -221,3 +249,26 @@ class ValidateForgetPasswordOtpAPIView(APIView):
                 message="Invalid OTP please check your mail",
                 status_code=status.HTTP_400_BAD_REQUEST
             )
+
+
+class ResetPasswordAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serialize = ResetPasswordSerializer(data = request.data)
+        if serialize.is_valid(raise_exception=True):
+            user = serialize.validated_data['user']
+            user.set_password(serialize.validated_data['new_password'])
+            user.save()
+            return success_response(message='Password reset successfully', status_code=status.HTTP_200_OK)
+        else:
+            return error_response(message='incorrect password', status_code=status.HTTP_400_BAD_REQUEST)
+
+
+class DeleteAccountAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def delete(self, request, *args, **kwargs):
+        user = request.user
+        user.delete()
+        return success_response(message="user account delete successfully", status_code=status.HTTP_200_OK)

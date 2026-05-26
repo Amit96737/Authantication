@@ -12,8 +12,11 @@ urlpatterns = [
     path('verify-email-otp/', views.VerifyEmailOtpAPIView.as_view(), name='verify_email_otp'),
     path('verify-sms-otp/', views.VerifySMSOtpAPIView.as_view(), name='verify_sms_otp'),
     path('sign-in/', views.SignInAPIView.as_view(), name='sign_in'),
+    path('sign-out/', views.SignOUTAPIView.as_view(), name='sign_out'),
     path('user-profile/', views.UserProfileAPIView.as_view(), name='user_profile'),
     path('change-password/', views.UserChangePasswordAPIView.as_view(), name='change_password'),
     path('forgot-password-mail/', views.UserRequestForgotPasswordAPIView.as_view(), name='forgot_password_mail'),
     path('verify-forgot-password/', views.ValidateForgetPasswordOtpAPIView.as_view(), name='verify_forgot_password'),
+    path('reset-password/', views.ResetPasswordAPIView.as_view(), name='reset_password'),
+    path('delete-account/', views.DeleteAccountAPIView.as_view(), name='delete_account'),
 ]

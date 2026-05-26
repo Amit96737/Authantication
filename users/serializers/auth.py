@@ -1,10 +1,13 @@
 from rest_framework import serializers
 from users.models.users import User
 from users.serializers.custom import CustomSerializer
+from notification.serializers.fcm_serializers import FcmTokenSerializer
 
 class UserSignInSerializer(CustomSerializer):
     email = serializers.EmailField()
     password = serializers.CharField(write_only=True)
+    fcm = FcmTokenSerializer(required=False)
+
 
     def validate(self, data):
         email = data.get("email").lower()
