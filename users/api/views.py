@@ -8,10 +8,12 @@ from users.helper.response import success_response, error_response, response_not
 from users.services.send_otp_verification import send_otp_to_mail, send_otp_to_phone, send_forget_password_otp
 from users.models import User
 from django.core.cache import cache
-from users.serializers.auth import UserSignInSerializer
+from users.serializers.auth import UserSignInSerializer, SocialAuthSerializer
 from notification.models.fcm import FCMToken
 from users.serializers.follow_serializers import UserFollowSerializer
 from users.models.follow import Follow
+from users.models.block_user import BlockUser
+from users.serializers.block_serializers import BlockUserSerializers
 
 
 class SignUpAPIView(APIView):
@@ -131,7 +133,7 @@ class VerifySMSOtpAPIView(APIView):
 class SignInAPIView(APIView):
     permission_classes = [AllowAny]
 
-    def handle_fcm_token_generate(self, user, fcm_data):
+    def handle_fcm_token_generate(self, user, fcm_data, request):
 
         # FCMToken.objects.filter(user=user).delete()
 
@@ -276,6 +278,42 @@ class DeleteAccountAPIView(APIView):
         return success_response(message="user account delete successfully", status_code=status.HTTP_200_OK)
 
 
+class SocialLoginAPIView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        serialize = SocialAuthSerializer(data = request.data)
+        if serialize.is_valid(raise_exception=True):
+            if serialize.validated_data['platform'] == 'Google':
+                user_info = self.google_sign_in(serialize.validated_data['token'])
+
+            elif serialize.validated_data['platform'] == 'Apple':
+                user_info = self.apple_sign_in(serialize.validated_data['token'])
+                return response_not_found(message="Please try again later we are working on it.", status_code=status.HTTP_404_NOT_FOUND)
+
+            else:
+                return error_response(message=f"Incorrect platform {serialize.validated_data['platform']}", status_code=status.HTTP_400_BAD_REQUEST)
+
+            user = User.objects.filter(email=str(user_info['email']).lower())
+            fcm =serialize.validated_data.get('fcm')
+
+            if user.exists() is True:
+                user = user.first()
+
+                if fcm:
+                    SignInAPIView.handle_fcm_token_generate(user=user, fcm_data=fcm, request=request)
+
+                refresh = RefreshToken.for_user(user)
+                serialize = UserSerializer(user)
+
+                return success_response(message="login successful", data={
+                    "refresh": str(refresh),
+                    "access": str(refresh.access_token),
+                    "user": serialize.data
+                }, status_code=status.HTTP_200_OK)
+
+
+
 class UserFollowAPIView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -318,3 +356,19 @@ class UserFollowListAPIView(APIView):
             },
             status_code=status.HTTP_200_OK
         )
+
+class BlockUserAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        serialize = BlockUserSerializers(data=request.data)
+        if serialize.is_valid(raise_exception=True):
+            user_blocked =BlockUser.objects.filter(blocker=request.user, blocked=serialize.validated_data['blocked'])
+            if user_blocked.exists() is False:
+                BlockUser.objects.create(blocker=request.user, blocked=serialize.validated_data['blocked'])
+                return success_response(message=f"{serialize.validated_data['blocked'].username} block successfully", status_code=status.HTTP_200_OK)
+
+            user_blocked.delete()
+
+            return success_response(message=f"{serialize.validated_data['blocked'].username} unblocked successfully",
+                                    status_code=status.HTTP_200_OK)

@@ -29,3 +29,15 @@ class UserSignInSerializer(CustomSerializer):
 
         data['user'] = user
         return data
+
+
+class SocialAuthSerializer(CustomSerializer, serializers.Serializer):
+    token = serializers.CharField()
+    PLATFORM_CHOICE = [
+        ('Google', 'Google'),
+        ('Apple', 'Apple'),
+    ]
+    platform = serializers.ChoiceField(choices=PLATFORM_CHOICE)
+    fcm = FcmTokenSerializer(required=False)
+
+

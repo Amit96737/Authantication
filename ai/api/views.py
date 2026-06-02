@@ -1,15 +1,33 @@
+import requests
+import os
 from django.http import JsonResponse
-from ai.utils.langchain_helper import ask_ai
+from dotenv import load_dotenv
 
-def ai_chat(request):
-    user_input = request.GET.get("q")
+load_dotenv()
 
-    if not user_input:
-        return JsonResponse({"error": "No question provided"})
+API_KEY = os.getenv("OPENROUTER_API_KEY")
 
-    answer = ask_ai(user_input)
+def chat_boat_app(request):
+    user_message = request.GET.get('message')
+    url = "https://openrouter.ai/api/v1/chat/completions"
 
-    return JsonResponse({
-        "question": user_input,
-        "answer": answer
-    })
+    headers = {
+        "Authorization": f"Bearer {API_KEY}",
+        "Content-Type": "application/json"
+    }
+
+    data = {
+        "model": "meta-llama/llama-3-8b-instruct",
+        "messages": [
+            {"role": "user", "content": user_message}
+        ]
+    }
+
+    response = requests.post(url, headers=headers, json=data)
+    print("response", response)
+
+    result = response.json()
+
+    reply = result["choices"][0]["message"]["content"]
+
+    return JsonResponse({"response": reply})
