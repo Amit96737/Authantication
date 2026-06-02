@@ -7,20 +7,25 @@ urlpatterns = [
     path('token/access/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 
-    # user api
+    # authentication
+
     path('sign-up/', views.SignUpAPIView.as_view(), name='sign_up'),
     path('verify-email-otp/', views.VerifyEmailOtpAPIView.as_view(), name='verify_email_otp'),
     path('verify-sms-otp/', views.VerifySMSOtpAPIView.as_view(), name='verify_sms_otp'),
     path('sign-in/', views.SignInAPIView.as_view(), name='sign_in'),
     path('sign-out/', views.SignOUTAPIView.as_view(), name='sign_out'),
-    path('user-profile/', views.UserProfileAPIView.as_view(), name='user_profile'),
-    path('change-password/', views.UserChangePasswordAPIView.as_view(), name='change_password'),
     path('forgot-password-mail/', views.UserRequestForgotPasswordAPIView.as_view(), name='forgot_password_mail'),
     path('verify-forgot-password/', views.ValidateForgetPasswordOtpAPIView.as_view(), name='verify_forgot_password'),
+    path('change-password/', views.UserChangePasswordAPIView.as_view(), name='change_password'),
     path('reset-password/', views.ResetPasswordAPIView.as_view(), name='reset_password'),
     path('delete-account/', views.DeleteAccountAPIView.as_view(), name='delete_account'),
 
-    # user follower & following api
+    path('social-sign-in/', views.SocialLoginAPIView.as_view(), name='social_sign_in'),
+
+    # user api
+    path('user-profile/', views.UserProfileAPIView.as_view(), name='user_profile'),
     path('user-follow/', views.UserFollowAPIView.as_view(), name='user_follow'),
     path('user-follow-list/', views.UserFollowListAPIView.as_view(), name='user_follow_list'),
+    path('block-user/', views.BlockUserAPIView.as_view(), name='block_user'),
+
 ]

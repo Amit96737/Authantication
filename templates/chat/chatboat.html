@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #343541;
+            color: #ececf1;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .sidebar {
+            width: 260px;
+            background: #202123;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+        }
+        .new-chat-btn {
+            background: transparent;
+            color: white;
+            border: 1px solid #4d4d4f;
+            padding: 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 14px;
+            transition: background 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .new-chat-btn:hover {
+            background: #2a2b32;
+        }
+
+        .history-list {
+            flex: 1;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .history-item-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            border-radius: 5px;
+        }
+        .history-item-wrapper:hover, .history-item-wrapper.active {
+            background: #2a2b32;
+        }
+
+        .history-item {
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex: 1;
+            padding-right: 35px;
+        }
+
+        .options-btn {
+            position: absolute;
+            right: 5px;
+            background: transparent;
+            border: none;
+            color: #8e8ea0;
+            cursor: pointer;
+            padding: 5px 8px;
+            border-radius: 3px;
+            display: none; /* Pehle hidden rahega */
+        }
+        .history-item-wrapper:hover .options-btn,
+        .history-item-wrapper.active .options-btn {
+            display: block;
+        }
+        .options-btn:hover {
+            color: white;
+            background: #343541;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            right: 5px;
+            top: 35px;
+            background: #050505;
+            border: 1px solid #4d4d4f;
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+            z-index: 10;
+            display: none;
+            min-width: 100px;
+        }
+        .dropdown-menu.show {
+            display: block;
+        }
+        .dropdown-item {
+            padding: 10px 12px;
+            font-size: 13px;
+            color: #ff4d4d;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 4px;
+        }
+        .dropdown-item:hover {
+            background: #2a2b32;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .chat-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            max-width: 800px;
+            width: 100%;
+            margin: 0 auto;
+            height: calc(100vh - 150px);
+        }
+        .messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px 10px;
+        }
+
+        .msg-row {
+            display: flex;
+            width: 100%;
+            padding: 15px 10px;
+            border-bottom: 1px solid #444654;
+            box-sizing: border-box;
+        }
+        .user-row { background: #343541; }
+        .bot-row { background: #444654; }
+
+        .avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 2px;
+            margin-right: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 12px;
+            flex-shrink: 0;
+        }
+        .user-row .avatar { background: #5436da; }
+        .bot-row .avatar { background: #10a37f; }
+
+        .msg-text {
+            flex: 1;
+            line-height: 1.6;
+            font-size: 15px;
+            word-break: break-word;
+        }
+
+        .input-container {
+            padding: 20px;
+            background: #343541;
+        }
+        .input-box {
+            display: flex;
+            background: #40414f;
+            border-radius: 8px;
+            padding: 10px 15px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            align-items: center;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            background: transparent;
+            border: none;
+            outline: none;
+            color: white;
+            font-size: 16px;
+        }
+        .send-btn {
+            background: transparent;
+            border: none;
+            color: #ececf1;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 8px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+        .send-btn:hover {
+            background: #2a2b32;
+        }
+        .send-btn:disabled {
+            color: #7f7f7f;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #565869;
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #7f7f7f;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="sidebar">
+        <div class="sidebar-title">
+             Welcome AI ChatBot
+        </div>
+        <br>
+        <button class="new-chat-btn" onclick="newChat()">
+            <i class="fa-solid fa-plus"></i> New Chat
+        </button>
+        <div class="history-list" id="history-list"></div>
+    </div>
+
+    <div class="main-content">
+        <div class="chat-container">
+            <div class="messages" id="messages">
+                <div style="text-align: center; margin-top: 20%; color: #8e8ea0;" id="welcome-text">
+                    <h2>How can I help you today?</h2>
+                </div>
+            </div>
+
+            <div class="input-container">
+                <div class="input-box">
+                    <input type="text" id="msg" placeholder="Send a message..." onkeypress="handleKeyPress(event)">
+                    <button class="send-btn" id="send-btn" onclick="send()">
+                        <i class="fa-regular fa-paper-plane" id="btn-icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<script>
+let allChats = [];
+let currentChatId = null;
+let activeDropdownId = null;
+
+function addMessage(text, type) {
+    document.getElementById("welcome-text").style.display = "none";
+    let messagesDiv = document.getElementById("messages");
+
+    let row = document.createElement("div");
+    row.className = "msg-row " + (type === "user" ? "user-row" : "bot-row");
+
+    let avatar = document.createElement("div");
+    avatar.className = "avatar";
+    avatar.innerText = type === "user" ? "U" : "AI";
+
+    let textDiv = document.createElement("div");
+    textDiv.className = "msg-text";
+    textDiv.innerText = text;
+
+    row.appendChild(avatar);
+    row.appendChild(textDiv);
+    messagesDiv.appendChild(row);
+
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
+    if (currentChatId !== null) {
+        let activeChat = allChats.find(c => c.id === currentChatId);
+        if (activeChat) {
+            activeChat.messages.push({ text: text, type: type });
+
+            if (activeChat.title === "New Chat Thread" && type === "user") {
+                activeChat.title = text;
+                renderSidebar();
+            }
+        }
+    }
+}
+
+function send() {
+    let input = document.getElementById("msg");
+    let sendBtn = document.getElementById("send-btn");
+    let btnIcon = document.getElementById("btn-icon");
+    let msg = input.value.trim();
+
+    if (!msg) return;
+
+    if (currentChatId === null) {
+        currentChatId = Date.now();
+        allChats.push({
+            id: currentChatId,
+            title: msg,
+            messages: []
+        });
+        renderSidebar();
+    }
+
+    addMessage(msg, "user");
+    input.value = "";
+
+    sendBtn.disabled = true;
+    btnIcon.className = "fa-solid fa-spinner spinner";
+
+    fetch(`/api/ai/chat/?message=${encodeURIComponent(msg)}`)
+    .then(res => res.json())
+    .then(data => {
+        if (data.response) {
+            addMessage(data.response, "bot");
+        } else {
+            addMessage("Error: " + JSON.stringify(data), "bot");
+        }
+    })
+    .catch(() => {
+        addMessage("Server error", "bot");
+    })
+    .finally(() => {
+        sendBtn.disabled = false;
+        btnIcon.className = "fa-regular fa-paper-plane";
+    });
+}
+
+function handleKeyPress(event) {
+    if (event.key === "Enter") {
+        send();
+    }
+}
+
+function renderSidebar() {
+    let historyList = document.getElementById("history-list");
+    historyList.innerHTML = "";
+
+    allChats.forEach(chat => {
+        let wrapper = document.createElement("div");
+        wrapper.className = "history-item-wrapper" + (chat.id === currentChatId ? " active" : "");
+
+        let item = document.createElement("div");
+        item.className = "history-item";
+        item.innerHTML = `<i class="fa-regular fa-comment"></i> ${chat.title}`;
+        item.onclick = () => loadChat(chat.id);
+
+        let dotsBtn = document.createElement("button");
+        dotsBtn.className = "options-btn";
+        dotsBtn.innerHTML = `<i class="fa-solid fa-ellipsis"></i>`;
+        dotsBtn.onclick = (e) => {
+            e.stopPropagation();
+            toggleDropdown(e, chat.id);
+        };
+
+        let dropdown = document.createElement("div");
+        dropdown.className = "dropdown-menu";
+        dropdown.id = `dropdown-${chat.id}`;
+        dropdown.innerHTML = `
+            <div class="dropdown-item" onclick="deleteChat(event, ${chat.id})">
+                <i class="fa-regular fa-trash-can"></i> Delete
+            </div>
+        `;
+
+        wrapper.appendChild(item);
+        wrapper.appendChild(dotsBtn);
+        wrapper.appendChild(dropdown);
+        historyList.appendChild(wrapper);
+    });
+}
+
+function toggleDropdown(event, chatId) {
+    event.stopPropagation();
+
+    closeAllDropdowns();
+
+    let currentDropdown = document.getElementById(`dropdown-${chatId}`);
+    if (activeDropdownId !== chatId) {
+        currentDropdown.classList.add("show");
+        activeDropdownId = chatId;
+    } else {
+        activeDropdownId = null;
+    }
+}
+
+function closeAllDropdowns() {
+    document.querySelectorAll('.dropdown-menu').forEach(menu => {
+        menu.classList.remove('show');
+    });
+    activeDropdownId = null;
+}
+
+function deleteChat(event, chatId) {
+    event.stopPropagation();
+
+    allChats = allChats.filter(chat => chat.id !== chatId);
+
+    if (currentChatId === chatId) {
+        currentChatId = null;
+        document.getElementById("messages").innerHTML = `
+            <div style="text-align: center; margin-top: 20%; color: #8e8ea0;" id="welcome-text">
+                <h2>How can I help you today?</h2>
+            </div>
+        `;
+    }
+
+    closeAllDropdowns();
+    renderSidebar();
+}
+
+document.addEventListener("click", () => {
+    closeAllDropdowns();
+});
+
+function loadChat(chatId) {
+    currentChatId = chatId;
+    let activeChat = allChats.find(c => c.id === chatId);
+
+    let messagesDiv = document.getElementById("messages");
+    messagesDiv.innerHTML = "";
+
+    if (activeChat && activeChat.messages.length > 0) {
+        activeChat.messages.forEach(m => {
+            let row = document.createElement("div");
+            row.className = "msg-row " + (m.type === "user" ? "user-row" : "bot-row");
+
+            let avatar = document.createElement("div");
+            avatar.className = "avatar";
+            avatar.innerText = m.type === "user" ? "U" : "AI";
+
+            let textDiv = document.createElement("div");
+            textDiv.className = "msg-text";
+            textDiv.innerText = m.text;
+
+            row.appendChild(avatar);
+            row.appendChild(textDiv);
+            messagesDiv.appendChild(row);
+        });
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    } else {
+        messagesDiv.innerHTML = `
+            <div style="text-align: center; margin-top: 20%; color: #8e8ea0;" id="welcome-text">
+                <h2>How can I help you today?</h2>
+            </div>
+        `;
+    }
+    renderSidebar();
+}
+
+function newChat() {
+    currentChatId = Date.now();
+    allChats.push({
+        id: currentChatId,
+        title: "New Chat Thread",
+        messages: []
+    });
+
+    document.getElementById("messages").innerHTML = `
+        <div style="text-align: center; margin-top: 20%; color: #8e8ea0;" id="welcome-text">
+            <h2>How can I help you today?</h2>
+        </div>
+    `;
+
+    renderSidebar();
+}
+</script>
+</body>
+</html>
