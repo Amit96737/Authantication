@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Chatbot</title>
+    <title>Master Chef App</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         body {
@@ -248,7 +248,7 @@
 
     <div class="sidebar">
         <div class="sidebar-title">
-             Welcome AI ChatBot
+             Welcome master Chef Application
         </div>
         <br>
         <button class="new-chat-btn" onclick="newChat()">
@@ -290,7 +290,7 @@ function addMessage(text, type) {
 
     let avatar = document.createElement("div");
     avatar.className = "avatar";
-    avatar.innerText = type === "user" ? "U" : "AI";
+    avatar.innerText = type === "user" ? "U" : "MC"; // Master Chef
 
     let textDiv = document.createElement("div");
     textDiv.className = "msg-text";
@@ -340,16 +340,21 @@ function send() {
     btnIcon.className = "fa-solid fa-spinner spinner";
 
     fetch(`/api/ai/chat-app/?message=${encodeURIComponent(msg)}`)
-    .then(res => res.json())
+    .then(async (res) => {
+        if (!res.ok) {
+            throw new Error("HTTP " + res.status);
+        }
+        return res.json();
+    })
     .then(data => {
         if (data.response) {
             addMessage(data.response, "bot");
         } else {
-            addMessage("Error: " + JSON.stringify(data), "bot");
+            addMessage("Unexpected response format", "bot");
         }
     })
-    .catch(() => {
-        addMessage("Server error", "bot");
+    .catch(err => {
+        addMessage("Error: " + err.message, "bot");
     })
     .finally(() => {
         sendBtn.disabled = false;
@@ -402,7 +407,6 @@ function renderSidebar() {
 
 function toggleDropdown(event, chatId) {
     event.stopPropagation();
-
     closeAllDropdowns();
 
     let currentDropdown = document.getElementById(`dropdown-${chatId}`);
@@ -457,7 +461,7 @@ function loadChat(chatId) {
 
             let avatar = document.createElement("div");
             avatar.className = "avatar";
-            avatar.innerText = m.type === "user" ? "U" : "AI";
+            avatar.innerText = m.type === "user" ? "U" : "MC";
 
             let textDiv = document.createElement("div");
             textDiv.className = "msg-text";
