@@ -9,6 +9,9 @@ urlpatterns = [
     path('api/', include(api_urls)),
     path("", include("dashboard.core.urls")),
     path("ai/", include("ai.core.urls")),
+    path("news/", include("news.core.urls")),
+    path("crud/", include("crud.core.urls")),
+    path("bank/", include("bank.core.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

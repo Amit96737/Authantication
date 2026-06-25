@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Verify Student Account</title>
+</head>
+<body style="font-family: 'Segoe UI', Arial, sans-serif; background-color: #f8f9fa; margin: 0; padding: 40px 20px; color: #212529;">
+
+    <div style="max-width: 550px; margin: 0 auto; background: #ffffff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); overflow: hidden; border: 1px solid #e3e6f0;">
+
+        <div style="background-color: #212529; padding: 30px; text-align: center; color: #ffffff;">
+            <h2 style="margin: 0; font-size: 22px; font-weight: 700; letter-spacing: 0.5px;">🎓 Student Account Verification</h2>
+        </div>
+
+        <div style="padding: 30px; text-align: center;">
+            <p style="font-size: 16px; margin-bottom: 10px; color: #495057;">Hello <strong>{{ student.first_name }} {{ student.last_name }}</strong>,</p>
+            <p style="font-size: 14px; color: #6c757d; line-height: 1.6; margin-bottom: 30px;">A new account initialization log request has been logged. Please action the verification routers below:</p>
+
+            <div style="margin: 25px 0; display: block; text-align: center;">
+
+                <a href="{{ accept_url }}" style="display: inline-block; padding: 12px 28px; font-size: 14px; font-weight: bold; color: #ffffff; background-color: #000000; text-decoration: none; border-radius: 6px; margin: 5px 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    Accept Request
+                </a>
+
+                <a href="{{ reject_url }}" style="display: inline-block; padding: 12px 28px; font-size: 14px; font-weight: bold; color: #ffffff; background-color: #000000; text-decoration: none; border-radius: 6px; margin: 5px 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+                    Reject Request
+                </a>
+
+            </div>
+
+            <p style="font-size: 11px; color: #adb5bd; margin-top: 30px; border-top: 1px dashed #dee2e6; padding-top: 15px;">
+                Secured Token ID Verification Link. System IP Tracking Parameters Active.
+            </p>
+        </div>
+    </div>
+
+</body>
+</html>

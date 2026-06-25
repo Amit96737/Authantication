@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Account Verification Status{% endblock %}
+
+{% block content %}
+<div class="container py-5 d-flex align-items-center justify-content-center" style="min-height: 75vh;">
+    
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden text-center p-5 bg-white" style="max-width: 550px; width: 100%;">
+        
+        {% if success or "ACTIVE" in message %}
+            
+            <h2 class="fw-bold text-dark mb-2 letter-spacing-tight">Authentication Confirmed</h2>
+            
+            <div class="alert alert-success border-0 rounded-3 small py-3 font-monospace mb-4">
+                {{ message }}
+            </div>
+
+        {% else %}
+            <div class="status-icon-frame mb-4 mx-auto d-flex align-items-center justify-content-center bg-light border rounded-circle" style="width: 80px; height: 80px;">
+                <i class="fa-solid fa-user-slash text-secondary display-5"></i>
+            </div>
+            
+            <h2 class="fw-bold text-dark mb-2 letter-spacing-tight">Verification Inactive</h2>
+            
+            <div class="alert alert-secondary border-0 rounded-3 small py-3 font-monospace mb-4 text-dark">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        <div class="d-grid">
+            <a href="{% url 'student_details' student_id=student.id %}" class="btn btn-dark fw-bold py-2 rounded-3 shadow-sm">
+                <i class="fa-solid fa-user me-2 small"></i> Account Details
+            </a>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .letter-spacing-tight {
+        letter-spacing: -0.5px;
+    }
+    .status-icon-frame i {
+        animation: scaleInEffect 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    }
+    @keyframes scaleInEffect {
+        0% { transform: scale(0.6); opacity: 0; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+</style>
+{% endblock %}

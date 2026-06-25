@@ -1,0 +1,146 @@
+{% extends "base.html" %}
+
+{% block title %}Curated Live News Feed{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    {% if ticker_articles %}
+    <div class="ticker-wrap mb-4 shadow-sm rounded-3 bg-dark text-white p-2 d-flex align-items-center">
+        <span class="badge bg-danger text-uppercase font-monospace me-3 px-3 py-2 animate-pulse">Flash</span>
+        <div class="ticker-content flex-grow-1 overflow-hidden">
+            <marquee behavior="scroll" direction="left" onmouseover="this.stop();" onmouseout="this.start();">
+                {% for ticker in ticker_articles %}
+                    <span class="mx-4 text-white-50 small">• <strong class="text-white">{{ ticker.title }}</strong></span>
+                {% endfor %}
+            </marquee>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="row align-items-center mb-5 g-4">
+        <div class="col-md-4 text-start">
+            <h1 class="fw-bold text-dark m-0 display-6">📰 News Stream</h1>
+        </div>
+        
+        <div class="col-md-8">
+            <form method="GET" action="{% url 'news_details' %}" class="d-flex gap-3 justify-content-md-end align-items-center flex-wrap">
+                
+                <div class="filter-dropdown-wrapper" style="min-width: 180px;">
+                    {{ form.category }}
+                </div>
+
+                <div class="input-group" style="max-width: 350px;">
+                    {{ form.q }}
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+        {% if articles %}
+            {% for article in articles %}
+            <div class="col-12 col-sm-6 col-md-4">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden news-hover-card">
+                    
+                    <div class="news-img-frame">
+                        {% if article.image_url %}
+                            <img src="{{ article.image_url }}" class="w-100 h-100 object-fit-cover" alt="News Preview" onerror="this.onerror=null;this.src='https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=600';">
+                        {% else %}
+                            <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center text-muted small">
+                                📷 No Live Frame Preview
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="badge bg-dark font-monospace text-uppercase" style="font-size: 10px;">
+                                    {{ article.source_id|default:"Global News" }}
+                                </span>
+                                <small class="text-muted font-monospace" style="font-size: 11px;">
+                                    {{ article.pubDate|slice:":10" }}
+                                </small>
+                            </div>
+                            
+                            <h5 class="fw-bold text-dark mb-2 news-headline-truncation">
+                                {{ article.title|default:"No Headline Title Provided" }}
+                            </h5>
+                            
+                            <p class="text-muted small mb-4 news-desc-truncation">
+                                {{ article.description|default:"Detailed description snippet is currently unavailable for this curated news log feed item." }}
+                            </p>
+                        </div>
+
+                        <a href="{{ article.link|default:'#' }}" target="_blank" class="btn btn-outline-dark btn-sm fw-bold w-100 py-2 rounded-2 mt-auto">
+                            Read Full Context <i class="fa-solid fa-arrow-up-right-from-square ms-1" style="font-size: 10px;"></i>
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <div class="fallback-frame p-4 bg-light rounded-3 shadow-sm border border-light mx-auto" style="max-width: 500px;">
+                    <h3 class="fw-bold text-dark mb-2">Stream Sequence Empty</h3>
+                    <p class="text-muted small mb-4">No live network records retrieved from third-party API matching the requested form parameters.</p>
+                    <a href="{% url 'news_details' %}" class="btn btn-dark btn-sm px-4 py-2 fw-bold rounded-pill">Refresh Global Feed</a>
+                </div>
+            </div>
+        {% endif %}
+    </div>
+
+</div>
+
+<style>
+    .animate-pulse {
+        animation: pulseEffect 2s infinite ease-in-out;
+    }
+    @keyframes pulseEffect {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.6; }
+    }
+
+    .news-hover-card {
+        transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
+        border: 1px solid #f1f3f5 !important;
+        background-color: #ffffff;
+    }
+    .news-hover-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08) !important;
+    }
+
+    .news-img-frame {
+        height: 190px;
+        overflow: hidden;
+        background-color: #f8f9fa;
+    }
+    .news-img-frame img {
+        transition: transform 0.5s ease;
+    }
+    .news-hover-card:hover .news-img-frame img {
+        transform: scale(1.03);
+    }
+
+    .news-headline-truncation {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        font-size: 16px;
+        line-height: 1.4;
+        height: 45px;
+    }
+
+    .news-desc-truncation {
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        height: 55px;
+    }
+</style>
+{% endblock %}

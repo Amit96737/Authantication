@@ -30,6 +30,7 @@ THIRD_PARTY_PACKAGES = [
     "django_filters",
     "django_celery_beat",
     "drf_yasg",
+    "tinymce",
 ]
 
 CUSTOM_APPS = [
@@ -38,6 +39,9 @@ CUSTOM_APPS = [
     "dashboard",
     "common",
     'ai',
+    'news',
+    'crud',
+    'bank'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_PACKAGES + CUSTOM_APPS

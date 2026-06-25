@@ -7,8 +7,20 @@
 
     <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-5 flex-wrap gap-3">
         <div class="text-start">
-            <h1 class="fw-bold text-dark m-0 display-6">Welcome</h1>
+            <h1 class="fw-bold text-dark m-0 display-6">Welcome Dashboard</h1>
         </div>
+
+        <div class="d-flex gap-2">
+
+            <a href="{% url 'user_sign_up' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">
+                <i class="fa-solid fa-database me-2"></i> Sign Up
+            </a>
+
+            <a href="{% url 'user_logout' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">
+                <i class="fa-solid fa-database me-2"></i> Log Out
+            </a>
+        </div>
+
     </div>
 
     <div class="row g-4 justify-content-center">
@@ -20,27 +32,11 @@
                 </div>
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                     <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">API Module</span>
-                        <h4 class="fw-bold text-dark mb-3 fs-5">Live News Feed</h4>
-                        <p class="card-text text-muted small mb-4">Fetch real-time global breaking news data from dynamic third-party network APIs effortlessly.</p>
+                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">News</span>
+                        <h4 class="fw-bold text-dark mb-3 fs-5">Live News</h4>
+                        <p class="card-text text-muted small mb-4">Fetch real-time global breaking news data from dynamic third-party APIs.</p>
                     </div>
-                    <a href="#" class="btn btn-dark btn-sm w-100 fw-bold py-2 mt-auto">Open Module</a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6 col-md-3">
-            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
-                <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=600" class="card-img-top custom-card-img" alt="Banking Image">
-                </div>
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">Finance</span>
-                        <h4 class="fw-bold text-dark mb-3 fs-5">Bank Management</h4>
-                        <p class="card-text text-muted small mb-4">Secure interface to manage customer accounts, ledger history logs, and mock transactional operations.</p>
-                    </div>
-                    <a href="#" class="btn btn-dark btn-sm w-100 fw-bold py-2 mt-auto">Open Module</a>
+                    <a href="{% url 'news_details' %}" class="btn btn-dark btn-sm w-100 fw-bold py-2 mt-auto">Open Module</a>
                 </div>
             </div>
         </div>
@@ -56,7 +52,23 @@
                         <h4 class="fw-bold text-dark mb-3 fs-5">CRUD Operations</h4>
                         <p class="card-text text-muted small mb-4">Create, Read, Update, and Delete standard dynamic records interacting directly with database tables.</p>
                     </div>
-                    <a href="#" class="btn btn-dark btn-sm w-100 fw-bold py-2 mt-auto">Open Module</a>
+                    <a href="{% url 'create_student' %}" class="btn btn-dark btn-sm w-100 fw-bold py-2 mt-auto">Open Module</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-12 col-sm-6 col-md-3">
+            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                <div class="card-img-wrapper">
+                    <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=600" class="card-img-top custom-card-img" alt="Banking Image">
+                </div>
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">Bank</span>
+                        <h4 class="fw-bold text-dark mb-3 fs-5">Bank Management</h4>
+                        <p class="card-text text-muted small mb-4">Secure interface to manage customer accounts, ledger history logs, and mock transactional operations.</p>
+                    </div>
+                    <a href="{% url 'bank_dashboard' %}" class="btn btn-dark btn-sm w-100 fw-bold py-2 mt-auto">Open Module</a>
                 </div>
             </div>
         </div>
@@ -68,11 +80,11 @@
                 </div>
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                     <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">AI Workspace</span>
+                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">AI</span>
                         <h4 class="fw-bold text-dark mb-3 fs-5">AI Assistant</h4>
                         <p class="card-text text-muted small mb-4">Integrate Large Language Models (LLMs) to automate text generation, smart insights, and custom AI responses.</p>
                     </div>
-                    <a href="#" class="btn btn-dark btn-sm w-100 fw-bold py-2 mt-auto">Open Module</a>
+                    <a href="{% url 'chat-boat-home' %}" class="btn btn-dark btn-sm w-100 fw-bold py-2 mt-auto">Open Module</a>
                 </div>
             </div>
         </div>
@@ -82,14 +94,12 @@
 </div>
 
 <style>
-    /* Profile Circle Avatar */
     .profile-avatar {
         width: 36px;
         height: 36px;
         object-fit: cover;
     }
 
-    /* Logout Button Aesthetic */
     .btn-logout {
         border: 1px solid #000000 !important;
         color: #000000 !important;
@@ -101,7 +111,6 @@
         color: #ffffff !important;
     }
 
-    /* Cards Structure */
     .custom-hover-card {
         transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
         border: 1px solid #f1f3f5 !important;
@@ -115,7 +124,7 @@
 
     .card-img-wrapper {
         overflow: hidden;
-        height: 160px; /* Thoda height adjust kiya 4 cards spacing ke liye */
+        height: 160px;
         background-color: #f8f9fa;
     }
 
