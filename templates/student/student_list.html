@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+
+{% block title %}All Student Records{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-4">
+    
+    <div class="border-bottom pb-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <h1 class="fw-bold text-dark m-0 display-6">All Student List</h1>
+        <a href="{% url 'create_student' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">
+            <i class="fa-solid fa-database me-2"></i> Register New Student
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle m-0" style="font-size: 14px;">
+                <thead class="table-dark">
+                    <tr>
+                        <th class="py-3 ps-4" style="width: 80px;">Avatar</th>
+                        <th class="py-3">Full Name</th>
+                        <th class="py-3">Email Routing</th>
+                        <th class="py-3">Phone Integer</th>
+                        <th class="py-3">Account Status</th>
+                        <th class="py-3 text-end pe-4">View Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for student in students %}
+                    <tr>
+                        <td class="py-3 ps-4">
+                            {% if student.profile_pic %}
+                                <img src="{{ student.profile_pic.url }}" class="rounded-circle object-fit-cover border" style="width: 42px; height: 42px;" alt="Pic">
+                            {% else %}
+                                <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center font-monospace fw-bold" style="width: 42px; height: 42px; font-size: 14px;">
+                                    {{ student.first_name|slice:":1"|upper }}
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td class="text-dark fw-bold">{{ student.first_name }} {{ student.last_name }}</td>
+                        <td class="text-muted">{{ student.email }}</td>
+                        <td class="font-monospace text-secondary">{{ student.phone_number }}</td>
+                        <td>
+                            {% if student.account_status %}
+                                <span class="badge bg-success text-white font-monospace text-uppercase" style="font-size: 10px; padding: 5px 8px;">Verified</span>
+                            {% else %}
+                                <span class="badge bg-warning text-dark font-monospace text-uppercase" style="font-size: 10px; padding: 5px 8px;">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            <a href="{% url 'student_details' student.id %}" class="btn btn-light btn-sm fw-bold border rounded-2 px-3 text-dark shadow-sm">
+                                <i class="fa-solid fa-eye me-1"></i> View
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5 text-muted font-monospace">
+                            <i class="fa-solid fa-folder-open d-block display-6 mb-3 text-secondary"></i>
+                            No records found.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
 from .forms import SignUpForm, LoginForm
 from users.models.users import User
-from users.services.send_otp_verification import send_otp_to_mail, send_otp_to_phone
+from users.services.send_otp_verification import send_otp_to_mail, send_otp_to_phone, send_forget_password_otp
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.hashers import check_password
 from django.core.cache import cache
+from django.contrib.auth import logout
+from django.contrib.auth.hashers import make_password
 
 def dashboard(request):
     return render(
@@ -166,3 +168,72 @@ def user_login(request):
         "dashboard/login.html",
         {'form': form}
     )
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('user_login')
+
+
+def forgot_password(request):
+    if request.method == "POST":
+        email = request.POST.get('email').lower().strip()
+        user = User.objects.filter(email=email).first()
+
+        if user:
+            send_forget_password_otp(user.username, user.email)
+
+            messages.success(request, "OTP has been sent to your email address.")
+            return redirect(f"/verify-forgot-otp/?email={email}")
+        else:
+            messages.error(request, "No account found with this email address.")
+
+    return render(request, "dashboard/forgot_password.html")
+
+def verify_forgot_otp(request):
+    email = request.GET.get('email', '').lower().strip()
+
+    if not email:
+        messages.error(request, "Invalid request parameters.")
+        return redirect('forgot_password')
+
+    if request.method == "POST":
+        user_otp = request.POST.get('otp')
+        cached_otp = cache.get(f"forget_otp_{email}")
+
+        if cached_otp and str(cached_otp) == str(user_otp):
+            cache.set(f"password_reset_verified_{email}", True, 60 * 5)
+
+            cache.delete(f"forget_otp_{email}")
+
+            return redirect(f"/set-new-password/?email={email}")
+        else:
+            messages.error(request, "Invalid or expired OTP. Please try again.")
+
+    return render(request, "dashboard/verify_forgot_otp.html", {'email': email})
+
+def set_new_password(request):
+    email = request.GET.get('email', '').lower().strip()
+    is_verified = cache.get(f"password_reset_verified_{email}")
+    if not is_verified:
+        messages.error(request, "Session expired or unauthorized access.")
+        return redirect('forgot_password')
+
+    if request.method == "POST":
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password == confirm_password:
+            user = User.objects.filter(email=email).first()
+            if user:
+                user.password = make_password(password)
+                user.save()
+
+                cache.delete(f"password_reset_verified_{email}")
+
+                messages.success(request, "Password reset successfully. Please login.")
+                return redirect('user_login')
+        else:
+            messages.error(request, "Passwords do not match.")
+
+    return render(request, "dashboard/set_new_password.html", {'email': email})

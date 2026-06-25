@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+
+{% block title %}Student System Profile Log{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-12 col-xl-10">
+
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden bg-white">
+
+                <div class="p-4 p-md-5 bg-dark text-white position-relative">
+                    <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-4">
+
+                        <div class="d-flex flex-column flex-md-row align-items-center gap-4">
+                            <div class="profile-avatar-wrapper position-relative">
+                                {% if student.profile_pic %}
+                                    <img src="{{ student.profile_pic.url }}" class="rounded-circle object-fit-cover border border-4 border-white shadow" style="width: 120px; height: 120px;" alt="Avatar">
+                                {% else %}
+                                    <div class="rounded-circle bg-secondary border border-4 border-white text-white d-flex align-items-center justify-content-center font-monospace fw-bold shadow" style="width: 120px; height: 120px; font-size: 38px;">
+                                        {{ student.first_name|slice:":1"|upper }}
+                                    </div>
+                                {% endif %}
+                            </div>
+
+                            <div class="text-center text-md-start">
+                                <span class="badge font-monospace text-uppercase mb-2 {% if student.account_status %}bg-success text-white{% else %}bg-warning text-dark{% endif %}" style="letter-spacing: 0.5px;">
+                                    Account Status: {% if student.account_status %}Verified{% else %}Pending{% endif %}
+                                </span>
+                                <h2 class="fw-bold m-0 lh-sm display-6">{{ student.first_name }} {{ student.last_name }}</h2>
+                            </div>
+                        </div>
+
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'student_update' student.id %}" class="btn btn-light fw-bold px-4 py-2 rounded-3 shadow-sm text-dark">
+                                <i class="fa-solid fa-pen-to-square me-2"></i> Update Profile
+                            </a>
+                            <button type="button" class="btn btn-outline-danger fw-bold px-4 py-2 rounded-3" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal">
+                                <i class="fa-solid fa-trash-can me-2"></i> Delete
+                            </button>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="p-4 p-md-5">
+                    <div class="table-responsive border rounded-3 mb-5">
+                        <table class="table table-hover align-middle m-0" style="font-size: 14px;">
+                            <tbody>
+                                <tr>
+                                    <td class="bg-light fw-bold text-muted font-monospace text-uppercase py-3 ps-4" style="width: 25%;">First Name</td>
+                                    <td class="text-dark fw-semibold py-3 ps-3">{{ student.first_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light fw-bold text-muted font-monospace text-uppercase py-3 ps-4">Last Name</td>
+                                    <td class="text-dark fw-semibold py-3 ps-3">{{ student.last_name }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light fw-bold text-muted font-monospace text-uppercase py-3 ps-4">Email Channel</td>
+                                    <td class="text-dark py-3 ps-3">
+                                        <i class="fa-regular fa-envelope me-2 text-muted"></i>{{ student.email }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light fw-bold text-muted font-monospace text-uppercase py-3 ps-4">Phone Integer</td>
+                                    <td class="text-dark font-monospace py-3 ps-3">
+                                        <i class="fa-solid fa-phone me-2 text-muted" style="font-size: 11px;"></i>{{ student.phone_number }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light fw-bold text-muted font-monospace text-uppercase py-3 ps-4">Gender Matrix</td>
+                                    <td class="text-dark py-3 ps-3">
+                                        <span class="badge text-uppercase font-monospace {% if student.gender == 'male' %}bg-primary-subtle text-primary{% elif student.gender == 'female' %}bg-danger-subtle text-danger{% else %}bg-secondary-subtle text-secondary{% endif %}" style="font-size: 11px; padding: 4px 8px;">
+                                            {{ student.gender }}
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light fw-bold text-muted font-monospace text-uppercase py-3 ps-4">Postal Address</td>
+                                    <td class="text-muted py-3 ps-3 text-wrap" style="line-height: 1.5;">{{ student.address }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="bg-light fw-bold text-muted font-monospace text-uppercase py-3 ps-4">Biograph</td>
+                                    <td class="text-muted py-3 ps-3 text-wrap" style="line-height: 1.5;">{{ student.biograph|safe }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="deleteConfirmModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow rounded-4 p-3">
+            <div class="modal-header border-0">
+                <h5 class="modal-title fw-bold text-dark" id="deleteModalLabel">⚠️ Confirm Permanent Deletion</h5>
+                <button type="button" class="btn-close" data-bs-shadow="none" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body py-2">
+                <p class="text-muted m-0">
+                    Are you absolutely sure you want to delete the student profile for <strong class="text-dark">{{ student.first_name }} {{ student.last_name }}</strong>?
+                </p>
+            </div>
+            <div class="modal-footer border-0 pt-4">
+                <button type="button" class="btn btn-light fw-semibold rounded-3 px-3" data-bs-dismiss="modal">Cancel</button>
+
+                <form method="POST" action="{% url 'delete_student' student.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger fw-bold rounded-3 px-4">
+                        Yes, Delete Record
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
