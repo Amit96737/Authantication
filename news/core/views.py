@@ -47,3 +47,6 @@ def news_details(request):
         "ticker_articles": ticker_articles,
         "form": form,
     })
+
+def news_home_page(request):
+    return render(request, "news/news_home_page.html", locals())

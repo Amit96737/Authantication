@@ -1,0 +1,72 @@
+<!--{% extends "base.html" %}-->
+
+<!--{% block title %}User Profile{% endblock %}-->
+
+<!--{% block content %}-->
+<!--<div class="container py-4">-->
+
+<!--    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-5 flex-wrap gap-3">-->
+<!--        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">-->
+<!--            <i class="fa-solid fa-arrow-left me-2"></i> Back to Dashboard-->
+<!--        </a>-->
+<!--        <h4 class="fw-bold text-dark m-0">My Profile Details</h4>-->
+<!--    </div>-->
+
+<!--    <div class="row g-4 justify-content-center">-->
+
+<!--        <div class="col-12 col-md-4 col-lg-3 text-center">-->
+<!--            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white h-100 d-flex flex-column align-items-center justify-content-center">-->
+<!--                <div class="position-relative mb-3">-->
+<!--                    {% if user.profile_pic %}-->
+<!--                        <img src="{{ user.profile_pic.url }}" class="rounded-circle object-fit-cover border border-4 border-light shadow-sm" style="width: 140px; height: 140px;" alt="User Avatar">-->
+<!--                    {% else %}-->
+<!--                        <div class="rounded-circle bg-dark border border-4 border-light text-white d-flex align-items-center justify-content-center font-monospace fw-bold shadow-sm mx-auto" style="width: 140px; height: 140px; font-size: 42px;">-->
+<!--                            {{ user.first_name|slice:":1"|upper }}-->
+<!--                        </div>-->
+<!--                    {% endif %}-->
+<!--                </div>-->
+
+<!--                <h5 class="fw-bold text-dark mb-1">{{ user.get_full_name|default:user.username }}</h5>-->
+<!--                <p class="text-muted small mb-0">{{ user.email }}</p>-->
+<!--            </div>-->
+<!--        </div>-->
+
+<!--        <div class="col-12 col-md-8 col-lg-7">-->
+<!--            <div class="card border-0 shadow-sm rounded-4 bg-white p-4 p-md-5">-->
+<!--                <h3 class="fw-bold text-dark mb-4">Account Specifications</h3>-->
+
+<!--                <fieldset disabled>-->
+<!--                    <div class="row g-3">-->
+<!--                        <div class="col-12 col-sm-6">-->
+<!--                            <label class="form-label text-secondary fw-bold small text-uppercase">First Name</label>-->
+<!--                            {{ form.first_name }}-->
+<!--                        </div>-->
+<!--                        <div class="col-12 col-sm-6">-->
+<!--                            <label class="form-label text-secondary fw-bold small text-uppercase">Last Name</label>-->
+<!--                            {{ form.last_name }}-->
+<!--                        </div>-->
+<!--                        <div class="col-12">-->
+<!--                            <label class="form-label text-secondary fw-bold small text-uppercase">Email Identity</label>-->
+<!--                            {{ form.email }}-->
+<!--                        </div>-->
+<!--                        <div class="col-12 col-sm-6">-->
+<!--                            <label class="form-label text-secondary fw-bold small text-uppercase">Phone Number</label>-->
+<!--                            {{ form.phone_number }}-->
+<!--                        </div>-->
+<!--                        <div class="col-12 col-sm-6">-->
+<!--                            <label class="form-label text-secondary fw-bold small text-uppercase">Gender Choice</label>-->
+<!--                            {{ form.gender }}-->
+<!--                        </div>-->
+<!--                        <div class="col-12">-->
+<!--                            <label class="form-label text-secondary fw-bold small text-uppercase">Personal Biography</label>-->
+<!--                            {{ form.biograph }}-->
+<!--                        </div>-->
+<!--                    </div>-->
+<!--                </fieldset>-->
+
+<!--            </div>-->
+<!--        </div>-->
+
+<!--    </div>-->
+<!--</div>-->
+<!--{% endblock %}-->

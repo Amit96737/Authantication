@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="container-fluid py-4 px-4">
-    
+
     <div class="border-bottom pb-3 mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
         <h1 class="fw-bold text-dark m-0 display-6">🎓 Student Management Portal</h1>
 
@@ -39,10 +39,10 @@
         <div class="col-12 col-md-8 col-xl-6">
             <div class="card border-0 shadow-sm rounded-3 p-4 bg-white">
                 <h4 class="fw-bold text-dark mb-4 border-bottom pb-2">📋 Register Student</h4>
-                
+
                 <form method="POST" action="{% url 'create_student' %}" enctype="multipart/form-data">
                     {% csrf_token %}
-                    
+
                     {{ form.media }}
 
                     <div class="row g-3">
@@ -91,9 +91,9 @@
 
 <style>
     .card form input[type="text"],
-    .card form input[type="email"], 
-    .card form input[type="date"], 
-    .card form select, 
+    .card form input[type="email"],
+    .card form input[type="date"],
+    .card form select,
     .card form textarea {
         display: block;
         width: 100%;
@@ -111,7 +111,7 @@
         border-radius: 0.375rem;
         transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
     }
-    
+
     .card form input:focus, .card form select:focus, .card form textarea:focus {
         border-color: #000000;
         outline: 0;

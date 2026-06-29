@@ -1,55 +1,46 @@
+{% extends "base.html" %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bank Dashboard</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-</head>
-<body>
-        <h1><i class="fa-solid fa-building-columns me-2"></i> Working in progress</h1>
 
-    <div class="bank-page-center-env">
+{% block title %}Bank Dashboard{% endblock %}
 
-        <div class="bank-isolated-card">
+{% block content %}
+<h1><i class="fa-solid fa-building-columns me-2"></i> Working in progress</h1>
 
-            <div class="header-panel">
-                <h2><i class="fa-solid fa-building-columns me-2"></i> Bank Management Operations</h2>
-            </div>
+<div class="bank-page-center-env">
 
-            <div class="bank-stack-layout">
-                <a href="{% url 'create_account' %}" class="bank-row-btn">
-                    <i class="fa-solid fa-user-plus icon-box"></i>   Open & View Account
-                </a>
-                <a href="#" class="bank-row-btn">
-                    <i class="fa-solid fa-money-bill-wave icon-box"></i>   Deposit Amount
-                </a>
-                <a href="#" class="bank-row-btn">
-                    <i class="fa-solid fa-money-check-dollar icon-box"></i>  Withdraw Amount
-                </a>
-                <a href="#" class="bank-row-btn">
-                    <i class="fa-solid fa-arrow-right-arrow-left icon-box"></i>  Transfer Amount
-                </a>
-                <a href="#" class="bank-row-btn">
-                    <i class="fa-solid fa-wallet icon-box"></i>  Check Bank Balance
-                </a>
-                <a href="#" class="bank-row-btn">
-                    <i class="fa-solid fa-clock-rotate-left icon-box"></i>  Transaction History
-                </a>
-                <a href="#" class="bank-row-btn">
-                    <i class="fa-solid fa-id-card icon-box"></i>   Specific Account Details
-                </a>
-                <a href="#" class="bank-row-btn">
-                    <i class="fa-solid fa-landmark icon-box"></i>  Open & View Bank Branch
-                </a>
+    <div class="bank-isolated-card">
 
-            </div>
-
+        <div class="header-panel">
+            <h2><i class="fa-solid fa-building-columns me-2"></i> Bank Management</h2>
         </div>
+
+        <div class="bank-stack-layout">
+            <a href="{% url 'create_account' %}" class="bank-row-btn">
+                <i class="fa-solid fa-user-plus icon-box"></i>   Open & View Account
+            </a>
+            <a href="#" class="bank-row-btn">
+                <i class="fa-solid fa-money-bill-wave icon-box"></i>   Deposit Amount
+            </a>
+            <a href="#" class="bank-row-btn">
+                <i class="fa-solid fa-money-check-dollar icon-box"></i>  Withdraw Amount
+            </a>
+            <a href="#" class="bank-row-btn">
+                <i class="fa-solid fa-arrow-right-arrow-left icon-box"></i>  Transfer Amount
+            </a>
+            <a href="#" class="bank-row-btn">
+                <i class="fa-solid fa-wallet icon-box"></i>  Check Bank Balance
+            </a>
+            <a href="#" class="bank-row-btn">
+                <i class="fa-solid fa-clock-rotate-left icon-box"></i>  Transaction History
+            </a>
+            <a href="#" class="bank-row-btn">
+                <i class="fa-solid fa-id-card icon-box"></i>   Specific Account Details
+            </a>
+            <a href="#" class="bank-row-btn">
+                <i class="fa-solid fa-landmark icon-box"></i>  Open & View Bank Branch
+            </a>
+        </div>
+
     </div>
-
-
-</body>
-</html>
+</div>
+{% endblock %}

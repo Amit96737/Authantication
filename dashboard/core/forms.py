@@ -1,5 +1,6 @@
 from django import forms
 from django.core.validators import FileExtensionValidator
+from users.models.users import User
 
 gender_choices = (
     ('', 'Select Gender'),
@@ -48,3 +49,19 @@ class LoginForm(forms.Form):
     password = forms.CharField(
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Enter your password'})
     )
+
+# class UserProfileForm(forms.ModelForm):
+#     class Meta:
+#         model = User
+#         fields = ['first_name', 'last_name', 'email', 'phone_number', 'gender', 'profile_pic', 'biograph']
+#         widgets = {
+#             'first_name': forms.TextInput(attrs={'class': 'form-control rounded-3', 'placeholder': 'First Name'}),
+#             'last_name': forms.TextInput(attrs={'class': 'form-control rounded-3', 'placeholder': 'Last Name'}),
+#             'email': forms.EmailInput(attrs={'class': 'form-control rounded-3', 'placeholder': 'Email Address'}),
+#             'phone_number': forms.TextInput(attrs={'class': 'form-control rounded-3', 'placeholder': 'Phone Number'}),
+#             'gender': forms.Select(attrs={'class': 'form-select rounded-3'}),
+#             'profile_pic': forms.FileInput(attrs={'class': 'form-control rounded-3'}),
+#             'biograph': forms.Textarea(
+#                 attrs={'class': 'form-control rounded-3', 'rows': 4, 'placeholder': 'Tell us about yourself...'}),
+#
+#         }

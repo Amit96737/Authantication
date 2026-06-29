@@ -25,7 +25,7 @@ class User(AbstractUser):
     email_verified = models.BooleanField(default=False)
     sms_verified = models.BooleanField(default=False)
 
-    REQUIRED_FIELDS = ['first_name', 'last_name', 'email', 'phone_number']
-    USERNAME_FIELD = 'username'
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_number']
     objects = UserManager()
 
