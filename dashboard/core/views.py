@@ -198,7 +198,14 @@ def verify_forgot_otp(request):
         return redirect('forgot_password')
 
     if request.method == "POST":
-        user_otp = request.POST.get('otp')
+        otp_1 = request.POST.get('otp_1', '')
+        otp_2 = request.POST.get('otp_2', '')
+        otp_3 = request.POST.get('otp_3', '')
+        otp_4 = request.POST.get('otp_4', '')
+        otp_5 = request.POST.get('otp_5', '')
+        otp_6 = request.POST.get('otp_6', '')
+
+        user_otp = f"{otp_1}{otp_2}{otp_3}{otp_4}{otp_5}{otp_6}"
         cached_otp = cache.get(f"forget_otp_{email}")
 
         if cached_otp and str(cached_otp) == str(user_otp):
@@ -220,8 +227,12 @@ def set_new_password(request):
         return redirect('forgot_password')
 
     if request.method == "POST":
-        password = request.POST.get('password')
-        confirm_password = request.POST.get('confirm_password')
+        password = request.POST.get('password', '')
+        confirm_password = request.POST.get('confirm_password', '')
+
+        if len(password) < 8 or len(confirm_password) < 8:
+            messages.error(request, "password and confirm password must be at least 8 characters long.")
+            return render(request, "dashboard/set_new_password.html", {'email': email})
 
         if password == confirm_password:
             user = User.objects.filter(email=email).first()
@@ -234,6 +245,6 @@ def set_new_password(request):
                 messages.success(request, "Password reset successfully. Please login.")
                 return redirect('user_login')
         else:
-            messages.error(request, "Passwords do not match.")
+            messages.error(request, "Passwords does not match.")
 
     return render(request, "dashboard/set_new_password.html", {'email': email})
