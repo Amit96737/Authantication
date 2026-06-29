@@ -1,0 +1,185 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #eef2f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+            text-transform: uppercase;
+            font-size: 22px;
+            letter-spacing: 0.5px;
+        }
+
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-top: -4px;
+            margin-bottom: 10px;
+            text-align: left;
+            width: 95%;
+            padding-left: 5px;
+        }
+
+        .success {
+            color: green;
+            font-size: 14px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: 0.3s;
+        }
+
+        input:focus, select:focus {
+            border-color: #000000;
+            outline: none;
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+        }
+
+        button {
+            background-color: #000000;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 18px;
+            font-weight: bold;
+            transition: 0.3s;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #000000;
+        }
+
+        .back-container {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .back-btn {
+            display: inline-block;
+            background-color: #6c757d;
+            padding: 10px 15px;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 15px;
+            transition: 0.3s;
+            width: 100%;
+        }
+
+        .back-btn:hover {
+            background-color: #5a6268;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.tags == 'success' %}
+                    <p class="success">{{ message }}</p>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+
+        <div class="form-container">
+            <h2>Create New Account</h2>
+
+            <form action="/create-account" method="POST">
+                {% csrf_token %}
+
+                <input type="text" name="customer_name" placeholder="Enter Customer Name" value="{{ request.POST.customer_name }}" required>
+                {% if errors.customer_name %}
+                    <p class="error">{{ errors.customer_name.0 }}</p>
+                {% endif %}
+
+                <input type="text" name="phone_number" placeholder="Enter Phone Number" value="{{ request.POST.phone_number }}" required>
+                {% if errors.phone_number %}
+                    <p class="error">No more than 10 Digits.</p>
+                {% endif %}
+
+                <input type="text" name="email" placeholder="Enter Email" value="{{ request.POST.email }}" required>
+                {% if errors.email %}
+                    <p class="error">Enter a valid email address</p>
+                {% endif %}
+
+                <select name="bank" required>
+                    <option value="">Select Bank</option>
+                    {% for bank in banks %}
+                        <option value="{{ bank.id }}" {% if request.POST.bank == bank.id|slugify %}selected{% endif %}>
+                            {{ bank.name }}
+                        </option>
+                    {% endfor %}
+                </select>
+                {% if errors.bank %}
+                    <p class="error">{{ errors.bank.0 }}</p>
+                {% endif %}
+
+                <input type="text" name="address" placeholder="Enter Address" value="{{ request.POST.address }}" required>
+
+                <input type="text" name="aadhar_number" placeholder="Enter Aadhar Number" value="{{ request.POST.aadhar_number }}" required>
+                {% if errors.aadhar_number %}
+                    <p class="error">No more than 12 Digits.</p>
+                {% endif %}
+
+                <input type="number" name="balance" placeholder="Enter Initial Balance" value="{{ request.POST.balance }}" required>
+                {% if errors.balance %}
+                    <p class="error">{{ errors.balance.0 }}</p>
+                {% endif %}
+
+                <button type="submit">Create Account</button>
+            </form>
+
+<!--            <div class="back-container">-->
+<!--                <a href="/dashboard" class="back-btn">Go Dashboard</a>-->
+<!--            </div>-->
+        </div>
+
+    </div>
+</body>
+</html>
