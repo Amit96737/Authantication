@@ -3,22 +3,122 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}My App{% endblock %}</title>
+    <title>{% block title %}DevBoard{% endblock %}</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
     {% block extra_css %}{% endblock %}
+
+    <style>
+        body {
+            background-color: #f8f9fa !important;
+            color: #212529 !important;
+        }
+
+        .global-header {
+            background-color: #ffffff;
+        }
+        .hover-dark-link:hover, .dropdown-toggle:hover {
+            color: #000000 !important;
+        }
+        .dropdown-menu {
+            border: 1px solid rgba(0,0,0,.08) !important;
+        }
+        .dropdown-item:active, .dropdown-item:hover {
+            background-color: #f1f3f5 !important;
+            color: #000000 !important;
+        }
+
+        .dropdown-submenu:hover .submenu {
+            display: block;
+        }
+        .dropdown-submenu .submenu {
+            display: none;
+            position: absolute;
+            left: 100%;
+            top: 0;
+            margin-left: 2px;
+        }
+        .dropdown-submenu .dropdown-toggle::after {
+            transform: rotate(-90deg);
+            vertical-align: middle;
+        }
+
+        .profile-circle-btn {
+            width: 32px;
+            height: 32px;
+            background-color: #212529;
+            color: #ffffff;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: all 0.2s ease-in-out;
+            border: 1px solid transparent;
+        }
+        .profile-circle-btn:hover {
+            background-color: #000000;
+            color: #ffffff;
+            transform: scale(1.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+        }
+    </style>
 </head>
 
 <body>
 
-<div class="container mt-4">
+<div class="global-header border-bottom shadow-sm mb-5 py-3">
+    <div class="container-fluid px-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
 
+        <div class="text-start d-flex align-items-center gap-4 flex-wrap">
+            <a href="{% url 'dashboard' %}" class="text-decoration-none">
+                <h1 class="fw-bold text-dark m-0 fs-3 main-title-text">DevBoard</h1>
+            </a>
+
+            <nav class="d-flex align-items-center ms-2 mt-1">
+                <div class="dropdown custom-nested-dropdown">
+                    <a class="text-decoration-none fw-bold text-secondary dropdown-toggle small" href="#" role="button" id="globalAboutDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="transition: color 0.2s;">
+                        <i class="fa-solid fa-circle-info me-1"></i> About
+                    </a>
+
+                    <ul class="dropdown-menu shadow-sm border-0 mt-2 rounded-3" aria-labelledby="globalAboutDropdown">
+
+                        <li class="dropdown-submenu position-relative">
+                            <a class="dropdown-item dropdown-toggle small py-2 d-flex align-items-center justify-content-between" href="#">
+                                <span><i class="fa-solid fa-book me-2 opacity-75"></i> Module Docs</span>
+                            </a>
+                            <ul class="dropdown-menu submenu shadow-sm border-0 rounded-3">
+                                <li><a class="dropdown-item small py-2" href="{% url 'news_home_page' %}"><i class="fa-solid fa-newspaper me-2 opacity-75"></i> Live News</a></li>
+                                <li><a class="dropdown-item small py-2" href="{% url 'crud_home_page' %}"><i class="fa-solid fa-database me-2 opacity-75"></i> CRUD Operations</a></li>
+                                <li><a class="dropdown-item small py-2" href="{% url 'bank_about_page' %}"><i class="fa-solid fa-building-columns me-2 opacity-75"></i> Bank Management</a></li>
+                                <li><a class="dropdown-item small py-2" href="{% url 'chat_about_page' %}"><i class="fa-solid fa-robot me-2 opacity-75"></i> AI Assistant</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </div>
+
+        <div class="d-flex align-items-center gap-3">
+
+            <a href="{% url 'user_logout' %}" class="btn btn-outline-dark fw-bold btn-sm rounded-3 px-3 shadow-sm">
+                <i class="fa-solid fa-sign-out-alt me-1"></i> Log Out
+            </a>
+
+            <a href="#" class="profile-circle-btn shadow-sm" title="View Profile">
+                <i class="fa-solid fa-user text-white small"></i>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-4">
     {% block content %}
     {% endblock %}
-
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

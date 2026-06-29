@@ -5,6 +5,9 @@ from crud.models.student import Student
 from django.shortcuts import get_object_or_404, render
 from django.contrib import messages
 
+def crud_home_page(request):
+    return render(request, "student/crud_home_page.html", locals())
+
 def create_student(request):
     if request.method == "POST":
         form = StudentForm(request.POST, request.FILES)

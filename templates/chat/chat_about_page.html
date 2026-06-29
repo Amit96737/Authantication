@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}AI Assistant Integration Docs{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="border-bottom pb-3 mb-5 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="fw-bold text-dark m-0 display-6">🤖 AI Assistant Integration Docs</h1>
+        </div>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">
+            <i class="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-9">
+            
+            <div class="card border-0 shadow-sm rounded-3 p-4 p-md-5 bg-white mb-5">
+                
+                <div class="mb-5">
+                    <h4 class="fw-bold text-dark d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-gears me-2 text-secondary"></i> How This Module Works
+                    </h4>
+                    <p class="text-secondary leading-relaxed">
+                        This module integrates a custom-engineered AI Chatbot Interface operating closely to conversational pipelines like ChatGPT. Users can pass explicit natural language prompts, which are processed programmatically by a hosted interface to stream back highly coherent, context-aware markdown or textual responses.
+                    </p>
+                </div>
+
+                <div class="mb-5 p-4 bg-light rounded-3 border border-light-subtle shadow-inner">
+                    <h5 class="fw-bold text-dark d-flex align-items-center mb-3 font-monospace small text-uppercase tracking-wider text-muted">
+                        <i class="fa-solid fa-microchip text-indigo me-2"></i> Large Language Model (LLM) Blueprint
+                    </h5>
+                    <p class="text-secondary small m-0 mb-3" style="line-height: 1.6;">
+                        To deliver state-of-the-art inference results, the backend establishes deep API layers targeting premium open-source weights. The inference compute metrics are managed through standard cloud-hosted infrastructure details:
+                    </p>
+                    <div class="bg-dark text-white font-monospace p-3 rounded-2 small opacity-90 border border-secondary border-opacity-25 shadow-sm">
+                        [LLM Environment Variables]<br>
+                        &bull; AI_MODEL_TARGET : meta-llama/llama-3-8b-instruct<br>
+                        &bull; COMPUTE_CREDITS : Limited Free Developer Allocation (Active)
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="fw-bold text-dark d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-layer-group me-2 text-secondary"></i> Intelligent Capabilities Breakdown
+                    </h4>
+                    <p class="text-secondary leading-relaxed mb-4">
+                        The integration focuses on processing unstructured datasets to handle varying conversational workflows smoothly:
+                    </p>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6">
+                            <div class="p-3 border rounded-3 bg-white shadow-sm h-100 custom-feature-box">
+                                <h6 class="fw-bold text-dark d-flex align-items-center"><i class="fa-solid fa-terminal text-primary me-2"></i> Prompt Parsing</h6>
+                                <p class="text-muted small m-0 mt-1">Accepts and sanitizes complex user input arrays before passing them seamlessly to the model endpoints.</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="p-3 border rounded-3 bg-white shadow-sm h-100 custom-feature-box">
+                                <h6 class="fw-bold text-dark d-flex align-items-center"><i class="fa-solid fa-wand-magic-sparkles text-success me-2"></i> Dynamic Inference</h6>
+                                <p class="text-muted small m-0 mt-1">Leverages Meta Llama's 8B Instruct capabilities to synthesize contextually accurate outputs for answers or code strings.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-5 opacity-25">
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .leading-relaxed {
+        line-height: 1.75;
+        font-size: 0.95rem;
+    }
+    .tracking-wider {
+        letter-spacing: 0.5px;
+    }
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    .text-indigo {
+        color: #6610f2 !important;
+    }
+    .custom-feature-box {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .custom-feature-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.06) !important;
+    }
+</style>
+{% endblock %}

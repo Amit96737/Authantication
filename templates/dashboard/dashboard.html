@@ -6,24 +6,25 @@
 <div class="container py-4">
 
     <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-5 flex-wrap gap-3">
-        <div class="text-start d-flex align-items-center gap-3">
+        <div class="text-start d-flex align-items-center gap-4 flex-wrap">
             <h1 class="fw-bold text-dark m-0 display-6 main-title-text">Welcome Dashboard</h1>
+            <nav class="d-flex align-items-center ms-2 mt-1">
+            </nav>
         </div>
 
-        <div class="d-flex align-items-center gap-3">
-            <a href="{% url 'user_sign_up' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">
-                <i class="fa-solid fa-database me-2"></i> Sign Up
-            </a>
-
-            <a href="{% url 'user_logout' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">
-                <i class="fa-solid fa-database me-2"></i> Log Out
-            </a>
+        <div style="min-width: 320px; max-width: 450px;" class="flex-grow-1 flex-sm-grow-0">
+            <div class="input-group shadow-sm rounded-3 overflow-hidden border">
+                <span class="input-group-text bg-white border-0 text-muted pe-1 py-2.5 ps-3">
+                    <i class="fa-solid fa-magnifying-glass small"></i>
+                </span>
+                <input type="text" id="dashboardSearchInput" class="form-control border-0 py-2.5 ps-2 text-dark" placeholder="Search module..." autocomplete="off" style="outline: none; box-shadow: none; font-size: 0.95rem;">
+            </div>
         </div>
     </div>
 
-    <div class="row g-4 justify-content-center">
+    <div class="row g-4 justify-content-center" id="moduleCardsContainer">
 
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-3 module-card-item">
             <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
                 <div class="card-img-wrapper">
                     <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=600" class="card-img-top custom-card-img" alt="News Image">
@@ -34,7 +35,6 @@
                         <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">Live News</h4>
                         <p class="card-text text-muted small mb-4 card-desc-text">Stream real-time global breaking news, tech, and live stories instantly from trusted third-party APIs.</p>
                     </div>
-<!--                    {% url 'news_details' %}-->
                     <a href="#" id="newsModuleBtn" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm" style="min-height: 38px;">
                         <span id="btnText">Open Module</span>
                         <div id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status">
@@ -45,7 +45,7 @@
             </div>
         </div>
 
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-3 module-card-item">
             <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
                 <div class="card-img-wrapper">
                     <img src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600" class="card-img-top custom-card-img" alt="CRUD Image">
@@ -61,7 +61,7 @@
             </div>
         </div>
 
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-3 module-card-item">
             <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
                 <div class="card-img-wrapper">
                     <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=600" class="card-img-top custom-card-img" alt="Banking Image">
@@ -77,7 +77,7 @@
             </div>
         </div>
 
-        <div class="col-12 col-sm-6 col-md-3">
+        <div class="col-12 col-sm-6 col-md-3 module-card-item">
             <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
                 <div class="card-img-wrapper">
                    <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600" class="card-img-top custom-card-img" alt="AI Image">
@@ -117,12 +117,56 @@
         btnSpinner.classList.add('d-none');
         newsModuleBtn.style.pointerEvents = 'auto';
     });
+
+    // Client-side search module filter framework execution
+    document.getElementById('dashboardSearchInput').addEventListener('input', function (e) {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        const cards = document.querySelectorAll('.module-card-item');
+
+        cards.forEach(function (card) {
+            const title = card.querySelector('.card-title-text').textContent.toLowerCase();
+            const description = card.querySelector('.card-desc-text').textContent.toLowerCase();
+            const badge = card.querySelector('.badge').textContent.toLowerCase();
+
+            if (title.includes(searchTerm) || description.includes(searchTerm) || badge.includes(searchTerm)) {
+                card.style.display = "";
+            } else {
+                card.style.display = "none";
+            }
+        });
+    });
 </script>
 
 <style>
     body {
         background-color: #f8f9fa !important;
         color: #212529 !important;
+    }
+
+    .dropdown-submenu:hover .submenu {
+        display: block;
+    }
+    .dropdown-submenu .submenu {
+        display: none;
+        position: absolute;
+        left: 100%;
+        top: 0;
+        margin-left: 2px;
+    }
+    .dropdown-submenu .dropdown-toggle::after {
+        transform: rotate(-90deg);
+        vertical-align: middle;
+    }
+
+    .dropdown-toggle:hover {
+        color: #000000 !important;
+    }
+    .dropdown-menu {
+        border: 1px solid rgba(0,0,0,.08) !important;
+    }
+    .dropdown-item:active, .dropdown-item:hover {
+        background-color: #f1f3f5 !important;
+        color: #000000 !important;
     }
 
     .profile-avatar {
@@ -168,16 +212,6 @@
 
     .custom-hover-card:hover .custom-card-img {
         transform: scale(1.04);
-    }
-
-    .btn-dark {
-        background-color: #000000 !important;
-        border: 1px solid #000000 !important;
-        color: #ffffff !important;
-        transition: background-color 0.2s ease;
-    }
-    .btn-dark:hover {
-        background-color: #212529 !important;
     }
 </style>
 {% endblock %}

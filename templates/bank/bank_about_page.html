@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Bank Management System Docs{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <div class="alert alert-danger border-0 shadow-sm rounded-3 py-3 px-4 mb-4 d-flex align-items-center gap-3" role="alert">
+        <i class="fa-solid fa-triangle-exclamation fs-4 text-danger animate-pulse"></i>
+        <div>
+            <strong class="text-danger">Module Status: Work In Progress.</strong> This banking module is currently undergoing system architecture development and simulation tests.
+        </div>
+    </div>
+
+    <div class="border-bottom pb-3 mb-5 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="fw-bold text-dark m-0 display-6">Bank Management Docs</h1>
+        </div>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">
+            <i class="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-9">
+            
+            <div class="card border-0 shadow-sm rounded-3 p-4 p-md-5 bg-white mb-5">
+                
+                <div class="mb-5">
+                    <h4 class="fw-bold text-dark d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-gears me-2 text-secondary"></i> How This Module Works
+                    </h4>
+                    <p class="text-secondary leading-relaxed">
+                        This module simulates a robust, transaction-secure Banking Ledger Engine. It handles asynchronous state modifications, algorithmic generation of financial identifiers, and strict computational validation to execute core financial actions flawlessly.
+                    </p>
+                </div>
+
+                <div class="mb-5 p-4 bg-light rounded-3 border border-light-subtle shadow-inner">
+                    <h5 class="fw-bold text-dark d-flex align-items-center mb-3 font-monospace small text-uppercase tracking-wider text-muted">
+                        <i class="fa-solid fa-robot text-danger me-2"></i> Automatic Credentials Generation
+                    </h5>
+                    <p class="text-secondary small m-0 mb-3" style="line-height: 1.6;">
+                        When a user initiates an account registration, the application utilizes secure backend algorithms to completely automate the following deployment pipelines:
+                    </p>
+                    <div class="bg-dark text-white font-monospace p-3 rounded-2 small opacity-90 border border-secondary border-opacity-25 shadow-sm">
+                        [System Initialization Blueprint]<br>
+                        &bull; ACCOUNT_NUMBER : Generated automatically via high-entropy sequential string arrays.<br>
+                        &bull; IFSC_CODE       : Algorithmic system-generated branch tracking string string arrays.
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <h4 class="fw-bold text-dark d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-layer-group me-2 text-secondary"></i> Core Engine Functional Modules
+                    </h4>
+                    <p class="text-secondary leading-relaxed mb-4">
+                        The framework isolates discrete transactional scopes to manage user ledger operations with real-time processing balances:
+                    </p>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6">
+                            <div class="p-3 border rounded-3 bg-white shadow-sm h-100 custom-feature-box">
+                                <h6 class="fw-bold text-dark d-flex align-items-center"><i class="fa-solid fa-money-bill-trend-up text-success me-2"></i> Deposits & Withdrawals</h6>
+                                <p class="text-muted small m-0 mt-1">Executes synchronous numeric operations to instantly alter balance parameters while monitoring over-draft constraints.</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="p-3 border rounded-3 bg-white shadow-sm h-100 custom-feature-box">
+                                <h6 class="fa-bold text-dark d-flex align-items-center"><i class="fa-solid fa-arrow-right-arrow-left text-primary me-2"></i> Fund Transfers</h6>
+                                <p class="text-muted small m-0 mt-1">Moves money across distinct database models safely using isolation principles to eliminate internal transactional errors.</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="p-3 border rounded-3 bg-white shadow-sm h-100 custom-feature-box">
+                                <h6 class="fw-bold text-dark d-flex align-items-center"><i class="fa-solid fa-file-invoice-dollar text-warning me-2"></i> Statements & History</h6>
+                                <p class="text-muted small m-0 mt-1">Tracks transaction indices in clean logs, enabling users to check account balance and download structured transaction reports.</p>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6">
+                            <div class="p-3 border rounded-3 bg-white shadow-sm h-100 custom-feature-box">
+                                <h6 class="fw-bold text-dark d-flex align-items-center"><i class="fa-solid fa-magnifying-glass-chart text-dark me-2"></i> Account & Branch Visibility</h6>
+                                <p class="text-muted small m-0 mt-1">Allows operators to search for specific account details and seamlessly explore active banking branch properties.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-5 opacity-25">
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .leading-relaxed {
+        line-height: 1.75;
+        font-size: 0.95rem;
+    }
+    .tracking-wider {
+        letter-spacing: 0.5px;
+    }
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    .custom-feature-box {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .custom-feature-box:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.06) !important;
+    }
+    @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+    }
+    .animate-pulse {
+        animation: pulse 2s infinite ease-in-out;
+    }
+</style>
+{% endblock %}
