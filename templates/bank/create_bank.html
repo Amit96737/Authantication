@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block title %}Create Account{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+        <a href="{% url 'bank_dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back
+        </a>
+</div>
+
+<div class="d-flex justify-content-end mb-3">
+    <a href="{% url 'all_banks' %}" class="btn btn-outline-dark rounded-3 px-3">
+        <i class="fa-solid fa-database me-2"></i>
+        View All Bank →
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-4">
+
+                <h3 class="text-center mb-4 fw-bold">Add New Bank</h3>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success text-center py-2">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Bank Name</label>
+                        {{ form.name }}
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100 fw-bold">
+                        Add Bank
+                    </button>
+
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

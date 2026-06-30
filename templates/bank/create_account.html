@@ -1,185 +1,85 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Account</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        * {
-            padding: 0;
-            margin: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #eef2f3;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-        }
+{% extends 'base.html' %}
 
-        .container {
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 500px;
-            text-align: center;
-        }
+{% block title %}Create Account{% endblock %}
 
-        h2 {
-            margin-bottom: 20px;
-            color: #333;
-            text-transform: uppercase;
-            font-size: 22px;
-            letter-spacing: 0.5px;
-        }
+{% block content %}
+<div class="mb-4">
+        <a href="{% url 'bank_dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back
+        </a>
+</div>
 
-        .error {
-            color: red;
-            font-size: 13px;
-            margin-top: -4px;
-            margin-bottom: 10px;
-            text-align: left;
-            width: 95%;
-            padding-left: 5px;
-        }
+<div class="d-flex justify-content-end mb-3">
+    <a href="{% url 'all_records' %}" class="btn btn-outline-dark rounded-3 px-3">
+        <i class="fa-solid fa-database me-2"></i>
+        View All Records →
+    </a>
+</div>
 
-        .success {
-            color: green;
-            font-size: 14px;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
+<div class="row justify-content-center">
+    <div class="col-md-4">
 
-        input, select {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            font-size: 16px;
-            transition: 0.3s;
-        }
+        <div class="card shadow-sm border-0 rounded-3">
+            <div class="card-body p-4">
 
-        input:focus, select:focus {
-            border-color: #000000;
-            outline: none;
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-        }
+                <h3 class="text-center mb-4 fw-bold">Create Bank Account</h3>
 
-        button {
-            background-color: #000000;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 18px;
-            font-weight: bold;
-            transition: 0.3s;
-            margin-top: 15px;
-        }
-
-        button:hover {
-            background-color: #000000;
-        }
-
-        .back-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .back-btn {
-            display: inline-block;
-            background-color: #6c757d;
-            padding: 10px 15px;
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 15px;
-            transition: 0.3s;
-            width: 100%;
-        }
-
-        .back-btn:hover {
-            background-color: #5a6268;
-        }
-    </style>
-</head>
-<body>
-
-    <div class="container">
-
-        {% if messages %}
-            {% for message in messages %}
-                {% if message.tags == 'success' %}
-                    <p class="success">{{ message }}</p>
-                {% endif %}
-            {% endfor %}
-        {% endif %}
-
-        <div class="form-container">
-            <h2>Create New Account</h2>
-
-            <form action="/create-account" method="POST">
-                {% csrf_token %}
-
-                <input type="text" name="customer_name" placeholder="Enter Customer Name" value="{{ request.POST.customer_name }}" required>
-                {% if errors.customer_name %}
-                    <p class="error">{{ errors.customer_name.0 }}</p>
-                {% endif %}
-
-                <input type="text" name="phone_number" placeholder="Enter Phone Number" value="{{ request.POST.phone_number }}" required>
-                {% if errors.phone_number %}
-                    <p class="error">No more than 10 Digits.</p>
-                {% endif %}
-
-                <input type="text" name="email" placeholder="Enter Email" value="{{ request.POST.email }}" required>
-                {% if errors.email %}
-                    <p class="error">Enter a valid email address</p>
-                {% endif %}
-
-                <select name="bank" required>
-                    <option value="">Select Bank</option>
-                    {% for bank in banks %}
-                        <option value="{{ bank.id }}" {% if request.POST.bank == bank.id|slugify %}selected{% endif %}>
-                            {{ bank.name }}
-                        </option>
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-success text-center py-2">
+                            {{ message }}
+                        </div>
                     {% endfor %}
-                </select>
-                {% if errors.bank %}
-                    <p class="error">{{ errors.bank.0 }}</p>
                 {% endif %}
 
-                <input type="text" name="address" placeholder="Enter Address" value="{{ request.POST.address }}" required>
+                <form method="POST">
+                    {% csrf_token %}
 
-                <input type="text" name="aadhar_number" placeholder="Enter Aadhar Number" value="{{ request.POST.aadhar_number }}" required>
-                {% if errors.aadhar_number %}
-                    <p class="error">No more than 12 Digits.</p>
-                {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Customer Name</label>
+                        {{ form.customer_name }}
+                    </div>
 
-                <input type="number" name="balance" placeholder="Enter Initial Balance" value="{{ request.POST.balance }}" required>
-                {% if errors.balance %}
-                    <p class="error">{{ errors.balance.0 }}</p>
-                {% endif %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Phone Number</label>
+                        {{ form.phone_number }}
+                    </div>
 
-                <button type="submit">Create Account</button>
-            </form>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Email</label>
+                        {{ form.email }}
+                    </div>
 
-<!--            <div class="back-container">-->
-<!--                <a href="/dashboard" class="back-btn">Go Dashboard</a>-->
-<!--            </div>-->
+                    <div class="mb-3">
+                        <label>Gender:</label>
+                        {{ form.gender }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Bank:</label>
+                        {{ form.bank }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Address</label>
+                        {{ form.address }}
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Aadhar Number</label>
+                        {{ form.aadhar_number }}
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100 fw-bold">
+                        Create Account
+                    </button>
+
+                </form>
+
+            </div>
         </div>
 
     </div>
-</body>
-</html>
+</div>
+
+{% endblock %}
