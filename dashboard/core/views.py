@@ -3,18 +3,17 @@ from .forms import SignUpForm, LoginForm
 from users.models.users import User
 from users.services.send_otp_verification import send_otp_to_mail, send_otp_to_phone, send_forget_password_otp
 from django.contrib import messages
-from django.contrib.auth import login
 from django.contrib.auth.hashers import check_password
 from django.core.cache import cache
 from django.contrib.auth import logout
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth import authenticate, login
+from dashboard.core.forms import UserProfileForm
+from django.contrib.auth.decorators import login_required
 
+@login_required(login_url='user_login')
 def dashboard(request):
-    return render(
-        request,
-        "dashboard/dashboard.html",
-        locals()
-    )
+    return render(request, "dashboard/dashboard.html")
 
 def user_sign_up(request):
     if request.method == "POST":
@@ -22,7 +21,7 @@ def user_sign_up(request):
         if form.is_valid():
             data = form.cleaned_data
 
-            user=User.objects.create_user(
+            user=User.objects.create(
                 username=data['first_name'],
                 first_name=data['first_name'],
                 last_name=data['last_name'],
@@ -30,8 +29,9 @@ def user_sign_up(request):
                 email=data['email'],
                 phone_number=data['phone_number'],
                 profile_pic=data['profile_pic'],
-                password=data['password']
             )
+            user.set_password(data['password'])
+            user.save()
 
             if user and not user.email_verified:
                 full_name = f"{user.first_name}"
@@ -139,6 +139,38 @@ def verify_sms_otp(request):
     return render(request, "dashboard/sms_verify.html", {'phone': phone})
 
 
+# def user_login(request):
+#     if request.method == "POST":
+#         form = LoginForm(request.POST)
+#         if form.is_valid():
+#             email = form.cleaned_data['email'].lower()
+#             password = form.cleaned_data['password']
+#
+#             user = User.objects.filter(email=email).first()
+#
+#             if user:
+#                 if check_password(password, user.password):
+#
+#                     if not user.email_verified:
+#                         request.session['signup_email'] = user.email.lower()
+#                         messages.warning(request, "Please verify your email before logging in.")
+#                         return redirect('verify_email_otp')
+#
+#                     login(request, user)
+#                     return redirect('dashboard')
+#                 else:
+#                     messages.error(request, "Invalid Password. Please try again.")
+#             else:
+#                 messages.error(request, "No account found with this email.")
+#     else:
+#         form = LoginForm()
+#
+#     return render(
+#         request,
+#         "dashboard/login.html",
+#         {'form': form}
+#     )
+
 def user_login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -146,31 +178,24 @@ def user_login(request):
             email = form.cleaned_data['email'].lower()
             password = form.cleaned_data['password']
 
-            user = User.objects.filter(email=email).first()
+            user = authenticate(request, username=email, password=password)
 
-            if user:
-                if check_password(password, user.password):
+            if user and check_password(password, user.password):
 
-                    if not user.email_verified:
-                        request.session['signup_email'] = user.email.lower()
-                        messages.warning(request, "Please verify your email before logging in.")
-                        return redirect('verify_email_otp')
+                if not user.email_verified:
+                    request.session['signup_email'] = user.email.lower()
+                    messages.warning(request, "Please verify your email before logging in.")
+                    return redirect('verify_email_otp')
 
-                    login(request, user)
-                    return redirect('dashboard')
-                else:
-                    messages.error(request, "Invalid Password. Please try again.")
+                login(request, user)
+                return redirect('dashboard')
+
             else:
-                messages.error(request, "No account found with this email.")
+                messages.error(request, "Invalid email or password.")
     else:
         form = LoginForm()
 
-    return render(
-        request,
-        "dashboard/login.html",
-        {'form': form}
-    )
-
+    return render(request, "dashboard/login.html", {'form': form})
 
 def user_logout(request):
     logout(request)
@@ -250,3 +275,33 @@ def set_new_password(request):
             messages.error(request, "Passwords does not match.")
 
     return render(request, "dashboard/set_new_password.html", {'email': email})
+
+def user_profile(request):
+    form = UserProfileForm(instance=request.user)
+
+    return render(request, "dashboard/user_profile.html", {"form": form})
+
+def update_profile(request):
+    user = request.user
+
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, request.FILES, instance=user)
+
+        if form.is_valid():
+            form.save()
+            return redirect('user_profile')
+        else:
+            print(form.errors)
+
+    return redirect('user_profile')
+
+def delete_profile(request):
+    if request.method == "POST":
+        user = request.user
+
+        logout(request)
+        user.delete()
+
+        return redirect('user_login')
+
+    return redirect('user_profile')

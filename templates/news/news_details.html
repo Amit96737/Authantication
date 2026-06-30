@@ -3,6 +3,11 @@
 {% block title %}Curated Live News Feed{% endblock %}
 
 {% block content %}
+<div class="mb-4">
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back to Dashboard
+        </a>
+    </div>
 <div class="container py-4">
 
     {% if ticker_articles %}

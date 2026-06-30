@@ -66,6 +66,19 @@
             transform: scale(1.05);
             box-shadow: 0 2px 5px rgba(0,0,0,0.15);
         }
+
+        .profile-circle-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #111;
+            text-decoration: none;
+        }
+
     </style>
 </head>
 
@@ -109,8 +122,19 @@
                 <i class="fa-solid fa-sign-out-alt me-1"></i> Log Out
             </a>
 
-            <a href="#" class="profile-circle-btn shadow-sm" title="View Profile">
-                <i class="fa-solid fa-user text-white small"></i>
+            <a href="{% url 'user_profile' %}" class="profile-circle-btn shadow-sm" title="View Profile">
+
+                {% if user.profile_pic %}
+                    <img src="{{ user.profile_pic.url }}"
+                         class="rounded-circle"
+                         style="width:35px; height:35px; object-fit:cover;">
+                {% else %}
+                    <div class="d-flex align-items-center justify-content-center rounded-circle bg-dark text-white"
+                         style="width:35px; height:35px; font-size:14px;">
+                        {{ user.first_name|slice:":1"|upper }}
+                    </div>
+                {% endif %}
+
             </a>
         </div>
     </div>
