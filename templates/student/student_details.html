@@ -4,6 +4,11 @@
 
 {% block content %}
 <div class="container py-5">
+    <div class="mb-4">
+        <a href="{% url 'student_list' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back
+        </a>
+    </div>
     <div class="row justify-content-center">
         <div class="col-12 col-xl-10">
 
@@ -97,7 +102,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content border-0 shadow rounded-4 p-3">
             <div class="modal-header border-0">
-                <h5 class="modal-title fw-bold text-dark" id="deleteModalLabel">⚠️ Confirm Permanent Deletion</h5>
+                <h5 class="modal-title fw-bold text-dark" id="deleteModalLabel">Confirm Permanent Deletion</h5>
                 <button type="button" class="btn-close" data-bs-shadow="none" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body py-2">
@@ -111,7 +116,7 @@
                 <form method="POST" action="{% url 'delete_student' student.id %}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-danger fw-bold rounded-3 px-4">
-                        Yes, Delete Record
+                        Yes, Delete
                     </button>
                 </form>
             </div>

@@ -3,9 +3,10 @@ from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
 
+
 def send_verification_email(student):
     subject = "Verify Your Student Account"
-    domain = "http://127.0.0.1:8008"
+    domain = settings.DOMAIN_NAME
 
     context = {
         'student': student,
