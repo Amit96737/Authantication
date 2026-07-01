@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mb-4">
+        <a href="{% url 'bank_dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back
+        </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body p-4">
+
+                <h4 class="text-center mb-4 fw-bold">
+                    <i class="fa-solid fa-wallet me-2"></i>Specific Account
+                </h4>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert
+                            {% if message.tags == 'error' %}alert-danger
+                            {% elif message.tags == 'success' %}alert-success
+                            {% else %}alert-info
+                            {% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label>Account Number</label>
+                        <input type="text" name="account_number"
+                               value="{{ account_number }}"
+                               maxlength="9"
+                               class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>IFSC Code</label>
+                        <input type="text" name="ifsc_code"
+                               value="{{ ifsc_code }}"
+                               maxlength="11"
+                               class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100">
+                        Check Account
+                    </button>
+                </form>
+
+                {% if account %}
+                    <div class="modal fade show" id="accountModal" tabindex="-1" style="display:block; background:rgba(0,0,0,0.5);">
+                        <div class="modal-dialog">
+                            <div class="modal-content rounded-4">
+
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Account Details</h5>
+                                    <a href="" class="btn-close"></a>
+                                </div>
+
+                                <div class="modal-body">
+
+                                    <p><strong>Name:</strong> {{ account.customer_name }}</p>
+                                    <p><strong>Account Number:</strong> {{ account.account_number }}</p>
+                                    <p><strong>Phone:</strong> {{ account.phone_number }}</p>
+                                    <p><strong>Email:</strong> {{ account.email }}</p>
+                                    <p><strong>Gender:</strong> {{ account.gender }}</p>
+                                    <p><strong>Bank:</strong> {{ account.bank }}</p>
+                                    <p><strong>IFSC:</strong> {{ account.bank.ifsc_code }}</p>
+                                    <p><strong>Address:</strong> {{ account.address }}</p>
+                                    <p><strong>Aadhar:</strong> {{ account.aadhar_number }}</p>
+                                    <p><strong>Balance:</strong> ₹{{ account.balance }}</p>
+                                    <p><strong>Status:</strong>
+                                        {% if account.account_status %}
+                                            Active
+                                        {% else %}
+                                            Inactive
+                                        {% endif %}
+                                    </p>
+
+                                </div>
+
+                                <div class="modal-footer">
+                                    <a href="" class="btn btn-dark">Close</a>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

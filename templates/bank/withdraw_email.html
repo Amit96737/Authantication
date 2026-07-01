@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body { font-family: Arial; }
+        .box {
+            border: 1px solid #ddd;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .amount {
+            color: green;
+            font-size: 18px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+<div class="box">
+    <h2>Withdraw Successful</h2>
+
+    <p>Dear {{ name }},</p>
+
+    <p class="amount">-₹{{ amount }} debited successfully.</p>
+
+    <p><strong>Account Number:</strong> {{ account_number }}</p>
+    <p><strong>Current Balance:</strong> ₹{{ balance }}</p>
+    <p><strong>Date & Time:</strong> {{ date_time }}</p>
+
+    <br>
+
+    <p>Thank you for banking with {{ bank }}.</p>
+</div>
+
+</body>
+</html>

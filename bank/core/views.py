@@ -5,6 +5,8 @@ from django.contrib import messages
 from django.shortcuts import redirect
 from bank.core.services import send_account_email
 from bank.models.bank import BankName
+from bank.core.forms import DepositForm
+from bank.core.services import send_deposit_email,send_withdraw_email
 
 def bank_about_page(request):
     return render(
@@ -84,3 +86,112 @@ def all_banks(request):
         "bank/all_banks.html",
         locals()
     )
+
+def deposit(request):
+    if request.method == "POST":
+        form = DepositForm(request.POST, type="deposit")
+        if form.is_valid():
+            account_number = form.cleaned_data["account_number"]
+            amount = form.cleaned_data["amount"]
+
+            try:
+                account = BankAccount.objects.get(account_number=account_number)
+                if amount <= 0:
+                    messages.error(request, "Amount must be greater than zero")
+                    return redirect("deposit_amount")
+
+                account.balance += amount
+                account.save()
+
+                send_deposit_email(account, amount)
+
+                messages.success(request, f"+₹{amount} deposited successfully")
+                return redirect("deposit_amount")
+
+            except BankAccount.DoesNotExist:
+                messages.error(request, "Account not found")
+
+    else:
+        form = DepositForm()
+
+    return render(request, "bank/deposit.html", {"form": form})
+
+def withdraw(request):
+    if request.method == "POST":
+        form = DepositForm(request.POST, type="withdraw")
+
+        if form.is_valid():
+            account_number = form.cleaned_data["account_number"]
+            amount = form.cleaned_data["amount"]
+
+            account = BankAccount.objects.get(account_number=account_number)
+
+            account.balance -= amount
+            account.save()
+
+            send_withdraw_email(account, amount)
+
+            messages.success(request, f"-₹{amount} withdrawn successfully")
+            return redirect("withdraw_amount")
+
+    else:
+        form = DepositForm()
+
+    return render(request, "bank/withdraw.html", {"form": form})
+
+
+def check_balance(request):
+    balance = None
+    account_number = ""
+    ifsc_code = ""
+
+    if request.method == "POST":
+        account_number = request.POST.get("account_number")
+        ifsc_code = request.POST.get("ifsc_code")
+
+        try:
+            account = BankAccount.objects.get(account_number=account_number)
+
+            if not account.account_status:
+                messages.error(request, "Please activate your account first")
+
+            elif account.bank.ifsc_code != ifsc_code:
+                messages.error(request, "Invalid IFSC Code")
+
+            else:
+                balance = account.balance
+
+        except BankAccount.DoesNotExist:
+            messages.error(request, "Account not found")
+
+    return render(request, "bank/check_balance.html", {
+        "balance": balance,
+        "account_number": account_number,
+        "ifsc_code": ifsc_code,
+    })
+
+def specific_account(request):
+    account = None
+    account_number = ""
+    ifsc_code = ""
+
+    if request.method == "POST":
+        account_number = request.POST.get("account_number")
+        ifsc_code = request.POST.get("ifsc_code")
+
+        try:
+            account = BankAccount.objects.get(account_number=account_number)
+
+            if account.bank.ifsc_code != ifsc_code:
+                messages.error(request, "Invalid IFSC Code")
+
+                account = None
+
+        except BankAccount.DoesNotExist:
+            messages.error(request, "Account not found")
+
+    return render(request, "bank/specific_account.html", {
+        "account": account,
+        "account_number": account_number,
+        "ifsc_code": ifsc_code,
+    })

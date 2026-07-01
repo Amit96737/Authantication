@@ -9,36 +9,32 @@
             ← Back to Dashboard
         </a>
     </div>
-<h1><i class="fa-solid fa-building-columns me-2"></i> Working in progress</h1>
 
 <div class="bank-page-center-env">
-
     <div class="bank-isolated-card">
-
         <div class="header-panel">
             <h2><i class="fa-solid fa-building-columns me-2"></i> Bank Management</h2>
         </div>
-
         <div class="bank-stack-layout">
             <a href="{% url 'create_account' %}" class="bank-row-btn">
                 <i class="fa-solid fa-user-plus icon-box"></i>   Open & View Account
             </a>
-            <a href="#" class="bank-row-btn">
+            <a href="{% url 'deposit_amount' %}" class="bank-row-btn">
                 <i class="fa-solid fa-money-bill-wave icon-box"></i>   Deposit Amount
             </a>
-            <a href="#" class="bank-row-btn">
+            <a href="{% url 'withdraw_amount' %}" class="bank-row-btn">
                 <i class="fa-solid fa-money-check-dollar icon-box"></i>  Withdraw Amount
             </a>
             <a href="#" class="bank-row-btn">
                 <i class="fa-solid fa-arrow-right-arrow-left icon-box"></i>  Transfer Amount
             </a>
-            <a href="#" class="bank-row-btn">
+            <a href="{% url 'check_balance' %}" class="bank-row-btn">
                 <i class="fa-solid fa-wallet icon-box"></i>  Check Bank Balance
             </a>
             <a href="#" class="bank-row-btn">
                 <i class="fa-solid fa-clock-rotate-left icon-box"></i>  Transaction History
             </a>
-            <a href="#" class="bank-row-btn">
+            <a href="{% url 'specific_account' %}" class="bank-row-btn">
                 <i class="fa-solid fa-id-card icon-box"></i>   Specific Account Details
             </a>
             <a href="{% url 'create_bank' %}" class="bank-row-btn">
