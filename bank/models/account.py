@@ -19,5 +19,5 @@ class BankAccount(CommonFields):
     bank = models.ForeignKey(BankName, on_delete=models.CASCADE)
     address = models.TextField()
     aadhar_number = models.CharField(max_length=12, unique=True)
-    balance = models.FloatField(null=True, blank=True)
+    balance = models.DecimalField(max_digits=20, decimal_places=2, default=0)
     account_status = models.BooleanField(default=False)

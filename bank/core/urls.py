@@ -10,5 +10,10 @@ urlpatterns = [
     path("all-records/", views.all_records, name="all_records"),
     path("create-bank/", views.create_bank, name="create_bank"),
     path("all-banks/", views.all_banks, name="all_banks"),
+
+    path("deposit-bank/", views.deposit, name="deposit_amount"),
+    path("withdraw-bank/", views.withdraw, name="withdraw_amount"),
+    path("check-balance/", views.check_balance, name="check_balance"),
+    path("specific-account/", views.specific_account, name="specific_account"),
 ]
 

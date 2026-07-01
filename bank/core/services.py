@@ -3,6 +3,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.utils.html import strip_tags
 from django.conf import settings
+from django.utils.timezone import now
 
 def generate_account_number():
     while True:
@@ -30,6 +31,56 @@ def send_account_email(account):
         body=text_content,
         from_email=settings.DEFAULT_FROM_EMAIL,
         to=[account.email]
+    )
+
+    email.attach_alternative(html_content, "text/html")
+    email.send()
+
+def send_deposit_email(account, amount):
+    subject = "Deposit Successful"
+
+    context = {
+        "name": account.customer_name,
+        "amount": amount,
+        "account_number": account.account_number,
+        "balance": account.balance,
+        "date_time": now().strftime('%d-%m-%Y %H:%M:%S'),
+        "bank": account.bank,
+    }
+
+    html_content = render_to_string("bank/deposit_email.html", context)
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=text_content,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[account.email],
+    )
+
+    email.attach_alternative(html_content, "text/html")
+    email.send()
+
+def send_withdraw_email(account, amount):
+    subject = "Withdraw Successful"
+
+    context = {
+        "name": account.customer_name,
+        "amount": amount,
+        "account_number": account.account_number,
+        "balance": account.balance,
+        "date_time": now().strftime('%d-%m-%Y %H:%M:%S'),
+        "bank": account.bank,
+    }
+
+    html_content = render_to_string("bank/withdraw_email.html", context)
+    text_content = strip_tags(html_content)
+
+    email = EmailMultiAlternatives(
+        subject=subject,
+        body=text_content,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[account.email],
     )
 
     email.attach_alternative(html_content, "text/html")
