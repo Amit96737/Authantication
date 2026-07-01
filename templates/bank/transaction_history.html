@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction History{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <a href="{% url 'bank_dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+        ← Back
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body p-4">
+
+                <h4 class="text-center mb-4 fw-bold">
+                    <i class="fa-solid fa-clock-rotate-left me-2"></i> Transaction History
+                </h4>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert
+                            {% if message.tags == 'error' %}alert-danger
+                            {% elif message.tags == 'success' %}alert-success
+                            {% else %}alert-info
+                            {% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label>Account Number</label>
+                        <input type="text" name="account_number"
+                               value="{{ account_number }}"
+                               class="form-control" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label>IFSC Code</label>
+                        <input type="text" name="ifsc_code"
+                               value="{{ ifsc_code }}"
+                               class="form-control" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100">
+                        Check History
+                    </button>
+                </form>
+
+{% if transactions is not None %}
+
+    {% if transactions %}
+    <div style="position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:9999;">
+
+        <div style="background:#fff; width:80%; margin:50px auto; padding:20px; border-radius:10px;">
+
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <h4>Transaction History</h4>
+                <a href="{% url 'transaction_history' %}">✖</a>
+            </div>
+
+            <table border="1" width="100%" cellpadding="10" style="margin-top:20px;">
+                <tr>
+                    <th>Type</th>
+                    <th>Amount</th>
+                    <th>Sender</th>
+                    <th>Receiver</th>
+                    <th>Balance</th>
+                    <th>Date</th>
+                </tr>
+
+                {% for t in transactions %}
+                <tr>
+                    <td>{{ t.transaction_type }}</td>
+                    <td>₹{{ t.amount }}</td>
+                    <td>{{ t.sender.account_number|default:"-" }}</td>
+                    <td>{{ t.receiver.account_number|default:"-" }}</td>
+                    <td>₹{{ t.balance_after_transaction }}</td>
+                    <td>{{ t.created_at }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+
+        </div>
+    </div>
+
+    {% else %}
+    <p style="text-align:center; margin-top:20px; font-weight:bold;">
+        No Transaction Found
+    </p>
+    {% endif %}
+
+{% endif %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

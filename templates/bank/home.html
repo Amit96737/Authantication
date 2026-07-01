@@ -25,13 +25,13 @@
             <a href="{% url 'withdraw_amount' %}" class="bank-row-btn">
                 <i class="fa-solid fa-money-check-dollar icon-box"></i>  Withdraw Amount
             </a>
-            <a href="#" class="bank-row-btn">
+            <a href="{% url 'transfer_amount' %}" class="bank-row-btn">
                 <i class="fa-solid fa-arrow-right-arrow-left icon-box"></i>  Transfer Amount
             </a>
             <a href="{% url 'check_balance' %}" class="bank-row-btn">
                 <i class="fa-solid fa-wallet icon-box"></i>  Check Bank Balance
             </a>
-            <a href="#" class="bank-row-btn">
+            <a href="{% url 'transaction_history' %}" class="bank-row-btn">
                 <i class="fa-solid fa-clock-rotate-left icon-box"></i>  Transaction History
             </a>
             <a href="{% url 'specific_account' %}" class="bank-row-btn">

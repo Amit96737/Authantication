@@ -15,5 +15,7 @@ urlpatterns = [
     path("withdraw-bank/", views.withdraw, name="withdraw_amount"),
     path("check-balance/", views.check_balance, name="check_balance"),
     path("specific-account/", views.specific_account, name="specific_account"),
+    path("transfer-amount/", views.transfer_amount, name="transfer_amount"),
+    path("transaction-history/", views.transaction_history, name="transaction_history"),
 ]
 

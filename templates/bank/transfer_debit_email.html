@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            padding: 20px;
+        }
+        .card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            color: red;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: red;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+
+        <div class="header">Amount Debited</div>
+
+        <p>Hello <strong>{{ name }}</strong>,</p>
+
+        <p class="amount">₹{{ amount }} debited from your account</p>
+
+        <p><strong>To:</strong> {{ receiver_name }}</p>
+        <p><strong>Remaining Balance:</strong> ₹{{ balance }}</p>
+        <p><strong>Date:</strong> {{ date_time }}</p>
+
+        <hr>
+
+        <div class="footer">
+            If you did not perform this transaction, contact support immediately.
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>
