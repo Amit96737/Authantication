@@ -41,7 +41,8 @@ CUSTOM_APPS = [
     'ai',
     'news',
     'crud',
-    'bank'
+    'bank',
+    'ml'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_PACKAGES + CUSTOM_APPS
