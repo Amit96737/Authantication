@@ -6,7 +6,9 @@ from django.shortcuts import redirect
 from bank.core.services import send_account_email
 from bank.models.bank import BankName
 from bank.core.forms import DepositForm
-from bank.core.services import send_deposit_email,send_withdraw_email
+from bank.core.services import send_deposit_email, send_withdraw_email, send_transfer_email
+from decimal import Decimal
+from bank.models.transaction import Transaction
 
 def bank_about_page(request):
     return render(
@@ -96,12 +98,23 @@ def deposit(request):
 
             try:
                 account = BankAccount.objects.get(account_number=account_number)
+                if not account.account_status:
+                    messages.error(request, "Please activate your account first")
+                    return redirect("deposit_amount")
+
                 if amount <= 0:
                     messages.error(request, "Amount must be greater than zero")
                     return redirect("deposit_amount")
 
                 account.balance += amount
                 account.save()
+
+                Transaction.objects.create(
+                    receiver=account,
+                    transaction_type="DEPOSIT",
+                    amount=amount,
+                    balance_after_transaction=account.balance
+                )
 
                 send_deposit_email(account, amount)
 
@@ -125,9 +138,19 @@ def withdraw(request):
             amount = form.cleaned_data["amount"]
 
             account = BankAccount.objects.get(account_number=account_number)
+            if not account.account_status:
+                messages.error(request, "Please activate your account first")
+                return redirect("withdraw_amount")
 
             account.balance -= amount
             account.save()
+
+            Transaction.objects.create(
+                sender=account,
+                transaction_type="WITHDRAW",
+                amount=amount,
+                balance_after_transaction=account.balance
+            )
 
             send_withdraw_email(account, amount)
 
@@ -192,6 +215,116 @@ def specific_account(request):
 
     return render(request, "bank/specific_account.html", {
         "account": account,
+        "account_number": account_number,
+        "ifsc_code": ifsc_code,
+    })
+
+def transfer_amount(request):
+    sender_acc = ""
+    sender_ifsc = ""
+    receiver_acc = ""
+    receiver_ifsc = ""
+    amount = ""
+    if request.method == "POST":
+        sender_acc = request.POST.get("sender_account")
+        sender_ifsc = request.POST.get("sender_ifsc")
+
+        receiver_acc = request.POST.get("receiver_account")
+        receiver_ifsc = request.POST.get("receiver_ifsc")
+
+        amount = Decimal(request.POST.get("amount"))
+
+        try:
+            sender = BankAccount.objects.get(account_number=sender_acc)
+            receiver = BankAccount.objects.get(account_number=receiver_acc)
+
+            if not sender.account_status:
+                messages.error(request, "Activate your account first")
+
+            elif not receiver.account_status:
+                messages.error(request, "Receiver account inactive")
+
+            elif sender.bank.ifsc_code != sender_ifsc:
+                messages.error(request, "Invalid sender IFSC")
+
+            elif receiver.bank.ifsc_code != receiver_ifsc:
+                messages.error(request, "Invalid receiver IFSC")
+
+            elif sender.balance < amount:
+                messages.error(request, "Insufficient balance")
+
+            else:
+                sender.balance -= amount
+                receiver.balance += amount
+
+                sender.save()
+                receiver.save()
+
+                Transaction.objects.create(
+                    sender=sender,
+                    receiver=receiver,
+                    transaction_type="TRANSFER",
+                    amount=amount,
+                    balance_after_transaction=sender.balance
+                )
+
+                Transaction.objects.create(
+                    sender=sender,
+                    receiver=receiver,
+                    transaction_type="TRANSFER",
+                    amount=amount,
+                    balance_after_transaction=receiver.balance
+                )
+
+                send_transfer_email(sender, receiver, amount)
+
+                messages.success(request, "Transfer successful")
+                sender_acc = sender_ifsc = receiver_acc = receiver_ifsc = amount = ""
+
+        except BankAccount.DoesNotExist:
+            messages.error(request, "Account not found")
+
+    return render(request, "bank/transfer_amount.html",
+                  {
+                      "sender_account": sender_acc,
+                      "sender_ifsc": sender_ifsc,
+                      "receiver_account": receiver_acc,
+                      "receiver_ifsc": receiver_ifsc,
+                      "amount": amount,
+                  }
+                  )
+
+def transaction_history(request):
+    account = None
+    transactions = None
+    account_number = ""
+    ifsc_code = ""
+
+    if request.method == "POST":
+        account_number = request.POST.get("account_number")
+        ifsc_code = request.POST.get("ifsc_code")
+
+        try:
+            account = BankAccount.objects.get(account_number=account_number)
+
+            if not account.account_status:
+                messages.error(request, "Activate your account first")
+
+            elif account.bank.ifsc_code != ifsc_code:
+                messages.error(request, "Invalid IFSC Code")
+
+            else:
+                from django.db.models import Q
+
+                transactions = Transaction.objects.filter(
+                    Q(sender=account) | Q(receiver=account)
+                ).order_by('-created_at')
+
+        except BankAccount.DoesNotExist:
+            messages.error(request, "Account not found")
+
+    return render(request, "bank/transaction_history.html", {
+        "transactions": transactions,
         "account_number": account_number,
         "ifsc_code": ifsc_code,
     })

@@ -19,8 +19,8 @@ def send_account_email(account):
         'ifsc': account.bank.ifsc_code,
         'bank': account.bank,
         'aadhar_number': account.aadhar_number,
-        'activate_url': f"http://127.0.0.1:8000/bank/activate/{account.id}/",
-        'deactivate_url': f"http://127.0.0.1:8000/bank/deactivate/{account.id}/",
+        'activate_url': f"{settings.DOMAIN_NAME}/bank/activate/{account.id}/",
+        'deactivate_url': f"{settings.DOMAIN_NAME}/bank/deactivate/{account.id}/",
     }
 
     html_content = render_to_string("bank/create_account_email.html", context)
@@ -85,3 +85,54 @@ def send_withdraw_email(account, amount):
 
     email.attach_alternative(html_content, "text/html")
     email.send()
+
+def send_transfer_email(sender, receiver, amount):
+    subject = "Amount Transferred"
+
+    date_time = now().strftime('%d-%m-%Y %H:%M:%S')
+
+    sender_context = {
+        "name": sender.customer_name,
+        "amount": amount,
+        "account_number": sender.account_number,
+        "balance": sender.balance,
+        "receiver_name": receiver.customer_name,
+        "date_time": date_time,
+        "bank": sender.bank,
+    }
+
+    sender_html = render_to_string("bank/transfer_debit_email.html", sender_context)
+    sender_text = strip_tags(sender_html)
+
+    sender_email = EmailMultiAlternatives(
+        subject="Amount Debited",
+        body=sender_text,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[sender.email],
+    )
+
+    sender_email.attach_alternative(sender_html, "text/html")
+    sender_email.send()
+
+    receiver_context = {
+        "name": receiver.customer_name,
+        "amount": amount,
+        "account_number": receiver.account_number,
+        "balance": receiver.balance,
+        "sender_name": sender.customer_name,
+        "date_time": date_time,
+        "bank": receiver.bank,
+    }
+
+    receiver_html = render_to_string("bank/transfer_credit_email.html", receiver_context)
+    receiver_text = strip_tags(receiver_html)
+
+    receiver_email = EmailMultiAlternatives(
+        subject="Amount Credited",
+        body=receiver_text,
+        from_email=settings.DEFAULT_FROM_EMAIL,
+        to=[receiver.email],
+    )
+
+    receiver_email.attach_alternative(receiver_html, "text/html")
+    receiver_email.send()

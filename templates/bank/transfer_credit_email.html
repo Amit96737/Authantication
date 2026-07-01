@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        .container {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            padding: 20px;
+        }
+        .card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .header {
+            color: green;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .amount {
+            font-size: 24px;
+            font-weight: bold;
+            color: green;
+        }
+        .footer {
+            margin-top: 20px;
+            font-size: 12px;
+            color: gray;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+
+        <div class="header">Amount Credited</div>
+
+        <p>Hello <strong>{{ name }}</strong>,</p>
+
+        <p class="amount">₹{{ amount }} credited successfully</p>
+
+        <p><strong>From:</strong> {{ sender_name }}</p>
+        <p><strong>Available Balance:</strong> ₹{{ balance }}</p>
+        <p><strong>Date:</strong> {{ date_time }}</p>
+
+        <hr>
+
+        <div class="footer">
+            This is an automated message. Please do not reply.
+        </div>
+
+    </div>
+</div>
+
+</body>
+</html>

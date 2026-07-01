@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+
+{% block title %}Transfer Amount{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <a href="{% url 'bank_dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+        ← Back
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body p-4">
+
+                <h4 class="text-center mb-4 fw-bold">
+                    <i class="fa-solid fa-arrow-right-arrow-left me-2"></i> Transfer Amount
+                </h4>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert
+                            {% if message.tags == 'error' %}alert-danger
+                            {% elif message.tags == 'success' %}alert-success
+                            {% else %}alert-info
+                            {% endif %}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label>Sender Account Number</label>
+                        <input type="text" name="sender_account"
+                               value="{{ sender_account }}"
+                               class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Sender IFSC Code</label>
+                        <input type="text" name="sender_ifsc"
+                               value="{{ sender_ifsc }}"
+                               class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Receiver Account Number</label>
+                        <input type="text" name="receiver_account"
+                               value="{{ receiver_account }}"
+                               class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Receiver IFSC Code</label>
+                        <input type="text" name="receiver_ifsc"
+                               value="{{ receiver_ifsc }}"
+                               class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Amount</label>
+                        <input type="number" name="amount"
+                               value="{{ amount }}"
+                               class="form-control">
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100">
+                        Transfer Money
+                    </button>
+                </form>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
