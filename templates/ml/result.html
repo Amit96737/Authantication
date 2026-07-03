@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mb-4">
+    <a href="{% url 'salary_form' %}" class="btn btn-outline-dark rounded-3 px-3">
+        ← Back
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-md-4">
+        <div class="card shadow-sm border-0 rounded-4">
+            <div class="card-body p-4 text-center">
+
+                <h4 class="mb-3 fw-bold">
+                    Predicted Salary
+                </h4>
+
+                <h2 class="text-success fw-bold mb-4">
+                    ₹ {{ salary }}
+                </h2>
+
+                <a href="{% url 'salary_form' %}" class="btn btn-dark w-100">
+                    Try Again
+                </a>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
