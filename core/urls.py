@@ -12,6 +12,7 @@ urlpatterns = [
     path("news/", include("news.core.urls")),
     path("crud/", include("crud.core.urls")),
     path("bank/", include("bank.core.urls")),
+    path("ml/", include("ml.core.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
