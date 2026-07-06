@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Cancelled{% endblock %}
+
+{% block content %}
+
+<div class="container py-5 text-center">
+    <div class="card shadow-sm p-5 border-0 rounded-4">
+
+    <h1 class="text-danger fw-bold mb-3">Payment Cancelled</h1>
+
+    <p class="text-muted mb-4">
+        Your payment was cancelled. You can try again anytime.
+    </p>
+
+    <a href="{% url 'item_detail' %}" class="btn btn-outline-dark rounded-3 px-4">
+        Back to Products
+    </a>
+
+</div>
+
+</div>
+
+{% endblock %}

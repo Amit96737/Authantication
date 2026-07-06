@@ -25,6 +25,7 @@
       <sourceFolder url="file://$MODULE_DIR$/crud" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/env/lib/python3.10/site-packages/langchain" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/bank" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/payments" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/venv" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.13 (test_app)" jdkType="Python SDK" />

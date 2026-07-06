@@ -1,0 +1,1 @@
+from payments.models.product import Item

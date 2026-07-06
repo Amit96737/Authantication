@@ -12,7 +12,9 @@ SECRET_KEY = os.getenv("SECRET_KEY")
 DEBUG = True
 # DEBUG = True # never deploy a site into production with debug turned on
 
-ALLOWED_HOSTS = ['*']
+# ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '97f9-14-97-132-58.ngrok-free.app']
+CSRF_TRUSTED_ORIGINS = ['https://97f9-14-97-132-58.ngrok-free.app']
 
 DJANGO_APPS = [
     'django.contrib.admin',
@@ -42,7 +44,8 @@ CUSTOM_APPS = [
     'news',
     'crud',
     'bank',
-    'ml'
+    'ml',
+    'payments',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_PACKAGES + CUSTOM_APPS
@@ -183,3 +186,8 @@ CACHES = {
 }
 
 DOMAIN_NAME = os.getenv('DOMAIN_NAME')
+
+STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
+STRIPE_SECRET_KEY = os.getenv('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = os.getenv('STRIPE_WEBHOOK_SECRET')
+BASE_URL = os.getenv('BASE_URL')
