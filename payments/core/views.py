@@ -8,6 +8,9 @@ from django.http import HttpResponse
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
+def stripe_about_page(request):
+    return render(request, "payments/stripe_about_page.html", locals())
+
 def item_detail(request):
     items = Item.objects.filter(is_sold=False)
     return render(request, "payments/product_list.html", {"items": items})

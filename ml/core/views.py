@@ -9,6 +9,9 @@ model = pickle.load(open(os.path.join(BASE_DIR, "models/model.pkl"), "rb"))
 job_encoder = pickle.load(open(os.path.join(BASE_DIR, "models/job_encoder.pkl"), "rb"))
 edu_encoder = pickle.load(open(os.path.join(BASE_DIR, "models/edu_encoder.pkl"), "rb"))
 
+def ml_about_page(request):
+    return render(request, "ml/ml_about_page.html", locals())
+
 def salary_form(request):
     df = pd.read_csv(os.path.join(BASE_DIR, "Salary_data.csv"))
 

@@ -1,0 +1,176 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Stripe Integration Workflow{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+
+    <!-- Header Section -->
+    <div class="border-bottom pb-3 mb-5 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h1 class="fw-bold text-dark m-0 display-6">Stripe Module Documentation</h1>
+        </div>
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">
+            <i class="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
+        </a>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-9">
+
+            <!-- Main Documentation Card -->
+            <div class="card border-0 shadow-sm rounded-3 p-4 p-md-5 bg-white mb-5">
+
+                <!-- Core Workflow Explanation (Exactly What You Described) -->
+                <div class="mb-5">
+                    <h4 class="fw-bold text-dark d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-gears me-2 text-secondary"></i> Stripe Integration Lifecycle
+                    </h4>
+                    <ul class="text-secondary leading-relaxed list-unstyled d-flex flex-column gap-3 fs-6">
+                        <li class="d-flex align-items-start">
+                            <i class="fa-solid fa-circle-check text-success me-3 mt-1"></i>
+                            <span>The admin adds items through the Django Admin Panel, where the status is set to <strong>is_sold = False</strong> by default.</span>
+                        </li>
+                        <li class="d-flex align-items-start">
+                            <i class="fa-solid fa-circle-check text-success me-3 mt-1"></i>
+                            <span>The user can view the complete list of all available active items on the dashboard.</span>
+                        </li>
+                        <li class="d-flex align-items-start">
+                            <i class="fa-solid fa-circle-check text-success me-3 mt-1"></i>
+                            <span>When the user clicks on checkout, the Stripe API is triggered on the backend and the user securely processes the payment.</span>
+                        </li>
+                        <li class="d-flex align-items-start">
+                            <i class="fa-solid fa-circle-check text-success me-3 mt-1"></i>
+                            <span>Upon a successful payment transaction, an asynchronous Stripe Webhook is automatically triggered.</span>
+                        </li>
+                        <li class="d-flex align-items-start">
+                            <i class="fa-solid fa-circle-check text-success me-3 mt-1"></i>
+                            <span>Once the webhook executes successfully, the status of the item in the database (DB) mutates to <strong>is_sold = True</strong>.</span>
+                        </li>
+                        <li class="d-flex align-items-start">
+                            <i class="fa-solid fa-circle-check text-success me-3 mt-1"></i>
+                            <span>After the status updates to true, the sold item is completely excluded and hidden from the user dashboard.</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Visual Pipeline Diagram -->
+                <div class="mb-5 p-4 bg-light rounded-3 border border-light-subtle shadow-inner">
+                    <h5 class="fw-bold text-dark d-flex align-items-center mb-4 font-monospace small text-uppercase tracking-wider text-muted">
+                        <i class="fa-solid fa-network-wired text-success me-2"></i> Database State Machine Diagram
+                    </h5>
+
+                    <div class="row g-2 mb-4 text-center font-monospace small">
+                        <div class="col-12 col-md-3">
+                            <div class="p-2 rounded-2 bg-dark text-white shadow-sm opacity-90 border border-secondary border-opacity-25">
+                                <span class="d-block text-muted text-uppercase" style="font-size: 10px;">1. Item Added</span>
+                                <span class="text-info fw-bold">is_sold = False</span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-1 d-flex align-items-center justify-content-center text-muted">
+                            <i class="fa-solid fa-chevron-right d-none d-md-block"></i>
+                        </div>
+                        <div class="col-12 col-md-3">
+                            <div class="p-2 rounded-2 bg-dark text-white shadow-sm opacity-90 border border-secondary border-opacity-25">
+                                <span class="d-block text-muted text-uppercase" style="font-size: 10px;">2. Checkout</span>
+                                <span class="text-warning fw-bold">Stripe Pay Hit</span>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-1 d-flex align-items-center justify-content-center text-muted">
+                            <i class="fa-solid fa-chevron-right d-none d-md-block"></i>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <div class="p-2 rounded-2 bg-dark text-white shadow-sm opacity-90 border border-success border-opacity-50">
+                                <span class="d-block text-muted text-uppercase" style="font-size: 10px;">3. Webhook Success</span>
+                                <span class="text-success fw-bold">is_sold ➔ True</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-dark text-white font-monospace p-3 rounded-2 small opacity-90 border border-secondary border-opacity-25 shadow-sm">
+                        # Django Webhook Handler Configuration Blueprint<br>
+                        IF EVENT == 'checkout.session.completed':<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;item.is_sold = True<br>
+                        &nbsp;&nbsp;&nbsp;&nbsp;item.save()<br>
+                        # Result: Item successfully removed from listing.
+                    </div>
+                </div>
+
+                <!-- Features Layout Grid -->
+                <div class="mb-4">
+                    <h4 class="fw-bold text-dark d-flex align-items-center mb-3">
+                        <i class="fa-solid fa-layer-group me-2 text-secondary"></i> Architecture Components
+                    </h4>
+                    <p class="text-secondary leading-relaxed mb-4">
+                        This integration safely regulates the database states and user checkout pipeline flow:
+                    </p>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="p-3 border rounded-3 bg-white text-center shadow-sm h-100 d-flex flex-column align-items-center justify-content-center custom-filter-box">
+                                <i class="fa-solid fa-user-shield text-primary mb-2 fs-4"></i>
+                                <div class="fw-bold text-dark small">Admin Panel Entry</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="p-3 border rounded-3 bg-white text-center shadow-sm h-100 d-flex flex-column align-items-center justify-content-center custom-filter-box">
+                                <i class="fa-solid fa-list-ul text-dark mb-2 fs-4"></i>
+                                <div class="fw-bold text-dark small">Active Items List</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="p-3 border rounded-3 bg-white text-center shadow-sm h-100 d-flex flex-column align-items-center justify-content-center custom-filter-box">
+                                <i class="fa-solid fa-credit-card text-success mb-2 fs-4"></i>
+                                <div class="fw-bold text-dark small">Stripe Payment</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="p-3 border rounded-3 bg-white text-center shadow-sm h-100 d-flex flex-column align-items-center justify-content-center custom-filter-box">
+                                <i class="fa-solid fa-bell text-warning mb-2 fs-4"></i>
+                                <div class="fw-bold text-dark small">Webhook Callback</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="p-3 border rounded-3 bg-white text-center shadow-sm h-100 d-flex flex-column align-items-center justify-content-center custom-filter-box">
+                                <i class="fa-solid fa-database text-info mb-2 fs-4"></i>
+                                <div class="fw-bold text-dark small">DB State Update</div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <div class="p-3 border rounded-3 bg-white text-center shadow-sm h-100 d-flex flex-column align-items-center justify-content-center custom-filter-box">
+                                <i class="fa-solid fa-eye-slash text-danger mb-2 fs-4"></i>
+                                <div class="fw-bold text-dark small">Dashboard Hiding</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="my-5 opacity-25">
+
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<style>
+    .leading-relaxed {
+        line-height: 1.75;
+        font-size: 0.95rem;
+    }
+    .tracking-wider {
+        letter-spacing: 0.5px;
+    }
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    .custom-filter-box {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+    .custom-filter-box:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
+    }
+</style>
+{% endblock %}
