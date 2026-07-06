@@ -1,0 +1,139 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Salary Prediction AI System{% endblock %}
+
+{% block content %}
+
+<div class="container py-4">
+
+<div class="border-bottom pb-3 mb-5 d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div>
+        <h1 class="fw-bold text-dark m-0 display-6">Salary Prediction AI</h1>
+    </div>
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">
+        <i class="fa-solid fa-arrow-left me-2"></i> Back to Dashboard
+    </a>
+</div>
+
+<div class="row justify-content-center">
+    <div class="col-12 col-lg-9">
+
+        <div class="card border-0 shadow-sm rounded-3 p-4 p-md-5 bg-white mb-5">
+
+            {% if predicted_salary %}
+            <div class="mt-4 p-4 text-center rounded-3 border-start border-4 border-success custom-result-box shadow-sm" style="background-color: #f1fdf5;">
+                <span class="font-monospace text-uppercase small tracking-wider text-success fw-bold d-block mb-1">
+                    Prediction Process Completed
+                </span>
+                <h3 class="fw-bold text-dark m-0">
+                    Predicted Compensation:
+                    <span class="text-success">₹{{ predicted_salary }}</span>
+                    <small class="text-muted fs-6">/ annum</small>
+                </h3>
+            </div>
+            {% endif %}
+
+            <hr class="my-5 opacity-25">
+
+            <div class="mb-5">
+                <h4 class="fw-bold text-dark d-flex align-items-center mb-3">
+                    <i class="fa-solid fa-gears me-2 text-secondary"></i> How This Module Works
+                </h4>
+                <p class="text-secondary leading-relaxed">
+                    This system implements an automated regression pipeline trained on high-fidelity compensation records scraped from Kaggle. Categorical elements (Job Designation, Education Level) are dynamically parsed using an encoding scheme before entering the ensemble matrix.
+                </p>
+            </div>
+
+            <div class="mb-5 p-4 bg-light rounded-3 border border-light-subtle shadow-inner">
+                <h5 class="fw-bold text-dark d-flex align-items-center mb-3 font-monospace small text-uppercase tracking-wider text-muted">
+                    <i class="fa-solid fa-network-wired text-primary me-2"></i> Model Architecture & Data Split
+                </h5>
+                <p class="text-secondary small m-0 mb-3" style="line-height: 1.6;">
+                    To protect the machine learning pipeline from overfitting, the dataset was systematically divided into a strict split layout. Multi-variable decision paths evaluate user profile components recursively to compile an optimal numeric scale output.
+                </p>
+                <div class="bg-dark text-white font-monospace p-3 rounded-2 small opacity-90 border border-secondary border-opacity-25 shadow-sm">
+                    # Machine Learning Supervised Pipeline Diagram<br>
+                    MODEL_TYPE = RandomForestRegressor(n_estimators=100, random_state=42)<br>
+                    DATA_SPLIT = Train: 80% | Test: 20% [Verified Variance Bounds]
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <h4 class="fw-bold text-dark d-flex align-items-center mb-3">
+                    <i class="fa-solid fa-layer-group me-2 text-secondary"></i> Input Weight Matrices
+                </h4>
+                <p class="text-secondary leading-relaxed mb-4">
+                    The regressor calculates salary predictions by cross-referencing and shifting weights dynamically across four central vector nodes:
+                </p>
+
+                <div class="row g-3">
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="p-3 border rounded-3 bg-white text-center shadow-sm h-100 d-flex flex-column align-items-center justify-content-center custom-filter-box">
+                            <i class="fa-solid fa-cake-candles text-primary mb-2 fs-4"></i>
+                            <div class="fw-bold text-dark small">Age Range</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="p-3 border rounded-3 bg-white text-center shadow-sm h-100 d-flex flex-column align-items-center justify-content-center custom-filter-box">
+                            <i class="fa-solid fa-id-badge text-dark mb-2 fs-4"></i>
+                            <div class="fw-bold text-dark small">Job Role</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="p-3 border rounded-3 bg-white text-center shadow-sm h-100 d-flex flex-column align-items-center justify-content-center custom-filter-box">
+                            <i class="fa-solid fa-timeline text-warning mb-2 fs-4"></i>
+                            <div class="fw-bold text-dark small">Experience</div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-sm-6 col-md-3">
+                        <div class="p-3 border rounded-3 bg-white text-center shadow-sm h-100 d-flex flex-column align-items-center justify-content-center custom-filter-box">
+                            <i class="fa-solid fa-graduation-cap text-success mb-2 fs-4"></i>
+                            <div class="fw-bold text-dark small">Education</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+```
+
+</div>
+
+<style>
+.leading-relaxed {
+    line-height: 1.75;
+    font-size: 0.95rem;
+}
+.tracking-wider {
+    letter-spacing: 0.5px;
+}
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+.custom-filter-box {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.custom-filter-box:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
+}
+.custom-predict-btn {
+    transition: all 0.2s ease;
+}
+.custom-predict-btn:hover {
+    background-color: #212529;
+    transform: translateY(-1px);
+}
+.custom-result-box {
+    animation: fadeIn 0.4s ease-out;
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+</style>
+
+{% endblock %}
