@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}FCM Notification Panel{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+        ← Back to Dashboard
+    </a>
+</div>
+
+<div class="container py-4">
+    <div class="row g-4 justify-content-center">
+        <div class="col-12 col-lg-6">
+            <div class="card border-0 shadow-sm rounded-4 p-4 bg-white">
+                <div class="d-flex align-items-center gap-2 border-bottom pb-3 mb-4">
+                    <h4 class="fw-bold text-dark m-0">Global Push Notification Center</h4>
+                </div>
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'success' %}success{% else %}warning{% endif %} border-0 shadow-sm rounded-3 py-2 small" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <div class="mb-3">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Notification Title</label>
+                        <input type="text" name="title" class="form-control py-2" placeholder="e.g. New Update Available" required style="border-radius: 0.375rem;">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label text-muted small fw-bold text-uppercase">Notification Message</label>
+                        <textarea name="body" class="form-control py-2" rows="4" required style="border-radius: 0.375rem;"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100 fw-bold py-2.5 rounded-3 shadow-sm text-uppercase font-monospace">
+                        Send
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
