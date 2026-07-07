@@ -1,0 +1,1 @@
+from paypal_payments.models.subscription import SubscriptionPlan
