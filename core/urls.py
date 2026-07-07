@@ -14,6 +14,7 @@ urlpatterns = [
     path("bank/", include("bank.core.urls")),
     path("ml/", include("ml.core.urls")),
     path("payments/", include("payments.core.urls")),
+    path("paypal_payments/", include("paypal_payments.core.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
