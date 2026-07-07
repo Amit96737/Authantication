@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}About Firebase Notification Module{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+        ← Back to Dashboard
+    </a>
+</div>
+
+<div class="container py-4">
+    <div class="row justify-content-center">
+        <div class="col-12 col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 p-5 bg-white">
+                
+                <div class="text-center mb-5">
+                    <h2 class="fw-bold text-dark">About Firebase Notification System</h2>
+                    <p class="text-secondary lead">Learn how the real-time push notification network operates inside this application scope.</p>
+                    <hr class="w-25 mx-auto border-dark border-2 mt-4">
+                </div>
+
+                <div class="mb-5">
+                    <h5 class="fw-bold text-dark mb-3 text-uppercase font-monospace text-secondary" style="letter-spacing: 1px;">Module Overview</h5>
+                    <p class="text-muted lh-lg">
+                        This specialized control framework implements the <strong>Firebase Cloud Messaging (FCM)</strong> structural engine to execute mass broadcast sequences. It enables the system administrator or manager to compose a centralized alert configuration and seamlessly fire real-time push notifications straight to every single registered profile inside the <code>User</code> database pool matrix.
+                    </p>
+                </div>
+
+                <div class="mb-5">
+                    <h5 class="fw-bold text-dark mb-4 text-uppercase font-monospace text-secondary" style="letter-spacing: 1px;">How It Works</h5>
+                    
+                    <div class="d-flex gap-3 mb-4">
+                        <div class="fw-bold text-white bg-dark rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; font-size: 0.9rem;">1</div>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-1">Token Generation & Synchronization</h6>
+                            <p class="text-muted small m-0">When a consumer interacts with the platform interface, a unique cryptographic <strong>FCM Device Token</strong> is initialized by the frontend engine and saved into the database mapped against that user profile row record.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 mb-4">
+                        <div class="fw-bold text-white bg-dark rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; font-size: 0.9rem;">2</div>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-1">Centralized Admin Control Board</h6>
+                            <p class="text-muted small m-0">The administrator opens the notification module workstation, enters the required alert <em>Title</em>, appends the informational <em>Body summary string</em>, and triggers the broadcast directive payload wrapper.</p>
+                        </div>
+                    </div>
+
+                    <div class="d-flex gap-3 mb-0">
+                        <div class="fw-bold text-white bg-dark rounded-circle d-flex align-items-center justify-content-center flex-shrink-0" style="width: 32px; height: 32px; font-size: 0.9rem;">3</div>
+                        <div>
+                            <h6 class="fw-bold text-dark mb-1">Firebase Multicast SDK Dispatch</h6>
+                            <p class="text-muted small m-0">Django loops inside the model scope, compiles the complete collection array of structural unique hardware tokens, and ships the full batch matrix to the Google Firebase backend cluster via the secure Admin SDK network for immediate system delivery.</p>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

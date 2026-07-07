@@ -21,7 +21,7 @@ def bank_about_page(request):
 def bank_dashboard(request):
     return render(
         request,
-        "bank/home.html",
+        "bank/notification_home.html",
         locals()
     )
 
@@ -51,7 +51,7 @@ def activate_account(request, id):
     account.save()
     return render(
         request,
-        "bank/home.html",
+        "bank/notification_home.html",
         locals()
     )
 

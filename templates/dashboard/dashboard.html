@@ -1,20 +1,17 @@
 {% extends "base.html" %}
-
-{% block title %}Dashboard{% endblock %}
+{% load static %} {% block title %}Dashboard{% endblock %}
 
 {% block content %}
 <div class="container py-4">
 
     <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-5 flex-wrap gap-3">
         <div class="text-start d-flex align-items-center gap-3 flex-wrap">
-
             <h1 class="fw-bold text-dark m-0 display-5 main-title-text">
                 Welcome
                 <span class="fw-normal text-secondary" style="font-size: 0.7em;">
                     {{ user.first_name }} {{ user.last_name }}
                 </span>
             </h1>
-
         </div>
 
         <div style="min-width: 320px; max-width: 450px;" class="flex-grow-1 flex-sm-grow-0">
@@ -32,7 +29,7 @@
         <div class="col-12 col-sm-6 col-md-3 module-card-item">
             <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
                 <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=600" class="card-img-top custom-card-img" alt="News Image">
+                    <img src="{% static 'images/news_logo.jfif' %}" class="card-img-top custom-card-img" alt="News Image">
                 </div>
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                     <div>
@@ -53,7 +50,7 @@
         <div class="col-12 col-sm-6 col-md-3 module-card-item">
             <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
                 <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=600" class="card-img-top custom-card-img" alt="CRUD Image">
+                    <img src="{% static 'images/crud_logo.png' %}" class="card-img-top custom-card-img" alt="CRUD Image">
                 </div>
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                     <div>
@@ -69,7 +66,7 @@
         <div class="col-12 col-sm-6 col-md-3 module-card-item">
             <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
                 <div class="card-img-wrapper">
-                    <img src="https://images.unsplash.com/photo-1559526324-4b87b5e36e44?q=80&w=600" class="card-img-top custom-card-img" alt="Banking Image">
+                    <img src="{% static 'images/bank_logo.jfif' %}" class="card-img-top custom-card-img" alt="Banking Image">
                 </div>
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                     <div>
@@ -85,13 +82,13 @@
         <div class="col-12 col-sm-6 col-md-3 module-card-item">
             <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
                 <div class="card-img-wrapper">
-                   <img src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&w=600" class="card-img-top custom-card-img" alt="AI Image">
+                   <img src="{% static 'images/ai_logo.jfif' %}" class="card-img-top custom-card-img" alt="AI Image">
                 </div>
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                     <div>
                         <span class="badge bg-dark mb-2 text-uppercase font-monospace">AI</span>
                         <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">AI Assistant</h4>
-                        <p class="card-text text-muted small mb-4 card-desc-text">Integrate Large Language Models  to automate text generation, smart insights, and custom AI responses.</p>
+                        <p class="card-text text-muted small mb-4 card-desc-text">Integrate Large Language Models to automate text generation, smart insights, and custom AI responses.</p>
                     </div>
                     <a href="{% url 'chat-boat-home' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
                 </div>
@@ -101,7 +98,7 @@
         <div class="col-12 col-sm-6 col-md-3 module-card-item">
             <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
                 <div class="card-img-wrapper">
-                   <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?q=80&w=600" class="card-img-top custom-card-img" alt="AI Image">
+                   <img src="{% static 'images/ml_logo.jfif' %}" class="card-img-top custom-card-img" alt="ML Image">
                 </div>
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                     <div>
@@ -117,7 +114,7 @@
         <div class="col-12 col-sm-6 col-md-3 module-card-item">
             <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
                 <div class="card-img-wrapper">
-                   <img src="https://images.unsplash.com/photo-1563013544-824ae1b704d3?q=80&w=600" class="card-img-top custom-card-img" alt="AI Image">
+                   <img src="{% static 'images/stripe_logo.png' %}" class="card-img-top custom-card-img" alt="Stripe Image">
                 </div>
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                     <div>
@@ -133,7 +130,7 @@
         <div class="col-12 col-sm-6 col-md-3 module-card-item">
             <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
                 <div class="card-img-wrapper">
-                   <img src="https://www.paypalobjects.com/webstatic/icon/pp258.png" class="card-img-top custom-card-img" alt="AI Image">
+                   <img src="{% static 'images/paypal_logo.jfif' %}" class="card-img-top custom-card-img" alt="PayPal Image">
                 </div>
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
                     <div>
@@ -146,8 +143,25 @@
             </div>
         </div>
 
-    </div>
+        <div class="col-12 col-sm-6 col-md-3 module-card-item">
+            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                <div class="card-img-wrapper" style="display: flex; align-items: center; justify-content: center; padding: 20px;">
+                   <img src="{% static 'images/firebase_logo.png' %}" class="custom-card-img" alt="Firebase Image" style="object-fit: contain; max-height: 100%; width: auto;">
+                </div>
+                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">Firebase</span>
+                        <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">Firebase Integration</h4>
+                        <p class="card-text text-muted small mb-4 card-desc-text">
+                            This module enables real-time push notifications using Firebase Cloud Messaging (FCM) to keep users updated instantly.
+                        </p>
+                    </div>
+                    <a href="{% url 'home' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                </div>
+            </div>
+        </div>
 
+    </div>
 </div>
 
 <script>
@@ -171,7 +185,6 @@
         newsModuleBtn.style.pointerEvents = 'auto';
     });
 
-    // Client-side search module filter framework execution
     document.getElementById('dashboardSearchInput').addEventListener('input', function (e) {
         const searchTerm = e.target.value.toLowerCase().trim();
         const cards = document.querySelectorAll('.module-card-item');
