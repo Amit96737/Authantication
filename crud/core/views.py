@@ -1,5 +1,5 @@
 from django.shortcuts import redirect
-from .forms import StudentForm
+from .forms import StudentForm, UpdateStudentForm
 from crud.core.services import send_verification_email
 from crud.models.student import Student
 from django.shortcuts import get_object_or_404, render
@@ -62,30 +62,39 @@ def verify_student_account(request, student_id):
 def student_details(request, student_id):
     student = get_object_or_404(Student, id=student_id)
 
-    return render(
-        request,
-        "student/student_details.html",
-        {"student": student}
-    )
-
-def student_update(request, student_id):
-    student = get_object_or_404(Student, id=student_id)
-
     if request.method == "POST":
-        form = StudentForm(request.POST, request.FILES, instance=student)
+        form = UpdateStudentForm(request.POST, request.FILES, instance=student)
+
         if form.is_valid():
             form.save()
-            messages.success(request, "Profile updated successfully!")
+            messages.success(request, "Student Profile Update Successfully")
             return redirect('student_details', student_id=student.id)
+        else:
+            print("Form Errors:", form.errors)
+            messages.error(request, "Form error")
     else:
-        form = StudentForm(instance=student)
+        form = UpdateStudentForm(instance=student)
 
     return render(request, "student/student_details.html", {
         "form": form,
-        "is_edit": True,
         "student": student
     })
 
+def update_student_profile(request):
+    student = get_object_or_404(Student, email=request.user.email)
+
+    if request.method == "POST":
+        form = UpdateStudentForm(request.POST, request.FILES, instance=student)
+        # print("form", form)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Student Profile Update Successfully")
+            return redirect('create_student')
+        else:
+            print(form.errors)
+
+    return redirect('dashboard')
 
 def delete_student(request, student_id):
     if request.method == "POST":
@@ -97,7 +106,6 @@ def delete_student(request, student_id):
         messages.success(request, f"Student record for {student_name} has been successfully deleted.")
 
     return redirect('create_student')
-
 
 def student_list(request):
     students = Student.objects.all().order_by('-id')
