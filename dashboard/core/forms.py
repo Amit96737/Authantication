@@ -1,8 +1,13 @@
 from django import forms
-from django.core.validators import FileExtensionValidator
+from django.core.validators import FileExtensionValidator, RegexValidator
 from users.models.users import User
 import re
 from django.core.exceptions import ValidationError
+
+name_validator = RegexValidator(
+    regex=r'^[A-Za-z ]+$',
+    message='Only letters are allowed'
+)
 
 gender_choices = (
     ('', 'Select Gender'),
@@ -14,10 +19,12 @@ gender_choices = (
 class SignUpForm(forms.Form):
     first_name = forms.CharField(
         max_length=120,
+        validators=[name_validator],
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter first name'})
     )
     last_name = forms.CharField(
         max_length=120,
+        validators=[name_validator],
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter last name'})
     )
     gender = forms.ChoiceField(
@@ -35,7 +42,7 @@ class SignUpForm(forms.Form):
         })
     )
     profile_pic = forms.ImageField(
-        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic'])],
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg'])],
         widget=forms.FileInput(attrs={'class': 'form-control'})
     )
     password = forms.CharField(

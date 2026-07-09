@@ -1,66 +1,67 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="en">
 {% load static %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subscription Packages</title>
 
-{% block title %}Subscription Packages{% endblock %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
 
-{% block content %}
+<body style="background:#f5f5f5;">
 
 <div class="container py-5">
     <div class="border-bottom pb-3 mb-5 d-flex justify-content-between align-items-center flex-wrap gap-3">
-        <div>
-            <h1 class="fw-bold text-dark m-0 display-6">Subscription Plans</h1>
-        </div>
+        <h1 class="fw-bold text-dark m-0 display-6">Subscription Plans</h1>
     </div>
 
     <div class="row g-4 justify-content-center align-items-stretch">
         {% for plan in plans %}
         <div class="col-12 col-md-6 col-lg-4 d-flex">
-            <div class="card border-0 shadow-sm rounded-3 overflow-hidden text-center bg-white w-100 d-flex flex-column custom-pricing-card">
+            <div class="card border-0 shadow-sm rounded-3 text-center bg-white w-100 d-flex flex-column custom-pricing-card">
 
-                <div class="py-4 px-3 text-white text-uppercase tracking-wider fw-bold font-monospace card-banner-header bg-dark">
+                <div class="py-4 text-white fw-bold bg-dark">
                     {{ plan.title }}
                 </div>
 
-                <div class="py-4 border-bottom border-light">
-                    <h2 class="fw-bold text-dark m-0 d-inline-block">
-                        <span class="fs-4 fw-medium align-top">₹</span>{{ plan.price }}
+                <div class="py-4 border-bottom">
+                    <h2 class="fw-bold m-0">
+                        ₹{{ plan.price }}
                     </h2>
-                    <span class="text-secondary small font-monospace d-block mt-1">{{ plan.validity }}</span>
+                    <span class="text-secondary small">{{ plan.validity }}</span>
                 </div>
 
-                <div class="p-4 flex-grow-1 d-flex flex-column justify-content-start gap-2 bg-content-tier">
-                    <div class="py-2 px-3 bg-light rounded-2 small text-secondary fw-semibold">
+                <div class="p-4 flex-grow-1">
+                    <div class="bg-light p-2 rounded small text-secondary">
                         {{ plan.description|truncatechars:200 }}
                     </div>
                 </div>
 
-                <div class="p-4 pt-0 mt-auto">
-                    <a href="{% url 'initiate_paypal_payment' plan.id %}" class="btn btn-dark w-100 fw-bold py-2 rounded-3 shadow-sm font-monospace text-uppercase custom-pricing-btn">
+                <div class="p-4">
+                    <a href="{% url 'initiate_paypal_payment' plan.id %}" class="btn btn-dark w-100 fw-bold">
                         Buy
                     </a>
-<!--                    <a href="#" class="btn btn-dark w-100 fw-bold py-2 rounded-3 shadow-sm font-monospace text-uppercase custom-pricing-btn">-->
-<!--                        Buy-->
-<!--                    </a>-->
                 </div>
 
             </div>
         </div>
         {% empty %}
         <div class="col-12 text-center py-5">
-            <p class="text-muted font-monospace m-0">No active structures detected inside database scope matrix. Ensure rows exist in Admin.</p>
+            <p class="text-muted">No plans available</p>
         </div>
         {% endfor %}
     </div>
 </div>
 
 <style>
-    .tracking-wider { letter-spacing: 1px; }
-    .card-banner-header { font-size: 1.1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-    .bg-content-tier { background-color: #fafafa; }
-    .custom-pricing-card { transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s ease; }
-    .custom-pricing-card:hover { transform: translateY(-5px); box-shadow: 0 8px 20px rgba(0,0,0,0.08) !important; }
-    .custom-pricing-btn { transition: transform 0.15s ease, opacity 0.15s ease; }
-    .custom-pricing-btn:hover { transform: translateY(-1px); opacity: 0.95; }
+.custom-pricing-card {
+    transition: 0.3s;
+}
+.custom-pricing-card:hover {
+    transform: translateY(-5px);
+}
 </style>
 
-{% endblock %}
+</body>
+</html>
