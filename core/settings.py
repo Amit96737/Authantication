@@ -13,7 +13,7 @@ DEBUG = True
 # DEBUG = True # never deploy a site into production with debug turned on
 
 # ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '97f9-14-97-132-58.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', '97f9-14-97-132-58.ngrok-free.app', '192.168.11.146']
 CSRF_TRUSTED_ORIGINS = ['https://97f9-14-97-132-58.ngrok-free.app']
 
 DJANGO_APPS = [

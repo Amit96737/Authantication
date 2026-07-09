@@ -88,21 +88,29 @@
     <div class="container-fluid px-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
 
         <div class="text-start d-flex align-items-center gap-4 flex-wrap">
-            <a href="{% url 'dashboard' %}" class="text-decoration-none">
-                <h1 class="fw-bold text-dark m-0 fs-3 main-title-text">DevBoard</h1>
-            </a>
+            <div class="d-flex align-items-center gap-2">
+
+                <img src="{% static 'images/odoo_logo.jfif' %}"
+                     class="rounded-circle"
+                     style="width:35px; height:35px; object-fit:cover;">
+
+                <h1 class="fw-bold text-dark m-0 fs-5 main-title-text">
+                    DevBoard
+                </h1>
+
+            </div>
 
             <nav class="d-flex align-items-center ms-2 mt-1">
                 <div class="dropdown custom-nested-dropdown">
                     <a class="text-decoration-none fw-bold text-secondary dropdown-toggle small" href="#" role="button" id="globalAboutDropdown" data-bs-toggle="dropdown" aria-expanded="false" style="transition: color 0.2s;">
-                        <i class="fa-solid fa-circle-info me-1"></i> About
+                        <i class="fa-solid fa-circle-info me-1"></i> Blog Docs
                     </a>
 
                     <ul class="dropdown-menu shadow-sm border-0 mt-2 rounded-3" aria-labelledby="globalAboutDropdown">
 
                         <li class="dropdown-submenu position-relative">
                             <a class="dropdown-item dropdown-toggle small py-2 d-flex align-items-center justify-content-between" href="#">
-                                <span><i class="fa-solid fa-book me-2 opacity-75"></i> Module Docs</span>
+                                <span><i class="fa-solid fa-book me-2 opacity-75"></i>Docs</span>
                             </a>
                             <ul class="dropdown-menu submenu shadow-sm border-0 rounded-3">
                                 <li><a class="dropdown-item small py-2" href="{% url 'news_home_page' %}"><i class="fa-solid fa-newspaper me-2 opacity-75"></i> Live News</a></li>
