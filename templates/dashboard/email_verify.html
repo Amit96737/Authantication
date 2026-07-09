@@ -48,6 +48,10 @@
                         </div>
                     </div>
 
+                    <div class="text-end mb-3">
+                        <a href="{% url 'resend_email_otp' %}" class="text-decoration-none small text-secondary">Resend OTP</a>
+                    </div>
+
                     <button type="submit" class="login-button mt-2">Verify Now</button>
                 </form>
 
@@ -58,10 +62,8 @@
 
     <script>
         function moveToNext(current, nextInputName) {
-            if (current.value.length >= 1) {
-                if (nextInputName !== '') {
-                    document.getElementsByName(nextInputName)[0].focus();
-                }
+            if (current.value.length > 1) {
+                current.value = current.value[0];
             }
         }
 

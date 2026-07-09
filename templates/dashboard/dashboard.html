@@ -9,7 +9,7 @@
             <h1 class="fw-bold text-dark m-0 display-5 main-title-text">
                 Welcome
                 <span class="fw-normal text-secondary" style="font-size: 0.7em;">
-                    {{ user.first_name }} {{ user.last_name }}
+                    {{ user.first_name|capfirst }} {{ user.last_name }}
                 </span>
             </h1>
         </div>

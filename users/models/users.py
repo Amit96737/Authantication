@@ -17,13 +17,14 @@ class User(AbstractUser):
     last_name = models.CharField(max_length=255, null=True, blank=True)
     email = models.EmailField(unique=True)
     profile_pic = models.ImageField(upload_to="user_profile", null=True, blank=True,
-                                    validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic'])
+                                    validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg'])
                                                 ])
     gender = models.CharField(max_length=255, choices=gender_choices)
     biograph = models.TextField(null=True, blank=True)
     phone_number = models.CharField(max_length=15, null=True, blank=True, validators=[validate_phone_number])
     email_verified = models.BooleanField(default=False)
     sms_verified = models.BooleanField(default=False)
+    has_subscription = models.BooleanField(default=False)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_number']

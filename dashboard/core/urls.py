@@ -7,6 +7,10 @@ urlpatterns = [
     path("sign-up", views.user_sign_up, name="user_sign_up"),
     path("verify-email-otp/", views.verify_email_otp, name="verify_email_otp"),
     path("verify-sms-otp/", views.verify_sms_otp, name="verify_sms_otp"),
+
+    path("resend-email-otp/", views.resend_email_otp, name="resend_email_otp"),
+    path("resend-sms-otp/", views.resend_sms_otp, name="resend_sms_otp"),
+
     path("", views.user_login, name="user_login"),
     path("logout/", views.user_logout, name="user_logout"),
     path("forgot-password/", views.forgot_password, name="forgot_password"),

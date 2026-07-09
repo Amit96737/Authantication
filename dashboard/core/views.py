@@ -11,6 +11,18 @@ from django.contrib.auth import authenticate, login
 from dashboard.core.forms import UserProfileForm
 from django.contrib.auth.decorators import login_required
 from paypal_payments.models.subscription import SubscriptionPlan
+import time
+
+import random
+
+def generate_unique_username(first_name):
+    username = f"{first_name.lower()}{random.randint(1000, 9999)}"
+    print("username", username)
+
+    while User.objects.filter(username=username).exists():
+        username = f"{first_name.lower()}{random.randint(1000, 9999)}"
+
+    return username
 
 def plan_page_onboard(request):
     plans = SubscriptionPlan.objects.all()
@@ -29,8 +41,15 @@ def user_sign_up(request):
         if form.is_valid():
             data = form.cleaned_data
 
+            if User.objects.filter(email=data['email']).exists():
+                messages.error(request, "Email already registered please try another email")
+                return redirect('user_sign_up')
+
+            unique_username = generate_unique_username(data['first_name'])
+            print("unique_username", unique_username)
+
             user=User.objects.create(
-                username=data['first_name'],
+                username=unique_username,
                 first_name=data['first_name'],
                 last_name=data['last_name'],
                 gender=data['gender'],
@@ -48,6 +67,10 @@ def user_sign_up(request):
                     username=full_name,
                     user_email=user.email.lower()
                 )
+
+                request.session['email'] = user.email.lower()
+                request.session['phone_number'] = user.phone_number
+                request.session['username'] = full_name
 
                 messages.success(request, "OTP sent to your email. Please verify your account.")
                 return redirect(f"/verify-email-otp/?email={user.email}")
@@ -146,38 +169,42 @@ def verify_sms_otp(request):
 
     return render(request, "dashboard/sms_verify.html", {'phone': phone})
 
+def resend_email_otp(request):
+    email = request.session.get('email')
+    username = request.session.get('username')
+    user = User.objects.filter(email=email).first()
 
-# def user_login(request):
-#     if request.method == "POST":
-#         form = LoginForm(request.POST)
-#         if form.is_valid():
-#             email = form.cleaned_data['email'].lower()
-#             password = form.cleaned_data['password']
-#
-#             user = User.objects.filter(email=email).first()
-#
-#             if user:
-#                 if check_password(password, user.password):
-#
-#                     if not user.email_verified:
-#                         request.session['signup_email'] = user.email.lower()
-#                         messages.warning(request, "Please verify your email before logging in.")
-#                         return redirect('verify_email_otp')
-#
-#                     login(request, user)
-#                     return redirect('dashboard')
-#                 else:
-#                     messages.error(request, "Invalid Password. Please try again.")
-#             else:
-#                 messages.error(request, "No account found with this email.")
-#     else:
-#         form = LoginForm()
-#
-#     return render(
-#         request,
-#         "dashboard/login.html",
-#         {'form': form}
-#     )
+    if not email:
+        messages.error(request, "Session expired.")
+        return redirect(f"/verify-email-otp/?email={user.email}&phone={user.phone_number}")
+
+    send_otp_to_mail(
+        username=username,
+        user_email=email
+    )
+    request.session['otp_time'] = time.time()
+
+    messages.success(request, "OTP resent successfully")
+    return redirect(f"/verify-email-otp/?email={user.email}&phone={user.phone_number}")
+
+def resend_sms_otp(request):
+    email = request.session.get('email')
+    phone_number = request.session.get('phone_number')
+    username = request.session.get('username')
+    user = User.objects.filter(email=email).first()
+
+    if not phone_number:
+        messages.error(request, "Session expired.")
+        return redirect(f"/verify-sms-otp/?email={user.email}&phone={user.phone_number}")
+
+    send_otp_to_phone(
+        username=username,
+        phone_number=phone_number
+    )
+    request.session['sms_otp_time'] = time.time()
+
+    messages.success(request, "OTP resent successfully on phone")
+    return redirect(f"/verify-sms-otp/?email={user.email}&phone={user.phone_number}")
 
 def user_login(request):
     if request.method == "POST":
@@ -207,6 +234,9 @@ def user_login(request):
 
                     messages.warning(request, "Phone not verified. OTP sent.")
                     return redirect(f"/verify-sms-otp/?email={user.email}&phone={user.phone_number}")
+
+                if user.has_subscription == True:
+                    return redirect('dashboard')
 
                 # if not user.email_verified:
                 #     request.session['signup_email'] = user.email.lower()

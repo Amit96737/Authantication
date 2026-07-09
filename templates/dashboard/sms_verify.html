@@ -43,6 +43,11 @@
                             <input type="number" name="otp_6" class="otp-input" maxlength="1" oninput="moveToNext(this, '')" onkeydown="moveToPrev(this, 'otp_5')" required>
                         </div>
                     </div>
+
+                    <div class="text-end mb-3">
+                        <a href="{% url 'resend_sms_otp' %}" class="text-decoration-none small text-secondary">Resend OTP</a>
+                    </div>
+
                     <button type="submit" class="login-button mt-2">Verify & Register</button>
                 </form>
             </div>
@@ -50,7 +55,11 @@
     </div>
 
     <script>
-        function moveToNext(current, nextInputName) { if (current.value.length >= 1 && nextInputName !== '') { document.getElementsByName(nextInputName)[0].focus(); } }
+        function moveToNext(current, nextInputName) {
+            if (current.value.length > 1) {
+                current.value = current.value[0];
+            }
+        }
         function moveToPrev(current, prevInputName) { if (event.key === "Backspace" && current.value.length === 0 && prevInputName !== '') { document.getElementsByName(prevInputName)[0].focus(); } }
     </script>
 </body>
