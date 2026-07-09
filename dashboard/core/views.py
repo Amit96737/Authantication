@@ -10,6 +10,14 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate, login
 from dashboard.core.forms import UserProfileForm
 from django.contrib.auth.decorators import login_required
+from paypal_payments.models.subscription import SubscriptionPlan
+
+def plan_page_onboard(request):
+    plans = SubscriptionPlan.objects.all()
+    context = {
+            'plans': plans,
+        }
+    return render(request, 'dashboard/on_board.html', context)
 
 @login_required(login_url='user_login')
 def dashboard(request):
@@ -183,12 +191,30 @@ def user_login(request):
             if user and check_password(password, user.password):
 
                 if not user.email_verified:
-                    request.session['signup_email'] = user.email.lower()
-                    messages.warning(request, "Please verify your email before logging in.")
-                    return redirect('verify_email_otp')
+                    send_otp_to_mail(
+                        username=user.first_name,
+                        user_email=user.email.lower()
+                    )
+
+                    messages.warning(request, "Email not verified. OTP sent again.")
+                    return redirect(f"/verify-email-otp/?email={user.email}")
+
+                if not user.sms_verified:
+                    send_otp_to_phone(
+                        username=user.first_name,
+                        phone_number=user.phone_number
+                    )
+
+                    messages.warning(request, "Phone not verified. OTP sent.")
+                    return redirect(f"/verify-sms-otp/?email={user.email}&phone={user.phone_number}")
+
+                # if not user.email_verified:
+                #     request.session['signup_email'] = user.email.lower()
+                #     messages.warning(request, "Please verify your email before logging in.")
+                #     return redirect('verify_email_otp')
 
                 login(request, user)
-                return redirect('dashboard')
+                return redirect('plan_page_onboard')
 
             else:
                 messages.error(request, "Invalid email or password.")

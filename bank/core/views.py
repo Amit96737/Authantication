@@ -21,7 +21,7 @@ def bank_about_page(request):
 def bank_dashboard(request):
     return render(
         request,
-        "bank/notification_home.html",
+        "bank/home.html",
         locals()
     )
 

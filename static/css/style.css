@@ -1,3 +1,14 @@
+.logo-circle {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 15px;
+    border-radius: 50%;
+    background: #f1f1f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 body {
     margin: 0;
     font-family: Arial, sans-serif;
@@ -6,6 +17,7 @@ body {
 .split-container {
     display: flex;
     height: 100vh;
+    flex-direction: column;
 }
 
 .split-form-container {
