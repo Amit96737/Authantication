@@ -27,7 +27,7 @@ def chat_boat_app(request):
     response = requests.post(url, headers=headers, json=data)
 
     result = response.json()
-    # print("result", result)
+    # print("response:", result)
 
     reply = result["choices"][0]["message"]["content"]
 
