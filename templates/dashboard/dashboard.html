@@ -12,6 +12,10 @@
                     {{ user.first_name|capfirst }} {{ user.last_name|capfirst }}
                 </span>
             </h1>
+
+            <button class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm" type="button" data-bs-toggle="offcanvas" data-bs-target="#liveChatSidebar" aria-controls="liveChatSidebar">
+                <i class="fa-solid fa-comments me-2"></i>Live Chat Users
+            </button>
         </div>
 
         <div style="min-width: 320px; max-width: 450px;" class="flex-grow-1 flex-sm-grow-0">
@@ -164,6 +168,33 @@
     </div>
 </div>
 
+<div class="offcanvas offcanvas-end border-0 shadow" tabindex="-1" id="liveChatSidebar" aria-labelledby="liveChatSidebarLabel">
+    <div class="offcanvas-header bg-dark text-white p-3">
+        <h5 class="offcanvas-title fw-bold" id="liveChatSidebarLabel"><i class="fa-solid fa-users me-2"></i>Active Registered Users</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-transform="scale(0.8)" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+
+    <div class="offcanvas-body p-3 bg-light">
+        <div class="list-group rounded-3 shadow-sm overflow-hidden">
+            {% for other_user in all_users %}
+                <div class="list-group-item list-group-item-action d-flex align-items-center justify-content-between p-3 border-0 bg-white border-bottom">
+                    <div>
+                        <h6 class="fw-bold mb-1 text-dark">{{ other_user.email|default:other_user.email }}</h6>
+                        <small class="text-muted font-monospace text-xs" style="font-size: 0.8rem;">Name: {{ other_user.first_name }}</small>
+                    </div>
+                    <a href="{% url 'chat_room' room_name=other_user.id %}" class="btn btn-sm btn-dark fw-bold rounded-2 px-3">
+                        Chat
+                    </a>
+                </div>
+            {% empty %}
+                <div class="text-center p-5 text-muted bg-white">
+                    <p class="m-0 small">User not registered</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
 <script>
     const body = document.body;
     body.removeAttribute('data-bs-theme');
@@ -173,16 +204,20 @@
     const btnText = document.getElementById('btnText');
     const btnSpinner = document.getElementById('btnSpinner');
 
-    newsModuleBtn.addEventListener('click', function(e) {
-        btnText.classList.add('d-none');
-        btnSpinner.classList.remove('d-none');
-        newsModuleBtn.style.pointerEvents = 'none';
-    });
+    if(newsModuleBtn) {
+        newsModuleBtn.addEventListener('click', function(e) {
+            btnText.classList.add('d-none');
+            btnSpinner.classList.remove('d-none');
+            newsModuleBtn.style.pointerEvents = 'none';
+        });
+    }
 
     window.addEventListener('pageshow', function(event) {
-        btnText.classList.remove('d-none');
-        btnSpinner.classList.add('d-none');
-        newsModuleBtn.style.pointerEvents = 'auto';
+        if(btnText && btnSpinner && newsModuleBtn) {
+            btnText.classList.remove('d-none');
+            btnSpinner.classList.add('d-none');
+            newsModuleBtn.style.pointerEvents = 'auto';
+        }
     });
 
     document.getElementById('dashboardSearchInput').addEventListener('input', function (e) {
@@ -201,6 +236,59 @@
             }
         });
     });
+
+    const currentUserId = "{{ user.id }}";
+    const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+
+    const notifySocket = new WebSocket(
+        protocol + window.location.host + '/ws/notifications/'
+    );
+
+    notifySocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+        if (data.notification) {
+            showDesktopNotification(
+                data.notification.title,
+                data.notification.body,
+                data.notification.sender_id
+            );
+        }
+    };
+
+    function showDesktopNotification(title, body, senderId) {
+        if (Notification.permission === "granted") {
+            const notification = new Notification(title, { body: body });
+            notification.onclick = function() {
+                window.location.href = `/chat/${senderId}/`;
+            };
+        } else if (Notification.permission !== "denied") {
+            Notification.requestPermission();
+        }
+
+        const alertBox = document.createElement('div');
+        alertBox.className = "alert alert-success position-fixed bottom-0 end-0 m-3 shadow-lg rounded-3 border-0";
+        alertBox.style.zIndex = "9999";
+        alertBox.style.cursor = "pointer";
+
+        alertBox.innerHTML = `
+            <div class="notification-content">
+                <strong>${title}</strong><br><small>${body}</small>
+            </div>
+            <button type="button" class="btn-close position-absolute top-50 end-0 translate-middle-y me-2" data-bs-dismiss="alert" style="font-size:0.75rem;"></button>
+        `;
+
+        alertBox.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-close')) {
+                return;
+            }
+            window.location.href = `/chat/${senderId}/`;
+        });
+
+        document.body.appendChild(alertBox);
+
+        setTimeout(() => { alertBox.remove(); }, 5000);
+    }
+
 </script>
 
 <style>
