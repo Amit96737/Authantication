@@ -3,6 +3,8 @@ from paypal_payments.models.subscription import SubscriptionPlan
 import requests
 from django.http import HttpResponse
 from django.conf import settings
+from django.views.decorators.csrf import csrf_exempt
+import json
 
 CLIENT_ID = settings.PAYPAL_CLIENT_ID
 SECRET = settings.PAYPAL_SECRET_KEY
@@ -45,7 +47,8 @@ def initiate_paypal_payment(request, plan_id):
                 "currency_code": "USD",
                 "value": str(plan.price)
             },
-            "description": plan.title
+            "description": plan.title,
+            "custom_id": str(request.user.id)
         }],
         "application_context": {
             "return_url": f"{settings.DOMAIN_NAME}/paypal_payments/paypal-payment-success/",
@@ -98,3 +101,29 @@ def payment_success_view(request):
 
 def payment_cancelled_view(request):
     return render(request, 'paypal/paypal_cancelled.html')
+
+@csrf_exempt
+def paypal_webhook(request):
+    if request.method == 'POST':
+        try:
+            event_data = json.loads(request.body.decode('utf-8'))
+            event_type = event_data.get('event_type')
+
+            if event_type == 'PAYMENT.CAPTURE.COMPLETED':
+                resource = event_data.get('resource', {})
+
+                user_id = resource.get('custom_id')
+
+                if user_id:
+                    from users.models.users import User
+                    user = User.objects.get(id=user_id)
+                    user.has_subscription = True
+                    user.save()
+
+                return HttpResponse("Webhook received successfully", status=200)
+
+        except Exception as e:
+            print("Webhook Error:", str(e))
+            return HttpResponse("Error processing webhook", status=400)
+
+    return HttpResponse("Invalid request method", status=405)
