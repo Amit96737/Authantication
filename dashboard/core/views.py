@@ -12,17 +12,8 @@ from dashboard.core.forms import UserProfileForm
 from django.contrib.auth.decorators import login_required
 from paypal_payments.models.subscription import SubscriptionPlan
 import time
+from dashboard.core.services import generate_unique_username
 
-import random
-
-def generate_unique_username(first_name):
-    username = f"{first_name.lower()}{random.randint(1000, 9999)}"
-    print("username", username)
-
-    while User.objects.filter(username=username).exists():
-        username = f"{first_name.lower()}{random.randint(1000, 9999)}"
-
-    return username
 
 def plan_page_onboard(request):
     plans = SubscriptionPlan.objects.all()
@@ -31,9 +22,11 @@ def plan_page_onboard(request):
         }
     return render(request, 'dashboard/on_board.html', context)
 
+
 @login_required(login_url='user_login')
 def dashboard(request):
     return render(request, "dashboard/dashboard.html")
+
 
 def user_sign_up(request):
     if request.method == "POST":
@@ -46,7 +39,6 @@ def user_sign_up(request):
                 return redirect('user_sign_up')
 
             unique_username = generate_unique_username(data['first_name'])
-            print("unique_username", unique_username)
 
             user=User.objects.create(
                 username=unique_username,
@@ -169,6 +161,7 @@ def verify_sms_otp(request):
 
     return render(request, "dashboard/sms_verify.html", {'phone': phone})
 
+
 def resend_email_otp(request):
     email = request.session.get('email')
     username = request.session.get('username')
@@ -186,6 +179,7 @@ def resend_email_otp(request):
 
     messages.success(request, "OTP resent successfully")
     return redirect(f"/verify-email-otp/?email={user.email}&phone={user.phone_number}")
+
 
 def resend_sms_otp(request):
     email = request.session.get('email')
@@ -206,6 +200,7 @@ def resend_sms_otp(request):
     messages.success(request, "OTP resent successfully on phone")
     return redirect(f"/verify-sms-otp/?email={user.email}&phone={user.phone_number}")
 
+
 def user_login(request):
     if request.method == "POST":
         form = LoginForm(request.POST)
@@ -222,7 +217,6 @@ def user_login(request):
                         username=user.first_name,
                         user_email=user.email.lower()
                     )
-
                     messages.warning(request, "Email not verified. OTP sent again.")
                     return redirect(f"/verify-email-otp/?email={user.email}")
 
@@ -231,19 +225,14 @@ def user_login(request):
                         username=user.first_name,
                         phone_number=user.phone_number
                     )
-
                     messages.warning(request, "Phone not verified. OTP sent.")
                     return redirect(f"/verify-sms-otp/?email={user.email}&phone={user.phone_number}")
+
+                login(request, user)
 
                 if user.has_subscription == True:
                     return redirect('dashboard')
 
-                # if not user.email_verified:
-                #     request.session['signup_email'] = user.email.lower()
-                #     messages.warning(request, "Please verify your email before logging in.")
-                #     return redirect('verify_email_otp')
-
-                login(request, user)
                 return redirect('plan_page_onboard')
 
             else:
@@ -252,6 +241,7 @@ def user_login(request):
         form = LoginForm()
 
     return render(request, "dashboard/login.html", {'form': form})
+
 
 def user_logout(request):
     logout(request)
@@ -272,6 +262,7 @@ def forgot_password(request):
             messages.error(request, "No account found with this email address.")
 
     return render(request, "dashboard/forgot_password.html")
+
 
 def verify_forgot_otp(request):
     email = request.GET.get('email', '').lower().strip()
@@ -301,6 +292,7 @@ def verify_forgot_otp(request):
             messages.error(request, "Invalid or expired OTP. Please try again.")
 
     return render(request, "dashboard/verify_forgot_otp.html", {'email': email})
+
 
 def set_new_password(request):
     email = request.GET.get('email', '').lower().strip()
@@ -332,10 +324,12 @@ def set_new_password(request):
 
     return render(request, "dashboard/set_new_password.html", {'email': email})
 
+
 def user_profile(request):
     form = UserProfileForm(instance=request.user)
 
     return render(request, "dashboard/user_profile.html", {"form": form})
+
 
 def update_profile(request):
     user = request.user
@@ -350,6 +344,7 @@ def update_profile(request):
             print(form.errors)
 
     return redirect('user_profile')
+
 
 def delete_profile(request):
     if request.method == "POST":
