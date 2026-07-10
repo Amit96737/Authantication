@@ -20,4 +20,3 @@ urlpatterns = [
     path("update-profile", views.update_profile, name="update_profile"),
     path("delete-profile", views.delete_profile, name="delete_profile"),
 ]
-
