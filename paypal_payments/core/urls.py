@@ -7,4 +7,5 @@ urlpatterns = [
     path('initiate-payment/<uuid:plan_id>/', views.initiate_paypal_payment, name='initiate_paypal_payment'),
     path('paypal-payment-success/', views.payment_success_view, name='payment_success'),
     path('paypal-payment-cancelled/', views.payment_cancelled_view, name='payment_cancelled'),
+    path('paypal-webhook/', views.paypal_webhook, name='paypal_webhook'),
 ]
