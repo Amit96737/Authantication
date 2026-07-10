@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %} {% block title %}Chat Communication{% endblock %}
+
+{% block content %}
+<div class="mb-4">
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+        ← Back to Dashboard
+    </a>
+</div>
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-header bg-dark text-white p-3 rounded-top-4">
+                    <h5 class="mb-0 fw-bold">
+                        <span class="text-warning">
+                            {% if other_user %}
+                                {{ other_user.first_name|capfirst }} {{ other_user.last_name|capfirst }}
+                            {% else %}
+                                Global Chat
+                            {% endif %}
+                        </span>
+                    </h5>
+                </div>
+
+                <div class="card-body bg-white p-4" id="chat-log" style="height: 400px; overflow-y: auto;">
+                    {% for msg in old_messages %}
+                        {% if msg.user == request.user %}
+                            <div class="d-flex flex-column align-items-end mb-3">
+                                <div class="bg-primary text-white p-2 rounded-3 shadow-sm">
+                                    {{ msg.message }}
+                                </div>
+                                <small class="text-muted mt-1" style="font-size: 0.75rem;">{{ msg.created_at|date:"h:i A" }}</small>
+                            </div>
+                        {% else %}
+                            <div class="d-flex flex-column align-items-start mb-3">
+                                <small class="text-secondary mb-1" style="font-size: 0.8rem;">{{ msg.user.first_name }}</small>
+                                <div class="bg-light text-dark p-2 rounded-3 shadow-sm border">
+                                    {{ msg.message }}
+                                </div>
+                                <small class="text-muted mt-1" style="font-size: 0.75rem;">{{ msg.created_at|date:"h:i A" }}</small>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+
+                <div class="card-footer p-3 bg-white border-top">
+                    <div class="input-group">
+                        <input id="chat-message-input" type="text" class="form-control rounded-start-3" placeholder="Type your message..." autocomplete="off">
+                        <button id="chat-message-submit" class="btn btn-dark px-4 rounded-end-3" type="button">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const roomName = "{{ room_name }}";
+    const currentUsername = "{{ request.user.username }}";
+
+    const wsScheme = window.location.protocol === "https:" ? "wss" : "ws";
+    const chatSocket = new WebSocket(
+        wsScheme + '://' + window.location.host + '/ws/chat/' + roomName + '/'
+    );
+
+    const chatLog = document.querySelector('#chat-log');
+    chatLog.scrollTop = chatLog.scrollHeight;
+
+    chatSocket.onmessage = function(e) {
+    const data = JSON.parse(e.data);
+    const message = data.message;
+    const senderFirstName = data.first_name;
+    const timestamp = data.timestamp;
+    const currentUser = "{{ request.user.username }}";
+
+    const messageElement = document.createElement('div');
+
+    if (data.username === currentUser) {
+        messageElement.className = "d-flex flex-column align-items-end mb-3";
+        messageElement.innerHTML = `
+            <div class="bg-primary text-white p-2 rounded-3 max-w-75 shadow-sm">
+                ${message}
+            </div>
+            <small class="text-muted mt-1" style="font-size: 0.75rem;">${timestamp}</small>
+        `;
+    } else {
+        messageElement.className = "d-flex flex-column align-items-start mb-3";
+        messageElement.innerHTML = `
+            <small class="text-secondary mb-1" style="font-size: 0.8rem; fw-bold">${senderFirstName}</small>
+            <div class="bg-light text-dark p-2 rounded-3 max-w-75 shadow-sm border">
+                ${message}
+            </div>
+            <small class="text-muted mt-1" style="font-size: 0.75rem;">${timestamp}</small>
+        `;
+    }
+
+    const chatLog = document.getElementById('chat-log');
+    chatLog.appendChild(messageElement);
+
+    chatLog.scrollTop = chatLog.scrollHeight;
+    };
+
+    chatSocket.onclose = function(e) {
+        console.error('Chat socket closed unexpectedly');
+    };
+
+    const messageInput = document.querySelector('#chat-message-input');
+    const submitButton = document.querySelector('#chat-message-submit');
+
+    messageInput.focus();
+    messageInput.onkeyup = function(e) {
+        if (e.key === 'Enter') {
+            submitButton.click();
+        }
+    };
+
+    submitButton.onclick = function(e) {
+        const message = messageInput.value.trim();
+        if(message.length > 0) {
+            chatSocket.send(JSON.stringify({
+                'message': message
+            }));
+            messageInput.value = '';
+        }
+    };
+</script>
+
+</body>
+</html>
+{% endblock %}

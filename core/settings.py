@@ -17,12 +17,14 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'c617-14-97-132-58.ngrok-free.app', '
 CSRF_TRUSTED_ORIGINS = ['https://c617-14-97-132-58.ngrok-free.app']
 
 DJANGO_APPS = [
+    'daphne',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
 ]
 
 THIRD_PARTY_PACKAGES = [
@@ -47,6 +49,7 @@ CUSTOM_APPS = [
     'ml',
     'payments',
     'paypal_payments',
+    'chat',
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_PACKAGES + CUSTOM_APPS
@@ -79,7 +82,8 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'core.wsgi.application'
+# WSGI_APPLICATION = 'core.wsgi.application'
+ASGI_APPLICATION = 'core.asgi.application'
 
 DATABASES = {
     'default': {
@@ -195,3 +199,9 @@ BASE_URL = os.getenv('BASE_URL')
 
 PAYPAL_SECRET_KEY = os.getenv('PAYPAL_SECRET_KEY')
 PAYPAL_CLIENT_ID = os.getenv('PAYPAL_CLIENT_ID')
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer",
+    },
+}

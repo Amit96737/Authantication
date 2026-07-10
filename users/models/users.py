@@ -7,9 +7,9 @@ from users.models.user_manager import UserManager
 
 class User(AbstractUser):
     gender_choices = (
-    ('male', 'male'),
-    ('female', 'female'),
-    ('others', 'others'),
+    ('Male', 'Male'),
+    ('Female', 'Female'),
+    ('Others', 'Others'),
     )
 
     id = models.CharField(primary_key=True, default=uuid.uuid4, unique=True, editable=False, max_length=255)

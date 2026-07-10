@@ -25,7 +25,11 @@ def plan_page_onboard(request):
 
 @login_required(login_url='user_login')
 def dashboard(request):
-    return render(request, "dashboard/dashboard.html")
+    all_users = User.objects.exclude(id=request.user.id)
+    return render(request, "dashboard/dashboard.html",
+                  {
+                      'all_users': all_users,
+                  })
 
 
 def user_sign_up(request):

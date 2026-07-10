@@ -5,9 +5,9 @@ from tinymce.models import HTMLField
 
 class Student(CommonFields):
     gender_choices = (
-        ('male', 'male'),
-        ('female', 'female'),
-        ('others', 'others'),
+        ('Male', 'Male'),
+        ('Female', 'Female'),
+        ('Others', 'Others'),
     )
     first_name = models.CharField(max_length=125)
     last_name = models.CharField(max_length=125)
