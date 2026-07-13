@@ -4,6 +4,7 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 from channels.layers import get_channel_layer
 from .models import ChatMessage
+from users.models.users import User
 
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
@@ -90,14 +91,24 @@ class NotificationConsumer(AsyncWebsocketConsumer):
 
             await self.channel_layer.group_add(self.group_name, self.channel_name)
             await self.accept()
+
+            await self.update_user_status(self.scope["user"], True)
         else:
             await self.close()
+
 
     async def disconnect(self, close_code):
         if hasattr(self, 'group_name'):
             await self.channel_layer.group_discard(self.group_name, self.channel_name)
 
+            if self.scope["user"].is_authenticated:
+                await self.update_user_status(self.scope["user"], False)
+
     async def send_notification(self, event):
         await self.send(text_data=json.dumps({
             "notification": event["notification"]
         }))
+
+    @database_sync_to_async
+    def update_user_status(self, user, status):
+        return User.objects.filter(pk=user.pk).update(is_online=status)

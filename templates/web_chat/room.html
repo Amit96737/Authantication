@@ -385,7 +385,6 @@
             if(fileModal) fileModal.show();
         }
 
-        // --- COMMON UPLOAD FUNCTION ---
         async function uploadFileToServer(file) {
             const formData = new FormData();
             formData.append('file', file);
@@ -443,7 +442,7 @@
             };
         }
 
-        // --- AUDIO RECORDING LOGIC ---
+        // AUDIO RECORDING
         const micBtn = document.getElementById('mic-btn');
         let mediaRecorder = null;
         let audioChunks = [];
@@ -454,7 +453,6 @@
                 e.preventDefault();
 
                 if (!isRecording) {
-                    // Start Recording
                     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
                         alert("Your browser does not support audio recording.");
                         return;
@@ -472,11 +470,9 @@
                         };
 
                         mediaRecorder.onstop = async function () {
-                            // Create file from recorded audio chunks
                             const audioBlob = new Blob(audioChunks, { type: 'audio/mp3' });
                             const audioFile = new File([audioBlob], `voice_message_${Date.now()}.mp3`, { type: 'audio/mp3' });
 
-                            // Visual status update
                             micBtn.innerHTML = "⏳ Sending...";
                             micBtn.disabled = true;
 
@@ -485,7 +481,7 @@
                                 if (resData.status === 'success') {
                                     chatSocket.send(JSON.stringify({
                                         'message': resData.file_name,
-                                        'message_type': 'audio', // Ensure backend detects it as audio
+                                        'message_type': 'audio',
                                         'file_url': resData.file_url
                                     }));
                                 } else {
@@ -495,13 +491,11 @@
                                 alert("Failed to upload recorded audio.");
                             }
 
-                            // Reset Mic Button
                             micBtn.innerHTML = "🎤";
                             micBtn.classList.remove('mic-recording');
                             micBtn.disabled = false;
                             isRecording = false;
 
-                            // Stop tracks to release mic icon from browser bar
                             stream.getTracks().forEach(track => track.stop());
                         };
 

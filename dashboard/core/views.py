@@ -25,11 +25,10 @@ def plan_page_onboard(request):
 
 @login_required(login_url='user_login')
 def dashboard(request):
-    all_users = User.objects.exclude(id=request.user.id)
-    return render(request, "dashboard/dashboard.html",
-                  {
-                      'all_users': all_users,
-                  })
+    current_user = request.user
+    online_users = User.objects.filter(is_online=True).exclude(id=request.user.id)
+    all_users = User.objects.all().exclude(id=current_user.id)
+    return render(request, 'dashboard/dashboard.html', {'active_users': online_users, 'all_users': all_users,})
 
 
 def user_sign_up(request):
