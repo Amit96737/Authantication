@@ -8,6 +8,9 @@ class ChatMessage(CommonFields):
     message = models.TextField()
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    message_type = models.CharField(max_length=10, default='text', choices=[('text', 'text'), ('audio', 'audio')])
+    audio_file = models.FileField(upload_to='chat/', blank=True, null=True)
+
     class Meta:
         ordering = ['timestamp']
 

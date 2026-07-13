@@ -24,18 +24,24 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
-        message = text_data_json['message']
-        sender = self.scope['user']
+        message_type = text_data_json.get('message_type', 'text')
+        message = text_data_json.get('message', '')
 
+        file_url = text_data_json.get('file_url', text_data_json.get('audio_url', ''))
+
+        sender = self.scope['user']
         current_time = datetime.now().strftime('%I:%M %p')
 
-        await self.save_message(sender, self.room_name, message)
+        if message_type == 'text':
+            await self.save_message(sender, self.room_name, message, 'text')
 
         await self.channel_layer.group_send(
             self.room_group_name,
             {
                 'type': 'chat_message',
+                'message_type': message_type,
                 'message': message,
+                'file_url': file_url,
                 'username': sender.username,
                 'first_name': sender.first_name if sender.first_name else sender.username,
                 'timestamp': current_time
@@ -46,7 +52,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             room_parts = self.room_name.split('_')
             if len(room_parts) >= 3:
                 receiver_id = room_parts[2] if room_parts[1] == str(sender.id) else room_parts[1]
-
                 channel_layer = get_channel_layer()
                 sender_name = sender.first_name if sender.first_name else sender.username
 
@@ -56,7 +61,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
                         "type": "send_notification",
                         "notification": {
                             "title": f"New Message from {sender_name}",
-                            "body": message[:30] + "..." if len(message) > 30 else message,
+                            "body": f"Sent an attachment: {message}" if message_type != 'text' else message,
                             "sender_id": str(sender.id)
                         }
                     }
@@ -64,15 +69,17 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
+            'message_type': event['message_type'],
             'message': event['message'],
+            'file_url': event.get('file_url', ''),
             'username': event['username'],
             'first_name': event['first_name'],
             'timestamp': event['timestamp']
         }))
 
     @database_sync_to_async
-    def save_message(self, user, room_name, message):
-        return ChatMessage.objects.create(user=user, room_name=room_name, message=message)
+    def save_message(self, user, room_name, message, msg_type):
+        return ChatMessage.objects.create(user=user, room_name=room_name, message=message, message_type=msg_type)
 
 
 class NotificationConsumer(AsyncWebsocketConsumer):
