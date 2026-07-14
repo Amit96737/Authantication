@@ -50,6 +50,7 @@ CUSTOM_APPS = [
     'payments',
     'paypal_payments',
     'chat',
+    'sub_admin'
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_PACKAGES + CUSTOM_APPS

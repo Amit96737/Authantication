@@ -17,6 +17,7 @@ urlpatterns = [
     path("paypal_payments/", include("paypal_payments.core.urls")),
     path("notification/", include("notification.core.urls")),
     path("chat/", include("chat.urls")),
+    path("sub_admin/", include("sub_admin.core.urls")),
 ]
 
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

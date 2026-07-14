@@ -233,6 +233,9 @@ def user_login(request):
 
                 login(request, user)
 
+                if user.is_sub_admin == True and user.has_subscription == True:
+                    return redirect('sub_admin_dashboard')
+
                 if user.has_subscription == True:
                     return redirect('dashboard')
 

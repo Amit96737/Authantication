@@ -1,0 +1,175 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Sub Admin Dashboard{% endblock %}
+
+{% block content %}
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        overflow: hidden;
+    }
+
+    .sidebar {
+        background-color: #111b21;
+        height: calc(100vh - 70px) !important;
+        overflow-y: auto;
+        border-right: 1px solid #202c33;
+        z-index: 1000;
+    }
+
+    .main-content-scroll {
+        margin-left: 240px;
+        margin-top: 70px;
+        height: calc(100vh - 70px);
+        overflow-y: auto;
+    }
+
+    .sidebar-link {
+        color: #cfd8dc;
+        text-decoration: none;
+        display: block;
+        padding: 10px 15px;
+        border-radius: 8px;
+        transition: all 0.25s ease;
+        font-weight: 500;
+    }
+
+    .sidebar-link:hover {
+        background-color: #cfd8dc;
+        color: #111b21 !important;
+    }
+
+    .sidebar-link.active {
+        background-color: #ffffff;
+        color: #111b21 !important;
+        font-weight: 600;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-card {
+        border: none;
+        border-radius: 12px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .custom-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08) !important;
+    }
+</style>
+
+<div class="d-flex">
+
+    <div class="bg-dark text-white position-fixed sidebar d-flex flex-column justify-content-between"
+     style="width:240px; left:0; top:70px; height:calc(100vh - 70px);">
+
+        <div class="p-3">
+            <h5>Dashboard</h5>
+            <br>
+
+            <ul class="list-unstyled">
+                <li class="mb-2"><a href="#" class="sidebar-link">User Management</a></li>
+                <li class="mb-2"><a href="#" class="sidebar-link">CRUD Management</a></li>
+                <li class="mb-2"><a href="#" class="sidebar-link">Bank Management</a></li>
+                <li class="mb-2"><a href="#" class="sidebar-link">Stripe Management</a></li>
+                <li class="mb-2"><a href="#" class="sidebar-link">PayPal Management</a></li>
+                <li class="mb-2"><a href="{% url 'user_profile' %}" class="sidebar-link">Settings</a></li>
+            </ul>
+        </div>
+
+        <div class="p-3">
+            <a href="{% url 'user_logout' %}"
+               class="btn btn-outline-light w-100 fw-bold rounded-3">
+                <i class="fa-solid fa-sign-out-alt me-1"></i> Log Out
+            </a>
+        </div>
+
+    </div>
+
+    <div class="flex-grow-1 p-4 bg-light main-content-scroll">
+        <div class="d-flex align-items-center justify-content-between mb-2">
+            <div>
+                <h2 class="fw-bold text-dark mb-1">
+                    {{ request.user.first_name|capfirst }} {{ request.user.last_name|capfirst }}
+                </h2>
+                <p class="text-muted small mb-0">
+                    {{ request.user.email }}
+                </p>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-1">
+
+            <div class="col-md-4">
+                <div class="card custom-card shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <h6 class="text-muted fw-semibold mb-2">Total DevBoard Users</h6>
+                        <h2 class="fw-bold text-dark">{{ total_dev_users }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card custom-card shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <h6 class="text-muted fw-semibold mb-2">Total Students</h6>
+                        <h2 class="fw-bold text-dark">{{ total_students }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card custom-card shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <h6 class="text-muted fw-semibold mb-2">Total Bank Users</h6>
+                        <h2 class="fw-bold text-dark">{{ total_banks_account }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card custom-card shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <h6 class="text-muted fw-semibold mb-2">Total Items</h6>
+                        <h2 class="fw-bold text-dark">{{ total_items }}</h2>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card custom-card shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <h6 class="text-muted fw-semibold mb-2">Total Subscriptions</h6>
+                        <h2 class="fw-bold text-dark">{{ total_subscription }}</h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card custom-card shadow-sm">
+                    <div class="card-body p-4 text-center">
+                        <h6 class="text-muted fw-semibold mb-2">Total Register Bank</h6>
+                        <h2 class="fw-bold text-dark">{{ total_register_bank }}</h2>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+    const links = document.querySelectorAll(".sidebar-link");
+
+    links.forEach(link => {
+        link.addEventListener("click", function () {
+            links.forEach(l => l.classList.remove("active"));
+            this.classList.add("active");
+        });
+    });
+</script>
+
+{% endblock %}
