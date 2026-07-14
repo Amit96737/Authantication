@@ -183,6 +183,7 @@
         <button type="button" class="btn-close btn-close-white" data-bs-transform="scale(0.8)" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
     <br>
+
     <ul class="nav nav-pills nav-justified mb-3" id="chatTabs" role="tablist">
             <li class="nav-item" role="presentation">
                 <button class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm" id="all-tab" data-bs-toggle="tab" data-bs-target="#all-panel" type="button" role="tab" aria-controls="all-panel" aria-selected="false">
@@ -244,7 +245,7 @@
                                     {% endif %}
                                 </div>
                             </div>
-                            <a href="{% url 'chat_room' room_name=user.id %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm blink-green-btn">
+                            <a href="{% url 'chat_room' room_name=user.id %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">
                         Chat
                     </a>
                         </a>

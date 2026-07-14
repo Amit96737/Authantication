@@ -4,12 +4,17 @@
 
 {% block content %}
 <div class="container py-5">
-
     <div class="mb-4">
+    {% if request.user.is_sub_admin %}
+        <a href="{% url 'sub_admin_dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back
+        </a>
+    {% else %}
         <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
             ← Back to Dashboard
         </a>
-    </div>
+    {% endif %}
+</div>
 
     <div class="row g-4 justify-content-center">
 
@@ -83,6 +88,11 @@
                         <div class="fw-semibold">
                             {{ user.biograph|default:"Not added" }}
                         </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">Sub Admin</small>
+                        <div class="fw-semibold">{{ user.is_sub_admin }}</div>
                     </div>
 
                     <button class="btn btn-outline-dark rounded-3 px-3"
