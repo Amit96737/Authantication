@@ -1,0 +1,61 @@
+<div class="bg-dark text-white position-fixed sidebar d-flex flex-column justify-content-between"
+     style="width:240px; left:0; top:70px; height:calc(100vh - 70px);">
+
+    <div class="p-3">
+        <h5>Dashboard</h5>
+        <br>
+
+        <ul class="list-unstyled">
+            <li>
+                <a href="#"
+                   class="sidebar-link {% if request.resolver_match.url_name == '' %}active{% endif %}">
+                    User's Requests
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'user_management' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'user_management' %}active{% endif %}">
+                    User Management
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'crud_management' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'crud_management' %}active{% endif %}">
+                    CRUD Management
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'bank_management' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'bank_management' %}active{% endif %}">
+                    Bank Management
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'stripe_management' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'stripe_management' %}active{% endif %}">
+                    Stripe Management
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'paypal_management' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'paypal_management' %}active{% endif %}">
+                    PayPal Management
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'sub_admin_settings' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'sub_admin_settings' %}active{% endif %}">
+                   Settings
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="p-3">
+        <a href="{% url 'user_logout' %}"
+           class="btn btn-outline-light w-100 fw-bold rounded-3">
+            <i class="fa-solid fa-sign-out-alt me-1"></i> Log Out
+        </a>
+    </div>
+
+</div>

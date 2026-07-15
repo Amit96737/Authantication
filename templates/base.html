@@ -146,7 +146,9 @@
             </a>
             {% endif %}
 
-            <a href="{% url 'user_profile' %}" class="profile-circle-btn shadow-sm" title="View Profile">
+
+            <a href="{% if request.user.is_sub_admin %}{% url 'sub_admin_settings' %}{% else %}{% url 'user_profile' %}{% endif %}"
+               class="profile-circle-btn shadow-sm" title="View Profile">
 
                 {% if user.profile_pic %}
                     <img src="{{ user.profile_pic.url }}"
@@ -164,9 +166,17 @@
     </div>
 </div>
 
-<div class="container mt-4">
-    {% block content %}
-    {% endblock %}
+<div class="d-flex">
+
+    {% if request.user.is_sub_admin %}
+        {% include 'sidebar.html' %}
+    {% endif %}
+
+    <div class="flex-grow-1 p-4" style="{% if request.user.is_sub_admin %}margin-left:240px;{% endif %}">
+        {% block content %}
+        {% endblock %}
+    </div>
+
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
