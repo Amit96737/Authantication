@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="mb-4">
+        <a href="{% url 'user_management' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back
+        </a>
+    </div>
+
+    <div class="row g-4 justify-content-center">
+
+        <div class="col-md-4 col-lg-3">
+            <div class="card border-0 shadow-sm rounded-4 text-center p-4">
+
+                <div class="mb-3">
+                    {% if selected_user.profile_pic %}
+                        <img src="{{ selected_user.profile_pic.url }}"
+                             class="rounded-circle shadow"
+                             style="width:120px; height:120px; object-fit:cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-dark text-white d-flex align-items-center justify-content-center mx-auto"
+                             style="width:120px; height:120px; font-size:40px;">
+                            {{ selected_user.first_name|slice:":1"|upper }}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <h5 class="fw-bold mb-1">{{ selected_user.first_name }} {{ selected_user.last_name }}</h5>
+                <p class="text-muted small mb-0">{{ selected_user.email }}</p>
+
+            </div>
+        </div>
+
+        <div class="col-md-8 col-lg-7">
+            <div class="card border-0 shadow-sm rounded-4 p-4">
+
+                <h3 class="fw-bold mb-4">{{ selected_user.first_name|capfirst}} {{ selected_user.last_name|capfirst}} Profile</h3>
+
+                <div class="row g-3">
+
+                    <div class="col-md-6">
+                        <small class="text-muted">Account Status</small>
+
+                        {% if selected_user.email_verified %}
+                            <div class="fw-semibold text-success">Verified</div>
+                        {% else %}
+                            <div class="fw-semibold text-warning">Pending</div>
+                        {% endif %}
+
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">First Name</small>
+                        <div class="fw-semibold">{{ selected_user.first_name }}</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">Last Name</small>
+                        <div class="fw-semibold">{{ selected_user.last_name }}</div>
+                    </div>
+
+                    <div class="col-12">
+                        <small class="text-muted">Email</small>
+                        <div class="fw-semibold">{{ selected_user.email }}</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">Phone</small>
+                        <div class="fw-semibold">{{ selected_user.phone_number }}</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">Gender</small>
+                        <div class="fw-semibold">{{ selected_user.gender }}</div>
+                    </div>
+
+                    <div class="col-12">
+                        <small class="text-muted">Bio</small>
+                        <div class="fw-semibold">
+                            {{ selected_user.biograph|default:"Not added" }}
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <small class="text-muted">Sub Admin</small>
+                        <div class="fw-semibold">{{ selected_user.is_sub_admin }}</div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
