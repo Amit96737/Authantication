@@ -7,9 +7,9 @@
 
         <ul class="list-unstyled">
             <li>
-                <a href="#"
-                   class="sidebar-link {% if request.resolver_match.url_name == '' %}active{% endif %}">
-                    User's Requests
+                <a href="{% url 'users_verification' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'users_verification' %}active{% endif %}">
+                    User's Verification
                 </a>
             </li>
             <li>
@@ -40,6 +40,12 @@
                 <a href="{% url 'paypal_management' %}"
                    class="sidebar-link {% if request.resolver_match.url_name == 'paypal_management' %}active{% endif %}">
                     PayPal Management
+                </a>
+            </li>
+            <li>
+                <a href="{% url 'sub_admin_user' %}"
+                   class="sidebar-link {% if request.resolver_match.url_name == 'sub_admin_user' %}active{% endif %}">
+                    Sub-Admin Management
                 </a>
             </li>
             <li>

@@ -1,12 +1,18 @@
 from django.urls import path
 from . import views
+from . import services
 
 urlpatterns = [
+    path('user-verify/', views.users_verification, name="users_verification"),
+    path('approve-user/<str:id>/', views.approve_user, name='approve_user'),
+    path('reject-user/<str:id>/', views.reject_user, name='reject_user'),
+
     path('dashboard/', views.sub_admin_dashboard, name="sub_admin_dashboard"),
 
     # User Management Section
     path('user-management/', views.user_management, name="user_management"),
     path('user-details/<str:id>/', views.user_detail, name="user_detail"),
+    path('download-csv/', services.download_users_csv, name='download_csv'),
     # path('user-update/<str:id>/', views.update_user, name="update_user"),
 
     # Crud Management Section
@@ -18,7 +24,13 @@ urlpatterns = [
 
     # Crud Management Section
     path('stripe-management/', views.stripe_management, name="stripe_management"),
+    path('download-item-csv/', services.download_items_csv, name='download_items_csv'),
 
     path('paypal-management/', views.paypal_management, name="paypal_management"),
+
+    # Sub-Admin Section
+    path('sub-admin-user/', views.sub_admin_user, name='sub_admin_user'),
+    path('toggle-sub-admin/<str:id>/', views.toggle_sub_admin, name='toggle_sub_admin'),
+
     path('settings/', views.sub_admin_settings, name="sub_admin_settings"),
 ]

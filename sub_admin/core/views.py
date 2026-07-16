@@ -8,6 +8,88 @@ from bank.models.bank import BankName
 from payments.models.product import Item
 from django.db.models import Q
 from django.core.paginator import Paginator
+from django.contrib import messages
+from django.http import JsonResponse
+
+
+def approve_user(request, id):
+    if request.method == "POST":
+        user = User.objects.get(id=id)
+        user.status = 'Approved'
+        user.is_verified = True
+        user.save()
+        messages.success(request, "Request accepted successfully")
+    return redirect('users_verification')
+
+
+def reject_user(request, id):
+    if request.method == "POST":
+        user = User.objects.get(id=id)
+
+        reason = request.POST.get("reason")
+
+        user.status = 'Rejected'
+        user.reject_reason = reason
+        user.save()
+        user.is_verified = False
+        user.save()
+        messages.error(request, "Request rejected successfully")
+    return redirect('users_verification')
+
+
+def sub_admin_user(request):
+    query = request.GET.get('q')
+    sub_admin = User.objects.filter(is_sub_admin=True).exclude(id=request.user.id).order_by('-id')
+
+
+    if query:
+        sub_admin = sub_admin.filter(
+            Q(email__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(gender__icontains=query) |
+            Q(phone_number__icontains=query)
+        )
+
+    paginator = Paginator(sub_admin, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'sub_admin/sub_admin.html', locals())
+
+
+def toggle_sub_admin(request, id):
+    if request.method == "POST":
+        user = get_object_or_404(User, id=id)
+
+        user.is_sub_admin = not user.is_sub_admin
+        user.save()
+
+        return JsonResponse({
+            "status": "success",
+            "is_sub_admin": user.is_sub_admin
+        })
+
+
+@sub_admin_required
+def users_verification(request):
+    query = request.GET.get('q')
+    users = User.objects.filter(status='Pending').exclude(id=request.user.id).order_by('-id')
+
+    if query:
+        users = users.filter(
+            Q(email__icontains=query) |
+            Q(first_name__icontains=query) |
+            Q(last_name__icontains=query) |
+            Q(gender__icontains=query) |
+            Q(phone_number__icontains=query)
+        )
+
+    paginator = Paginator(users, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'sub_admin/users_verification.html', {'page_obj': page_obj,})
 
 
 @login_required(login_url='user_login')

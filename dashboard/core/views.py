@@ -51,6 +51,7 @@ def user_sign_up(request):
                 email=data['email'],
                 phone_number=data['phone_number'],
                 profile_pic=data['profile_pic'],
+                status='Pending'
             )
             user.set_password(data['password'])
             user.save()
@@ -155,7 +156,7 @@ def verify_sms_otp(request):
                 cache.delete(cache_key)
                 user.sms_verified = True
                 user.save()
-                messages.success(request, "Phone number verified successfully! You can now log in.")
+                messages.success(request, "Phone number verified successfully! Please wait approved account by sub admin after then you can login now")
                 return redirect('user_login')
             else:
                 messages.error(request, "Invalid or expired SMS OTP code. Please try again.")
@@ -230,6 +231,10 @@ def user_login(request):
                     )
                     messages.warning(request, "Phone not verified. OTP sent.")
                     return redirect(f"/verify-sms-otp/?email={user.email}&phone={user.phone_number}")
+
+                if user.status != 'Approved':
+                    messages.error(request, "Your account is not approved yet")
+                    return redirect('user_login')
 
                 login(request, user)
 

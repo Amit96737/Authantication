@@ -12,6 +12,12 @@ class User(AbstractUser):
     ('Others', 'Others'),
     )
 
+    status_choices = (
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    )
+
     id = models.CharField(primary_key=True, default=uuid.uuid4, unique=True, editable=False, max_length=255)
     first_name = models.CharField(max_length=255, null=True, blank=True)
     last_name = models.CharField(max_length=255, null=True, blank=True)
@@ -27,6 +33,11 @@ class User(AbstractUser):
     has_subscription = models.BooleanField(default=False)
     is_online = models.BooleanField(default=False)
     is_sub_admin = models.BooleanField(default=False)
+
+    status = models.CharField(max_length=120, choices=status_choices, default='Pending')
+    is_verified = models.BooleanField(default=False)
+
+    reject_reason = models.TextField(null=True, blank=True)
 
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['first_name', 'last_name', 'phone_number']
