@@ -1,5 +1,7 @@
+from twilio.rest.ip_messaging.v1.service import user
+
 from django.shortcuts import render
-from bank.core.forms import BankAccountForm, BankNameForm
+from bank.core.forms import BankAccountForm, BankNameForm, IdentificationForm
 from bank.models.account import BankAccount
 from django.contrib import messages
 from django.shortcuts import redirect
@@ -9,6 +11,8 @@ from bank.core.forms import DepositForm
 from bank.core.services import send_deposit_email, send_withdraw_email, send_transfer_email
 from decimal import Decimal
 from bank.models.transaction import Transaction
+from bank.models.identity_verification import Identification
+
 
 def bank_about_page(request):
     return render(
@@ -31,6 +35,8 @@ def create_account(request):
         if form.is_valid():
             account=form.save()
 
+            request.session['bank_account_id'] = str(account.id)
+
             try:
                 send_account_email(account)
 
@@ -38,8 +44,8 @@ def create_account(request):
                 print(f"Email error: {e}")
                 messages.warning(request, "Account created, but we faced an issue sending the verification email.")
 
-            messages.success(request, "Account created successfully. First verify your account check email")
-            return redirect('create_account')
+            messages.success(request, "Account created successfully. First Upload document details")
+            return redirect('identity_verification')
     else:
         form = BankAccountForm()
 
@@ -328,3 +334,38 @@ def transaction_history(request):
         "account_number": account_number,
         "ifsc_code": ifsc_code,
     })
+
+def identity_verification(request):
+    if request.method == "POST":
+        form = IdentificationForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            data = form.cleaned_data
+
+            bank_user_id = request.session.get('bank_account_id')
+
+            if not bank_user_id:
+                messages.error(request, "Session expired")
+                return redirect("create_account")
+
+            bank_user = BankAccount.objects.get(id=bank_user_id)
+
+            user = Identification.objects.create(
+                customer=bank_user,
+                middle_mark_sheet=data['middle_mark_sheet'],
+                secondary_mark_sheet=data['secondary_mark_sheet'],
+                aadhar_image=data['aadhar_image'],
+                pan_card=data['pan_card'],
+                verification_status=False
+            )
+            details=user.save()
+
+        # send_account_email(details)
+
+            messages.success(request, "Please wait document under progress when document verify successfully notify you")
+            return redirect("identity_verification")
+
+    else:
+        form = IdentificationForm()
+
+    return render(request, "bank/identity_verification.html", locals())

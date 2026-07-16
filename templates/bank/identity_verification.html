@@ -1,0 +1,87 @@
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Identity Verification</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/css/intlTelInput.css"/>
+
+<script src="https://cdn.jsdelivr.net/npm/intl-tel-input@18.1.1/build/js/intlTelInput.min.js"></script>
+
+
+
+</head>
+
+<body>
+
+<div class="split-container">
+
+<div class="split-form-container">
+    <div class="signup-card">
+
+        <div class="logo-container" style="display: flex; justify-content: center; align-items: center; margin-bottom: 20px;">
+                    <div class="logo-circle" style="width: 150px; height: 150px; bg-color: #875a7b; border-radius: 50%; overflow: hidden; display: flex; align-items: center; justify-content: center; background-color: #8a5a7b;">
+                        <img src="{% static 'images/odoo_logo.jfif' %}" alt="logo" style="width: 85%; height: auto; object-fit: contain;">
+                    </div>
+        </div>
+
+        <h3 class="text-center mb-4 fw-bold">Identity Verification</h3>
+
+            {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} p-2" style="font-size: 14px;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+            {% endif %}
+
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            {% if form.errors %}
+            <div class="alert alert-danger">
+                Please enter correct details
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label>Middle class mark sheet</label>
+                {{ form.middle_mark_sheet }}
+                <div id="file-error" class="text-danger mt-1"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Secondary class mark sheet</label>
+                {{ form.secondary_mark_sheet }}
+                <div id="file-error" class="text-danger mt-1"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Aadhar image</label>
+                {{ form.aadhar_image }}
+                <div id="file-error" class="text-danger mt-1"></div>
+            </div>
+
+            <div class="form-group">
+                <label>Pan card</label>
+                {{ form.pan_card }}
+                <div id="file-error" class="text-danger mt-1"></div>
+            </div>
+
+            <button type="submit" class="signup-btn">Submit</button>
+
+        </form>
+
+    </div>
+</div>
+
+</div>
+
+</body>
+</html>

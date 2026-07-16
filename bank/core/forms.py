@@ -1,6 +1,9 @@
 from django import forms
 from bank.models.bank import BankName
 from bank.models.account import BankAccount
+from django.core.validators import FileExtensionValidator
+from bank.models.identity_verification import Identification
+
 
 class BankAccountForm(forms.ModelForm):
     class Meta:
@@ -90,3 +93,20 @@ class DepositForm(forms.Form):
 
         return cleaned_data
 
+class IdentificationForm(forms.Form):
+    middle_mark_sheet = forms.ImageField(
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg'])],
+        widget=forms.FileInput(attrs={'class': 'form-control'})
+    )
+    secondary_mark_sheet = forms.ImageField(
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg'])],
+        widget=forms.FileInput(attrs={'class': 'form-control'})
+    )
+    aadhar_image = forms.ImageField(
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg'])],
+        widget=forms.FileInput(attrs={'class': 'form-control'})
+    )
+    pan_card = forms.ImageField(
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg'])],
+        widget=forms.FileInput(attrs={'class': 'form-control'})
+    )

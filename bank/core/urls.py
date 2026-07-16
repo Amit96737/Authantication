@@ -17,5 +17,7 @@ urlpatterns = [
     path("specific-account/", views.specific_account, name="specific_account"),
     path("transfer-amount/", views.transfer_amount, name="transfer_amount"),
     path("transaction-history/", views.transaction_history, name="transaction_history"),
+
+    path("identity-verification/", views.identity_verification, name="identity_verification"),
 ]
 
