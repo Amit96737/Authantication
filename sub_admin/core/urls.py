@@ -21,6 +21,9 @@ urlpatterns = [
 
     # Crud Management Section
     path('bank-management/', views.bank_management, name="bank_management"),
+    path('identity-verification/', views.identity_verification, name="identity_verification"),
+    path('approve-verification/<str:id>/', views.approve_verification, name='approve_verification'),
+    path('reject-verification/<str:id>/', views.reject_verification, name='reject_verification'),
 
     # Crud Management Section
     path('stripe-management/', views.stripe_management, name="stripe_management"),
