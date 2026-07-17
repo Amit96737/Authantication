@@ -95,18 +95,18 @@ class DepositForm(forms.Form):
 
 class IdentificationForm(forms.Form):
     middle_mark_sheet = forms.ImageField(
-        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg'])],
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg', 'jfif'])],
         widget=forms.FileInput(attrs={'class': 'form-control'})
     )
     secondary_mark_sheet = forms.ImageField(
-        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg'])],
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg', 'jfif'])],
         widget=forms.FileInput(attrs={'class': 'form-control'})
     )
     aadhar_image = forms.ImageField(
-        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg'])],
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg', 'jfif'])],
         widget=forms.FileInput(attrs={'class': 'form-control'})
     )
     pan_card = forms.ImageField(
-        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg'])],
+        validators=[FileExtensionValidator(allowed_extensions=['jpg', 'jpeg', 'png', 'heic', 'svg', 'jfif'])],
         widget=forms.FileInput(attrs={'class': 'form-control'})
     )

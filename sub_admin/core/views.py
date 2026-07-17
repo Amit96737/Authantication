@@ -10,6 +10,8 @@ from django.db.models import Q
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.http import JsonResponse
+from bank.models.identity_verification import Identification
+from bank.core.services import send_accept_verification_email, send_reject_verification_email
 
 
 def approve_user(request, id):
@@ -200,7 +202,7 @@ def crud_management(request):
 @sub_admin_required
 def bank_management(request):
     query = request.GET.get('q')
-    bank_record = BankAccount.objects.all().order_by('-id')
+    bank_record = BankAccount.objects.filter(account_status=True).exclude(id=request.user.id).order_by('-id')
 
 
     if query:
@@ -228,6 +230,65 @@ def bank_management(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'sub_admin/bank_management.html', locals())
+
+
+def identity_verification(request):
+    query = request.GET.get('q')
+    document = Identification.objects.filter(verification_status='Pending').exclude(id=request.user.id).order_by('-id')
+
+    if query:
+        document = document.filter(
+            Q(customer__customer_name__icontains=query) |
+            Q(customer__email__icontains=query) |
+            Q(customer__account_number__icontains=query)
+        )
+
+    paginator = Paginator(document, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'sub_admin/identity_verification.html', {'page_obj': page_obj,})
+
+
+def approve_verification(request, id):
+    if request.method == "POST":
+        user = Identification.objects.get(id=id)
+        user.verification_status = 'Approved'
+        user.customer.account_status = True
+        user.customer.save()
+        user.save()
+
+        try:
+            send_accept_verification_email(user.customer)
+        except Exception as e:
+            print(f"Email error: {e}")
+            messages.warning(request, "Verification approve, but we faced an issue sending the verification email.")
+
+        messages.success(request, "Verification approve successfully")
+    return redirect('identity_verification')
+
+
+def reject_verification(request, id):
+    if request.method == "POST":
+        user = Identification.objects.get(id=id)
+
+        reason = request.POST.get("reason")
+
+        user.verification_status = 'Rejected'
+        user.reject_reason = reason
+
+        user.customer.account_status = False
+        user.customer.save()
+        user.save()
+
+        try:
+            send_reject_verification_email(user.customer, reason)
+        except Exception as e:
+            print("Email error:", e)
+            messages.warning(request, "Verification reject, but we faced an issue sending the verification email.")
+
+        messages.error(request, "Verification rejected successfully")
+    return redirect('identity_verification')
 
 
 @sub_admin_required
