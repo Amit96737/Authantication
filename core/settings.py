@@ -13,7 +13,7 @@ DEBUG = True
 # DEBUG = True # never deploy a site into production with debug turned on
 
 # ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'c617-14-97-132-58.ngrok-free.app', '192.168.11.146']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'c617-14-97-132-58.ngrok-free.app', '192.168.11.146',]
 CSRF_TRUSTED_ORIGINS = ['https://c617-14-97-132-58.ngrok-free.app']
 
 DJANGO_APPS = [
@@ -63,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'core.middleware.LoginRequiredMiddleware',
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -78,6 +79,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'bank.core.views.context_process',
             ],
         },
     },
