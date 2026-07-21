@@ -16,6 +16,21 @@
         <h1 class="fw-bold text-dark m-0 display-6">Subscription Plans</h1>
     </div>
 
+    <div class="mb-4 d-flex justify-content-end">
+        <a href="{% url 'activate_free_plan' %}" class="btn btn-dark rounded-3 px-3">
+            Try it free
+        </a>
+    </div>
+
+    {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} p-2" style="font-size: 14px;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+    <br>
     <div class="row g-4 justify-content-center align-items-stretch">
         {% for plan in plans %}
         <div class="col-12 col-md-6 col-lg-4 d-flex">

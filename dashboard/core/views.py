@@ -16,19 +16,73 @@ from dashboard.core.services import generate_unique_username
 
 
 def plan_page_onboard(request):
-    plans = SubscriptionPlan.objects.all()
+    plans = SubscriptionPlan.objects.exclude(validity='Free').order_by('price')
     context = {
             'plans': plans,
         }
     return render(request, 'dashboard/on_board.html', context)
 
 
+@login_required
+def activate_free_plan(request):
+    user = request.user
+
+    from datetime import timedelta
+    from django.utils import timezone
+
+    existing_plan = SubscriptionPlan.objects.filter(user=user).first()
+
+
+    if existing_plan and existing_plan.validity != "Free":
+        messages.error(request, "You already have an active premium plan.")
+        return redirect('plan_page_onboard')
+
+
+    if existing_plan and existing_plan.validity == "Free":
+        messages.warning(request, "Free plan already activated. Please go another plan.")
+        return redirect('plan_page_onboard')
+
+
+    SubscriptionPlan.objects.create(
+        user=user,
+        title="Free Plan",
+        description="1 month free trial",
+        price=0,
+        validity="Free",
+        expiry_date=timezone.now() + timedelta(days=30)
+    )
+
+    user.has_subscription = True
+    user.save()
+
+    return redirect('dashboard')
+
+
 @login_required(login_url='user_login')
 def dashboard(request):
+    from django.utils import timezone
     current_user = request.user
     online_users = User.objects.filter(is_online=True).exclude(id=request.user.id)
     all_users = User.objects.all().exclude(id=current_user.id)
-    return render(request, 'dashboard/dashboard.html', {'active_users': online_users, 'all_users': all_users,})
+
+    user_plan = SubscriptionPlan.objects.filter(user=current_user).first()
+    show_warning = False
+
+    if user_plan and user_plan.expiry_date:
+
+        remaining_days = (user_plan.expiry_date - timezone.now()).days
+        # print("remaining_days", remaining_days)
+
+        if remaining_days <= 3 and remaining_days > 0:
+
+            show_warning = True
+
+    return render(request, 'dashboard/dashboard.html', {
+        'active_users': online_users,
+        'all_users': all_users,
+        'plan': user_plan,
+        'show_warning': show_warning
+    })
 
 
 def user_sign_up(request):

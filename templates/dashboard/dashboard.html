@@ -2,6 +2,19 @@
 {% load static %} {% block title %}Dashboard{% endblock %}
 
 {% block content %}
+
+{% if show_warning %}
+<div class="alert alert-warning text-center">
+    ⚠️ Your free plan will expire in 3 days. Please upgrade to continue using all features.
+</div>
+{% endif %}
+
+<div class="mb-4 d-flex justify-content-end">
+    <a href="{% url 'plan_page_onboard'%}" class="btn btn-dark rounded-3 px-3">
+        Upgrade Plan
+    </a>
+</div>
+
 <div class="container py-4">
 
     <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-5 flex-wrap gap-3">
@@ -17,13 +30,15 @@
 <!--                <i class="fa-solid fa-comments me-2"></i>Live Chat Users-->
 <!--            </button>-->
 
-            <button class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm blink-green-btn"
-                    type="button"
-                    data-bs-toggle="offcanvas"
-                    data-bs-target="#liveChatSidebar"
-                    aria-controls="liveChatSidebar">
-                <i class="fa-solid fa-comments me-2"></i>Live Chat Users
-            </button>
+            {% if plan and plan.validity != "Free" %}
+                <button class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm blink-green-btn"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#liveChatSidebar"
+                        aria-controls="liveChatSidebar">
+                    <i class="fa-solid fa-comments me-2"></i>Live Chat Users
+                </button>
+            {% endif %}
 
         </div>
 
@@ -39,140 +54,194 @@
 
     <div class="row g-4 justify-content-center" id="moduleCardsContainer">
 
-        <div class="col-12 col-sm-6 col-md-3 module-card-item">
-            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
-                <div class="card-img-wrapper">
-                    <img src="{% static 'images/news_logo.jfif' %}" class="card-img-top custom-card-img" alt="News Image">
-                </div>
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">News</span>
-                        <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">Live News</h4>
-                        <p class="card-text text-muted small mb-4 card-desc-text">Stream real-time global breaking news, tech, and live stories instantly from trusted third-party APIs.</p>
+        {% if plan and plan.validity == "Free" %}
+
+            <div class="col-12 col-sm-6 col-md-3 module-card-item">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                    <div class="card-img-wrapper">
+                        <img src="{% static 'images/crud_logo.png' %}" class="card-img-top custom-card-img" alt="CRUD Image">
                     </div>
-                    <a href="{% url 'news_details' %}" id="newsModuleBtn" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm" style="min-height: 38px;">
-                        <span id="btnText">Open Module</span>
-                        <div id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2 text-uppercase font-monospace">Database</span>
+                            <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">CRUD Operations</h4>
+                            <p class="card-text text-muted small mb-4 card-desc-text">Create, Read, Update, and Delete standard dynamic records interacting directly with database tables.</p>
                         </div>
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-12 col-sm-6 col-md-3 module-card-item">
-            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
-                <div class="card-img-wrapper">
-                    <img src="{% static 'images/crud_logo.png' %}" class="card-img-top custom-card-img" alt="CRUD Image">
-                </div>
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">Database</span>
-                        <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">CRUD Operations</h4>
-                        <p class="card-text text-muted small mb-4 card-desc-text">Create, Read, Update, and Delete standard dynamic records interacting directly with database tables.</p>
+                        <a href="{% url 'create_student' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
                     </div>
-                    <a href="{% url 'create_student' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
                 </div>
             </div>
-        </div>
 
-        <div class="col-12 col-sm-6 col-md-3 module-card-item">
-            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
-                <div class="card-img-wrapper">
-                    <img src="{% static 'images/bank_logo.jfif' %}" class="card-img-top custom-card-img" alt="Banking Image">
-                </div>
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">Bank</span>
-                        <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">Bank Management</h4>
-                        <p class="card-text text-muted small mb-4 card-desc-text">Secure interface to manage customer accounts, ledger history logs, and mock transactional operations.</p>
+            <div class="col-12 col-sm-6 col-md-3 module-card-item">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                    <div class="card-img-wrapper">
+                        <img src="{% static 'images/bank_logo.jfif' %}" class="card-img-top custom-card-img" alt="Banking Image">
                     </div>
-                    <a href="{% url 'bank_dashboard' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2 text-uppercase font-monospace">Bank</span>
+                            <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">Bank Management</h4>
+                            <p class="card-text text-muted small mb-4 card-desc-text">Secure interface to manage customer accounts, ledger history logs, and mock transactional operations.</p>
+                        </div>
+                        <a href="{% url 'bank_dashboard' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-12 col-sm-6 col-md-3 module-card-item">
-            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
-                <div class="card-img-wrapper">
-                   <img src="{% static 'images/ai_logo.jfif' %}" class="card-img-top custom-card-img" alt="AI Image">
-                </div>
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">AI</span>
-                        <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">AI Assistant</h4>
-                        <p class="card-text text-muted small mb-4 card-desc-text">Integrate Large Language Models to automate text generation, smart insights, and custom AI responses.</p>
+            <div class="col-12 col-sm-6 col-md-3 module-card-item">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                    <div class="card-img-wrapper">
+                       <img src="{% static 'images/ml_logo.jfif' %}" class="card-img-top custom-card-img" alt="ML Image">
                     </div>
-                    <a href="{% url 'chat-boat-home' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2 text-uppercase font-monospace">Machine Learning</span>
+                            <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">ML</h4>
+                            <p class="card-text text-muted small mb-4 card-desc-text">Simple integration of a machine learning model for predictions and smart automation tasks.</p>
+                        </div>
+                        <a href="{% url 'salary_form' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-12 col-sm-6 col-md-3 module-card-item">
-            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
-                <div class="card-img-wrapper">
-                   <img src="{% static 'images/ml_logo.jfif' %}" class="card-img-top custom-card-img" alt="ML Image">
-                </div>
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">Machine Learning</span>
-                        <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">ML</h4>
-                        <p class="card-text text-muted small mb-4 card-desc-text">Simple integration of a machine learning model for predictions and smart automation tasks.</p>
-                    </div>
-                    <a href="{% url 'salary_form' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
-                </div>
-            </div>
-        </div>
+        {% else %}
 
-        <div class="col-12 col-sm-6 col-md-3 module-card-item">
-            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
-                <div class="card-img-wrapper">
-                   <img src="{% static 'images/stripe_logo.png' %}" class="card-img-top custom-card-img" alt="Stripe Image">
-                </div>
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">Payment System</span>
-                        <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">Stripe Integrate</h4>
-                        <p class="card-text text-muted small mb-4 card-desc-text">This module allows users to perform secure online payments using the Stripe payment gateway.</p>
+            <div class="col-12 col-sm-6 col-md-3 module-card-item">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                    <div class="card-img-wrapper">
+                        <img src="{% static 'images/crud_logo.png' %}" class="card-img-top custom-card-img" alt="CRUD Image">
                     </div>
-                    <a href="{% url 'item_detail' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2 text-uppercase font-monospace">Database</span>
+                            <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">CRUD Operations</h4>
+                            <p class="card-text text-muted small mb-4 card-desc-text">Create, Read, Update, and Delete standard dynamic records interacting directly with database tables.</p>
+                        </div>
+                        <a href="{% url 'create_student' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-12 col-sm-6 col-md-3 module-card-item">
-            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
-                <div class="card-img-wrapper">
-                   <img src="{% static 'images/paypal_logo.jfif' %}" class="card-img-top custom-card-img" alt="PayPal Image">
-                </div>
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">Payment System</span>
-                        <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">PayPal Integrate</h4>
-                        <p class="card-text text-muted small mb-4 card-desc-text">This module allows users to perform secure online payments using the Paypal payment gateway.</p>
+            <div class="col-12 col-sm-6 col-md-3 module-card-item">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                    <div class="card-img-wrapper">
+                        <img src="{% static 'images/bank_logo.jfif' %}" class="card-img-top custom-card-img" alt="Banking Image">
                     </div>
-                    <a href="{% url 'plan_page' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2 text-uppercase font-monospace">Bank</span>
+                            <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">Bank Management</h4>
+                            <p class="card-text text-muted small mb-4 card-desc-text">Secure interface to manage customer accounts, ledger history logs, and mock transactional operations.</p>
+                        </div>
+                        <a href="{% url 'bank_dashboard' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    </div>
                 </div>
             </div>
-        </div>
 
-        <div class="col-12 col-sm-6 col-md-3 module-card-item">
-            <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
-                <div class="card-img-wrapper" style="display: flex; align-items: center; justify-content: center; padding: 20px;">
-                   <img src="{% static 'images/firebase_logo.png' %}" class="custom-card-img" alt="Firebase Image" style="object-fit: contain; max-height: 100%; width: auto;">
-                </div>
-                <div class="card-body p-4 d-flex flex-column justify-content-between">
-                    <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">Firebase</span>
-                        <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">Firebase Integration</h4>
-                        <p class="card-text text-muted small mb-4 card-desc-text">
-                            This module enables real-time push notifications using Firebase Cloud Messaging (FCM) to keep users updated instantly.
-                        </p>
+            <div class="col-12 col-sm-6 col-md-3 module-card-item">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                    <div class="card-img-wrapper">
+                       <img src="{% static 'images/ml_logo.jfif' %}" class="card-img-top custom-card-img" alt="ML Image">
                     </div>
-                    <a href="{% url 'home' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2 text-uppercase font-monospace">Machine Learning</span>
+                            <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">ML</h4>
+                            <p class="card-text text-muted small mb-4 card-desc-text">Simple integration of a machine learning model for predictions and smart automation tasks.</p>
+                        </div>
+                        <a href="{% url 'salary_form' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    </div>
                 </div>
             </div>
-        </div>
+
+            <div class="col-12 col-sm-6 col-md-3 module-card-item">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                    <div class="card-img-wrapper">
+                        <img src="{% static 'images/news_logo.jfif' %}" class="card-img-top custom-card-img" alt="News Image">
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2 text-uppercase font-monospace">News</span>
+                            <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">Live News</h4>
+                            <p class="card-text text-muted small mb-4 card-desc-text">Stream real-time global breaking news, tech, and live stories instantly from trusted third-party APIs.</p>
+                        </div>
+                        <a href="{% url 'news_details' %}" id="newsModuleBtn" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm" style="min-height: 38px;">
+                            <span id="btnText">Open Module</span>
+                            <div id="btnSpinner" class="spinner-border spinner-border-sm d-none" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3 module-card-item">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                    <div class="card-img-wrapper">
+                       <img src="{% static 'images/ai_logo.jfif' %}" class="card-img-top custom-card-img" alt="AI Image">
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2 text-uppercase font-monospace">AI</span>
+                            <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">AI Assistant</h4>
+                            <p class="card-text text-muted small mb-4 card-desc-text">Integrate Large Language Models to automate text generation, smart insights, and custom AI responses.</p>
+                        </div>
+                        <a href="{% url 'chat-boat-home' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3 module-card-item">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                    <div class="card-img-wrapper">
+                       <img src="{% static 'images/stripe_logo.png' %}" class="card-img-top custom-card-img" alt="Stripe Image">
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2 text-uppercase font-monospace">Payment System</span>
+                            <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">Stripe Integrate</h4>
+                            <p class="card-text text-muted small mb-4 card-desc-text">This module allows users to perform secure online payments using the Stripe payment gateway.</p>
+                        </div>
+                        <a href="{% url 'item_detail' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3 module-card-item">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                    <div class="card-img-wrapper">
+                       <img src="{% static 'images/paypal_logo.jfif' %}" class="card-img-top custom-card-img" alt="PayPal Image">
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2 text-uppercase font-monospace">Payment System</span>
+                            <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">PayPal Integrate</h4>
+                            <p class="card-text text-muted small mb-4 card-desc-text">This module allows users to perform secure online payments using the Paypal payment gateway.</p>
+                        </div>
+                        <a href="{% url 'plan_page' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3 module-card-item">
+                <div class="card h-100 border-0 shadow-sm rounded-3 overflow-hidden custom-hover-card">
+                    <div class="card-img-wrapper" style="display: flex; align-items: center; justify-content: center; padding: 20px;">
+                       <img src="{% static 'images/firebase_logo.png' %}" class="custom-card-img" alt="Firebase Image" style="object-fit: contain; max-height: 100%; width: auto;">
+                    </div>
+                    <div class="card-body p-4 d-flex flex-column justify-content-between">
+                        <div>
+                            <span class="badge bg-dark mb-2 text-uppercase font-monospace">Firebase</span>
+                            <h4 class="fw-bold text-dark mb-3 fs-5 card-title-text">Firebase Integration</h4>
+                            <p class="card-text text-muted small mb-4 card-desc-text">
+                                This module enables real-time push notifications using Firebase Cloud Messaging (FCM) to keep users updated instantly.
+                            </p>
+                        </div>
+                        <a href="{% url 'home' %}" class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">Open Module</a>
+                    </div>
+                </div>
+            </div>
+
+        {% endif %}
 
     </div>
 </div>

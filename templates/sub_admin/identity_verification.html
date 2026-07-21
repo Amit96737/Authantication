@@ -116,51 +116,69 @@
         </div>
 
     <div class="modal fade" id="userModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
 
-            <div class="modal-header">
-                <h5>Identification Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <div class="modal-header">
+                    <h5 class="modal-title">Identification Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="row g-3 text-center">
+
+                        <div class="col-md-6">
+                            <div class="border p-2 rounded">
+                                <b>Middle Mark Sheet</b><br>
+                                <img id="middle_img" class="img-fluid rounded mt-2 zoom-img" style="max-height:120px;">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border p-2 rounded">
+                                <b>Secondary Mark Sheet</b><br>
+                                <img id="secondary_img" class="img-fluid rounded mt-2 zoom-img" style="max-height:120px;">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border p-2 rounded">
+                                <b>Aadhar Card</b><br>
+                                <img id="aadhar_img" class="img-fluid rounded mt-2 zoom-img" style="max-height:120px;">
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="border p-2 rounded">
+                                <b>PAN Card</b><br>
+                                <img id="pan_img" class="img-fluid rounded mt-2 zoom-img" style="max-height:120px;">
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="modal-footer justify-content-end">
+
+                    <form method="POST" id="approveForm" class="me-2">
+                        {% csrf_token %}
+                        <button class="btn btn-success px-4">Accept</button>
+                    </form>
+
+                    <form method="POST" id="rejectForm">
+                        {% csrf_token %}
+                        <button type="button" onclick="openRejectModal()" class="btn btn-danger px-4">
+                            Reject
+                        </button>
+                    </form>
+
+                </div>
+
             </div>
-
-            <div class="modal-body">
-                <p><b>Middle Mark Sheet:</b><br>
-                    <img id="middle_img" width="80" class="rounded zoom-img">
-                </p>
-
-                <p><b>Secondary Mark Sheet:</b><br>
-                    <img id="secondary_img" width="80" class="rounded zoom-img">
-                </p>
-
-                <p><b>Aadhar Image:</b><br>
-                    <img id="aadhar_img" width="80" class="rounded zoom-img">
-                </p>
-
-                <p><b>Pan Card:</b><br>
-                    <img id="pan_img" width="80" class="rounded zoom-img">
-                </p>
-            </div>
-
-            <div class="modal-footer">
-
-                <form method="POST" id="approveForm">
-                    {% csrf_token %}
-                    <button class="btn btn-success">Accept</button>
-                </form>
-
-                <form method="POST" id="rejectForm">
-                    {% csrf_token %}
-                    <button type="button" onclick="openRejectModal()" class="btn btn-danger">
-                        Reject
-                    </button>
-                </form>
-
-            </div>
-
         </div>
     </div>
-</div>
 
     <div id="imgModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:black; z-index:9999;">
         <img id="bigImg" style="display:block; margin:auto; max-width:80%; margin-top:5%;">

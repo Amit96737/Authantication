@@ -11,6 +11,10 @@ from decimal import Decimal
 from bank.models.transaction import Transaction
 from bank.models.identity_verification import Identification
 
+# def context_process(request):
+#     return {
+#         "site_name": "My Dev Board Site"
+#     }
 
 def bank_about_page(request):
     return render(
