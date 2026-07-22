@@ -91,7 +91,13 @@
                                 <img src="{% static 'images/table/edit.png' %}" width="18">
                             </a>
 
-                            <a href="#">
+                            <a href=""
+                               class="delete-btn"
+                               data-id="{{ student.id }}"
+                               data-name="{{ student.first_name }} {{ student.last_name }}"
+                               data-bs-toggle="modal"
+                               data-bs-target="#deleteConfirmModal">
+
                                 <img src="{% static 'images/table/trash.png' %}" width="18">
                             </a>
 
@@ -148,5 +154,51 @@
 </div>
 
 </div>
+
+<div class="modal fade" id="deleteConfirmModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    Are you sure you want to delete
+                    <strong id="deleteUserName"></strong>?
+                </p>
+            </div>
+
+            <div class="modal-footer border-0">
+
+                <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+
+                <form method="POST" id="deleteForm">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        Yes, Delete
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        let userId = this.getAttribute('data-id');
+        let userName = this.getAttribute('data-name');
+
+        document.getElementById('deleteUserName').innerText = userName;
+
+        document.getElementById('deleteForm').action = `/sub_admin/crud-user-delete/${userId}/`;
+    });
+});
+</script>
 
 {% endblock %}

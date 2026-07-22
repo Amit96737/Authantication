@@ -148,23 +148,20 @@ def user_detail(request, id):
     })
 
 
-# @sub_admin_required
-# def update_user(request, id):
-#     user = User.objects.get(id=id)
-#
-#     if request.method == "POST":
-#         user.first_name = request.POST.get('first_name')
-#         user.last_name = request.POST.get('last_name')
-#         user.email = request.POST.get('email')
-#         user.phone_number = request.POST.get('phone_number')
-#         user.gender = request.POST.get('gender')
-#         user.biograph = request.POST.get('biograph')
-#
-#         user.is_sub_admin = True if request.POST.get('is_sub_admin') == 'on' else False
-#
-#         user.save()
-#
-#     return redirect('update_user',id=user.id)
+@sub_admin_required
+def update_user(request, id):
+    pass
+
+
+@sub_admin_required
+def delete_user(request, id):
+    user = get_object_or_404(User, id=id)
+
+    if request.method == "POST":
+        user.delete()
+        return redirect('user_management')
+
+    return redirect('user_management')
 
 
 @sub_admin_required
@@ -198,6 +195,15 @@ def crud_management(request):
     return render(request, 'sub_admin/crud_management.html', locals())
 
 
+@sub_admin_required
+def crud_user_delete(request, id):
+    user = get_object_or_404(Student, id=id)
+
+    if request.method == "POST":
+        user.delete()
+        return redirect('crud_management')
+
+    return redirect('crud_management')
 
 @sub_admin_required
 def bank_management(request):
@@ -292,6 +298,16 @@ def reject_verification(request, id):
 
 
 @sub_admin_required
+def bank_user_delete(request, id):
+    user = get_object_or_404(BankAccount, id=id)
+
+    if request.method == "POST":
+        user.delete()
+        return redirect('bank_management')
+
+    return redirect('bank_management')
+
+@sub_admin_required
 def stripe_management(request):
     query = request.GET.get('q')
     items = Item.objects.all().order_by('-created_at')
@@ -323,6 +339,17 @@ def stripe_management(request):
     page_obj = paginator.get_page(page_number)
 
     return render(request, 'sub_admin/stripe_management.html', locals())
+
+
+@sub_admin_required
+def item_delete(request, id):
+    item = get_object_or_404(Item, id=id)
+
+    if request.method == "POST":
+        item.delete()
+        return redirect('stripe_management')
+
+    return redirect('stripe_management')
 
 
 @sub_admin_required
