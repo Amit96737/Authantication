@@ -13,22 +13,27 @@ urlpatterns = [
     path('user-management/', views.user_management, name="user_management"),
     path('user-details/<str:id>/', views.user_detail, name="user_detail"),
     path('download-csv/', services.download_users_csv, name='download_csv'),
-    # path('user-update/<str:id>/', views.update_user, name="update_user"),
+    path('user-update/<str:id>/', views.update_user, name="update_user"),
+    path('user-delete/<str:id>/', views.delete_user, name="delete_user"),
 
     # Crud Management Section
     path('crud-management/', views.crud_management, name="crud_management"),
     # path('student-details/<str:id>/', views.student_detail, name="student_detail"),
+    path('crud-user-delete/<str:id>/', views.crud_user_delete, name="crud_user_delete"),
 
-    # Crud Management Section
+    # Bank Management Section
     path('bank-management/', views.bank_management, name="bank_management"),
     path('identity-verification/', views.identity_verification, name="identity_verification"),
     path('approve-verification/<str:id>/', views.approve_verification, name='approve_verification'),
     path('reject-verification/<str:id>/', views.reject_verification, name='reject_verification'),
+    path('bank-user-delete/<str:id>/', views.bank_user_delete, name="bank_user_delete"),
 
-    # Crud Management Section
+    # Stripe Management Section
     path('stripe-management/', views.stripe_management, name="stripe_management"),
     path('download-item-csv/', services.download_items_csv, name='download_items_csv'),
+    path('item-delete/<str:id>/', views.item_delete, name="item_delete"),
 
+    # Paypal Management Section
     path('paypal-management/', views.paypal_management, name="paypal_management"),
 
     # Sub-Admin Section
