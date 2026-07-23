@@ -36,13 +36,11 @@
 
             <div class="image-zoom-wrapper d-flex position-relative">
 
-                <!-- LEFT IMAGE -->
                 <div class="image-zoom-container">
                     <img id="mainImage" src="{{ item.image.url }}" class="img-fluid rounded shadow">
                     <div id="zoomLens"></div>
                 </div>
 
-                <!-- RIGHT ZOOM BOX -->
                 <div id="zoomResult"></div>
 
             </div>
@@ -201,7 +199,6 @@
         background-color: #218838;
     }
 
-    /* ZOOM COMPONENT CSS STYLES */
     .image-zoom-wrapper {
         gap: 20px;
         position: relative;
@@ -228,7 +225,7 @@
         background-color: rgba(255, 255, 255, 0.4);
         display: none;
         cursor: crosshair;
-        pointer-events: none; /* Prevents lens flicker */
+        pointer-events: none;
     }
 
     #zoomResult {
@@ -302,14 +299,12 @@
 </div>
 
 <script>
-    // Thumbnail Image Switcher
     document.querySelectorAll('.thumb-img').forEach(img => {
         img.addEventListener('click', function () {
             document.getElementById('mainImage').src = this.src;
         });
     });
 
-    // Checkout Sidebar Functionality
     let qty = 1;
     let price = 0;
 
@@ -365,12 +360,11 @@
         document.getElementById('checkoutSidebar').style.right = "-400px";
     };
 
-    // --- FLIPKART/AMAZON STYLE ZOOM FUNCTIONALITY ---
     const mainImg = document.getElementById("mainImage");
     const lens = document.getElementById("zoomLens");
     const result = document.getElementById("zoomResult");
 
-    const zoomFactor = 2.5; // Zoom Magnification Level
+    const zoomFactor = 2.5;
 
     function initZoom() {
         mainImg.addEventListener("mouseenter", showZoom);
@@ -382,7 +376,6 @@
         lens.style.display = "block";
         result.style.display = "block";
 
-        // Ensure image is loaded properly before calculating bounds
         result.style.backgroundImage = `url('${mainImg.src}')`;
     }
 
@@ -402,11 +395,9 @@
         let lensWidth = lens.offsetWidth;
         let lensHeight = lens.offsetHeight;
 
-        // Position lens centered under cursor
         x = x - (lensWidth / 2);
         y = y - (lensHeight / 2);
 
-        // Boundary conditions to prevent lens going out of main image
         if (x < 0) x = 0;
         if (y < 0) y = 0;
         if (x > mainImg.clientWidth - lensWidth) x = mainImg.clientWidth - lensWidth;
@@ -415,14 +406,12 @@
         lens.style.left = x + "px";
         lens.style.top = y + "px";
 
-        // Set background size and exact position for zoom result box
         result.style.backgroundSize = `${mainImg.clientWidth * zoomFactor}px ${mainImg.clientHeight * zoomFactor}px`;
         result.style.backgroundPosition = `-${x * zoomFactor}px -${y * zoomFactor}px`;
     }
 
     initZoom();
 
-    // Delivery & Timer Calculations
     function formatDate(date) {
         const options = { weekday: 'long', day: 'numeric', month: 'long' };
         return date.toLocaleDateString('en-IN', options);
@@ -503,7 +492,6 @@
                        class="btn btn-outline-dark fw-bold rounded-3 w-100">
                         View Item
                     </a>
-
                 </div>
 
             </div>
