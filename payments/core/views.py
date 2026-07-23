@@ -1,23 +1,47 @@
 from django.shortcuts import render, redirect
-from payments.models.product import Item, FavouriteItem
+from payments.models.product import Item, FavouriteItem, Cart
 import stripe
 from django.conf import settings
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.http import JsonResponse
+from django.db.models import Q
+from django.contrib import messages
+from django.shortcuts import redirect, get_object_or_404
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
 def stripe_about_page(request):
     return render(request, "payments/stripe_about_page.html", locals())
 
+
 def item_detail(request):
+    query = request.GET.get('q')
     items = Item.objects.filter(is_sold=False)
-    fav_items=[]
+
+    if query:
+        items = items.filter(
+            Q(title__icontains=query) |
+            Q(brand__icontains=query) |
+            Q(description__icontains=query) |
+            Q(colors__icontains=query) |
+            Q(category__icontains=query)
+        )
+
+    fav_items = []
     if request.user.is_authenticated:
-        fav_items = FavouriteItem.objects.filter(user=request.user).values_list('item_id', flat=True)
-    return render(request, "payments/product_list.html", {"items": items, 'fav_items': fav_items})
+        fav_items = FavouriteItem.objects.filter(user=request.user)\
+                        .values_list('item_id', flat=True)
+
+    cart_count = 0
+    if request.user.is_authenticated:
+        cart_count = Cart.objects.filter(user=request.user).count()
+    return render(request, "payments/product_list.html", {
+        "items": items,
+        "fav_items": fav_items,
+        "cart_count": cart_count
+    })
 
 
 def success(request):
@@ -40,7 +64,6 @@ def create_checkout_session(request, id):
                 'currency': 'inr',
                 'product_data': {
                     'name': item.title,
-                    'description': item.description,
                 },
                 'unit_amount': int(item.price * 100),
             },
@@ -119,8 +142,59 @@ def favourite_items(request, id):
 
 def specific_item_detail(request, id):
     item = Item.objects.get(id=id)
+    related_items = Item.objects.filter(
+        category=item.category,
+        is_sold=False
+    ).exclude(id=item.id)[:3]
+
+    cart_count = 0
+    if request.user.is_authenticated:
+        cart_count = Cart.objects.filter(user=request.user).count()
+
     return render(request, "payments/item_detail.html",
                   {
-                      "item": item
+                      "item": item,
+                      "related_items": related_items,
+                      "cart_count": cart_count
                   }
                   )
+
+def add_to_cart(request, item_id):
+    item = get_object_or_404(Item, id=item_id)
+
+    cart_item, created = Cart.objects.get_or_create(
+        user=request.user,
+        item=item
+    )
+
+    if not created:
+        cart_item.quantity += 1
+        cart_item.save()
+
+    messages.success(request, "Item added to cart successfully")
+    return redirect('specific_item_detail', id=item.id)
+
+def cart_page(request):
+    query = request.GET.get('q')
+    cart_items = Cart.objects.filter(user=request.user)
+
+    if query:
+        cart_items = cart_items.filter(
+            Q(item__title__icontains=query) |
+            Q(item__brand__icontains=query) |
+            Q(item__description__icontains=query) |
+            Q(item__colors__icontains=query) |
+            Q(item__category__icontains=query)
+        )
+
+    cart_count = 0
+    if request.user.is_authenticated:
+        cart_count = Cart.objects.filter(user=request.user).count()
+
+    return render(request, "payments/cart.html", {"cart_items": cart_items,
+                                                  "cart_count": cart_count})
+
+def delete_cart_item(request, id):
+    cart_item = get_object_or_404(Cart, id=id, user=request.user)
+    cart_item.delete()
+    return redirect('cart_page')

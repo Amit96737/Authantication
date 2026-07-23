@@ -10,4 +10,7 @@ urlpatterns = [
     path("cancel/", views.cancel, name="cancel"),
     path("favourite-items/<uuid:id>/", views.favourite_items, name="favourite_items"),
     path("item/<uuid:id>/", views.specific_item_detail, name="specific_item_detail"),
+    path('add-to-cart/<uuid:item_id>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/', views.cart_page, name='cart_page'),
+    path('delete-cart-item/<uuid:id>/', views.delete_cart_item, name='delete_cart_item'),
 ]

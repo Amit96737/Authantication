@@ -2,85 +2,183 @@
 
 {% block content %}
 
-<div class="mb-4">
-        <a href="{% url 'item_detail' %}" class="btn btn-outline-dark rounded-3 px-3">
-            ← Back
-        </a>
-    </div>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="{% url 'item_detail' %}" class="btn btn-outline-dark rounded-3 px-3">
+        ← Back
+    </a>
+
+    <a href="{% url 'cart_page' %}" class="d-flex flex-column align-items-center text-dark text-decoration-none position-relative">
+
+        <i class="fa-solid fa-cart-shopping fs-4"></i>
+
+        {% if cart_count > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ cart_count }}
+            </span>
+        {% endif %}
+
+        <small style="font-size: 12px;">Cart</small>
+
+    </a>
+</div>
+
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-success text-center">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
 
 <div class="container py-5">
     <div class="row">
         <div class="col-md-5">
+
+        <div class="image-zoom-container">
             {% if item.image %}
-                <img src="{{ item.image.url }}" class="img-fluid rounded shadow">
+                <img id="mainImage" src="{{ item.image.url }}" class="img-fluid rounded shadow mb-3">
             {% else %}
-                <img src="https://via.placeholder.com/400" class="img-fluid rounded shadow">
+                <img id="mainImage" src="https://via.placeholder.com/400" class="img-fluid rounded shadow mb-3">
             {% endif %}
+
+            <div id="zoomLens"></div>
         </div>
 
-        <div class="col-md-7">
+            <div class="d-flex gap-2 flex-wrap align-items-center">
 
-            <h2 class="fw-bold">{{ item.title }}</h2>
+            {% if item.image %}
+                <img src="{{ item.image.url }}" class="thumb-img border">
+            {% endif %}
 
-            <p class="text-muted">{{ item.brand }}</p>
-
-            <p><b>Category:</b> {{ item.category }}</p>
-            <p><b>Color:</b> {{ item.colors }}</p>
-            <p><b>Size:</b> {{ item.size }}</p>
-
-            <p class="mt-3">{{ item.description }}</p>
-
-            <h4 class="fw-bold mt-3">₹{{ item.price }}</h4>
-
-            <button class=" btn btn-success mt-3 px-4 fw-bold rounded-3 px-3 shadow-s open-checkout">
-                            Add To Cart
-            </button>
-
-            <button class=" btn btn-success mt-3 px-4 fw-bold rounded-3 px-3 shadow-s open-checkout"
-                                data-url="{% url 'create_checkout_session' item.id %}"
-                                data-title="{{ item.title }}"
-                                data-price="{{ item.price }}"
-                                data-image="{{ item.image.url }}"
-                                data-brand="{{ item.brand }}"
-                                data-description="{{ item.description }}"
-                                data-color="{{ item.colors }}"
-                                data-size="{{ item.size }}"
-                                data-category="{{ item.category }}">
-                            Checkout
-            </button>
-
+            {% for img in item.images.all %}
+                <img src="{{ img.image.url }}" class="thumb-img border">
+            {% endfor %}
 
         </div>
 
     </div>
 
+    <div class="col-md-7">
+
+        <h2 class="fw-bold">{{ item.title }}</h2>
+
+        {% if item.quantity < 4 %}
+            <span class="badge bg-danger text-white mt-2 px-3 py-2">
+                Limited Time Deal
+            </span>
+        {% else %}
+            <span class="badge bg-success text-white mt-2 px-3 py-2">
+                In Stock
+            </span>
+        {% endif %}
+
+        <br><br>
+        <p class="text-muted">{{ item.brand }}</p>
+
+        <p><b>Category:</b> {{ item.category }}</p>
+        <p><b>Color:</b> {{ item.colors }}</p>
+        <p><b>Size:</b> {{ item.size }}</p>
+
+        <div class="mb-2">
+
+            <div class="d-flex align-items-center gap-2">
+
+                {% if item.mrp and item.price %}
+                    <span class="text-danger fw-bold fs-5">
+                        -{{ item.discount_percentage }}%
+                    </span>
+                {% endif %}
+
+                <span class="fw-bold text-dark fs-4">
+                    ₹{{ item.price }}
+                </span>
+
+            </div>
+
+            {% if item.mrp %}
+                <div class="text-muted small">
+                    M.R.P:
+                    <span class="text-decoration-line-through">
+                        ₹{{ item.mrp }}
+                    </span>
+                </div>
+            {% endif %}
+
+        </div>
+
+        <a href="{% url 'add_to_cart' item.id %}"
+           class="btn btn-success mt-3 px-4 fw-bold rounded-3 px-3">
+            Add To Cart
+        </a>
+
+        <button class="btn btn-success mt-3 px-4 fw-bold rounded-3 px-3 shadow-s open-checkout"
+            data-url="{% url 'create_checkout_session' item.id %}"
+            data-title="{{ item.title }}"
+            data-price="{{ item.price }}"
+            data-image="{{ item.image.url }}"
+            data-brand="{{ item.brand }}"
+            data-color="{{ item.colors }}"
+            data-size="{{ item.size }}"
+            data-category="{{ item.category }}">
+            Checkout
+        </button>
+
+        <div class="mt-4 p-3 bg-light rounded shadow-sm">
+
+            <p class="mb-1 text-danger fw-bold">
+                FREE delivery <span id="deliveryDate"></span>. Details
+            </p>
+
+            <p class="mb-0">
+                Or fastest delivery <b id="fastDelivery"></b>.
+                Order within <span id="timer"></span>
+            </p>
+
+        </div>
+
+    </div>
 </div>
 
-
+</div>
 <style>
     body {
         background-color: #f8f9fa !important;
         color: #212529 !important;
     }
 
-    .checkout-sidebar {
-    position: fixed;
-    top: 70px;
-    right: -400px;
-    width: 350px;
-    height: calc(100% - 70px);
-    background: #000;
-    color: #fff;
-    box-shadow: -5px 0 15px rgba(0,0,0,0.5);
-    transition: 0.3s;
-    z-index: 999;
+    .thumb-img {
+        width: 70px !important;
+        height: 70px !important;
+        min-width: 70px;
+        min-height: 70px;
+        max-width: 70px;
+        max-height: 70px;
+        object-fit: cover;
+        cursor: pointer;
+        border-radius: 6px;
+        transition: 0.3s;
+        display: block;
+    }
 
-    overflow-y: auto;
+    .thumb-img:hover {
+        transform: scale(1.1);
+        border: 2px solid black;
     }
 
     .checkout-sidebar {
-    display: flex;
-    flex-direction: column;
+        position: fixed;
+        top: 70px;
+        right: -400px;
+        width: 350px;
+        height: calc(100% - 70px);
+        background: #000;
+        color: #fff;
+        box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+        transition: 0.3s;
+        z-index: 999;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
     }
 
     .sidebar-footer {
@@ -88,45 +186,82 @@
         position: sticky;
         bottom: 0;
     }
+
     .pay-btn {
-    background-color: #28a745;
-    color: white;
-    border: none;
+        background-color: #28a745;
+        color: white;
+        border: none;
     }
 
     .pay-btn:hover {
         background-color: #218838;
     }
+
+    .image-zoom-container {
+    position: relative;
+    overflow: hidden;
+    }
+
+    #mainImage {
+        width: 100%;
+        height: 400px;
+        object-fit: contain;
+    }
+
+    #zoomLens {
+        position: absolute;
+        border: 2px solid #000;
+        width: 120px;
+        height: 120px;
+        display: none;
+        background-repeat: no-repeat;
+        pointer-events: none;
+    }
+    .product-card {
+    transition: 0.3s ease;
+    border-radius: 10px;
+    }
+
+    .product-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    }
+
+    .product-img {
+        height: 200px;
+        object-fit: cover;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+    }
+
 </style>
 
 <div id="checkoutSidebar" class="checkout-sidebar">
     <div class="p-3">
 
-        <div class="d-flex justify-content-end">
-            <button id="closeSidebar" style="background:none; border:none; color:white; font-size:22px;">
-                ✖
-            </button>
-        </div>
+    <div class="d-flex justify-content-end">
+        <button id="closeSidebar" style="background:none; border:none; color:white; font-size:22px;">
+            ✖
+        </button>
+    </div>
 
-        <img id="itemImage" height="20%" width="100%">
-        <br><br>
-        <p><b>Title:</b> <span id="itemTitle"></span></p>
-        <p><b>Brand:</b> <span id="itemBrand"></span></p>
-        <p><b>Category:</b> <span id="itemCategory"></span></p>
-        <p><b>Color:</b> <span id="itemColor"></span></p>
-        <p><b>Size:</b> <span id="itemSize"></span></p>
+    <img id="itemImage" height="20%" width="100%">
+    <br><br>
+    <p><b>Title:</b> <span id="itemTitle"></span></p>
+    <p><b>Brand:</b> <span id="itemBrand"></span></p>
+    <p><b>Category:</b> <span id="itemCategory"></span></p>
+    <p><b>Color:</b> <span id="itemColor"></span></p>
+    <p><b>Size:</b> <span id="itemSize"></span></p>
 
-        <p id="itemDescription"></p>
+    <p>Price: ₹<span id="itemPrice"></span></p>
 
-        <p>Price: ₹<span id="itemPrice"></span></p>
+    <div class="d-flex align-items-center gap-2">
+        <button id="minus">-</button>
+        <span id="qty">1</span>
+        <button id="plus">+</button>
+    </div>
 
-        <div class="d-flex align-items-center gap-2">
-            <button id="minus">-</button>
-            <span id="qty">1</span>
-            <button id="plus">+</button>
-        </div>
-
-        <h4>Total: ₹<span id="totalPrice"></span></h4>
+    <h4>Total: ₹<span id="totalPrice"></span></h4>
 
     <div class="sidebar-footer p-3">
         <form method="POST" id="checkoutForm">
@@ -136,67 +271,202 @@
         </form>
     </div>
 
-    </div>
+</div>
 </div>
 
 <script>
-let qty = 1;
-let price = 0;
-
-document.querySelectorAll('.open-checkout').forEach(btn => {
-    btn.addEventListener('click', function () {
-
-        let url = this.dataset.url;
-
-        document.getElementById('checkoutForm').action = url;
-
-        let title = this.dataset.title;
-        let priceVal = parseFloat(this.dataset.price);
-        let image = this.dataset.image;
-        let brand = this.dataset.brand;
-        let description = this.dataset.description;
-        let color = this.dataset.color;
-        let size = this.dataset.size;
-        let category = this.dataset.category;
-
-        price = priceVal;
-
-        document.getElementById('itemTitle').innerText = title;
-        document.getElementById('itemPrice').innerText = price;
-        document.getElementById('itemImage').src = image;
-
-        document.getElementById('itemBrand').innerText = brand;
-        document.getElementById('itemDescription').innerText = description;
-        document.getElementById('itemColor').innerText = color;
-        document.getElementById('itemSize').innerText = size;
-        document.getElementById('itemCategory').innerText = category;
-
-        qty = 1;
-        updateTotal();
-
-        document.getElementById('checkoutSidebar').style.right = "0";
+    document.querySelectorAll('.thumb-img').forEach(img => {
+        img.addEventListener('click', function () {
+            document.getElementById('mainImage').src = this.src;
+        });
     });
-});
 
-document.getElementById('plus').onclick = () => {
-    qty++;
-    updateTotal();
-};
+    let qty = 1;
+    let price = 0;
 
-document.getElementById('minus').onclick = () => {
-    if(qty > 1) qty--;
-    updateTotal();
-};
+    document.querySelectorAll('.open-checkout').forEach(btn => {
+        btn.addEventListener('click', function () {
 
-function updateTotal() {
-    document.getElementById('qty').innerText = qty;
-    document.getElementById('totalPrice').innerText = qty * price;
-    document.getElementById('quantityInput').value = qty;
-}
+            let url = this.dataset.url;
+            document.getElementById('checkoutForm').action = url;
 
-document.getElementById('closeSidebar').onclick = function () {
-    document.getElementById('checkoutSidebar').style.right = "-400px";
-};
+            let title = this.dataset.title;
+            let priceVal = parseFloat(this.dataset.price);
+            let image = this.dataset.image;
+            let brand = this.dataset.brand;
+            let description = this.dataset.description;
+            let color = this.dataset.color;
+            let size = this.dataset.size;
+            let category = this.dataset.category;
+
+            price = priceVal;
+
+            document.getElementById('itemTitle').innerText = title;
+            document.getElementById('itemPrice').innerText = price;
+            document.getElementById('itemImage').src = image;
+
+            document.getElementById('itemBrand').innerText = brand;
+            document.getElementById('itemColor').innerText = color;
+            document.getElementById('itemSize').innerText = size;
+            document.getElementById('itemCategory').innerText = category;
+
+            qty = 1;
+            updateTotal();
+
+            document.getElementById('checkoutSidebar').style.right = "0";
+        });
+    });
+
+    document.getElementById('plus').onclick = () => {
+        qty++;
+        updateTotal();
+    };
+
+    document.getElementById('minus').onclick = () => {
+        if(qty > 1) qty--;
+        updateTotal();
+    };
+
+    function updateTotal() {
+        document.getElementById('qty').innerText = qty;
+        document.getElementById('totalPrice').innerText = qty * price;
+        document.getElementById('quantityInput').value = qty;
+    }
+
+    document.getElementById('closeSidebar').onclick = function () {
+        document.getElementById('checkoutSidebar').style.right = "-400px";
+    };
+
+    const image = document.getElementById("mainImage");
+    const lens = document.getElementById("zoomLens");
+
+    image.addEventListener("mousemove", moveLens);
+    image.addEventListener("mouseenter", () => {
+        lens.style.display = "block";
+    });
+    image.addEventListener("mouseleave", () => {
+        lens.style.display = "none";
+    });
+
+    let zoomLevel = 1;
+
+    function moveLens(e) {
+        const rect = image.getBoundingClientRect();
+
+        let x = e.clientX - rect.left;
+        let y = e.clientY - rect.top;
+
+        let lensSize = lens.offsetWidth;
+
+        x = x - lensSize / 2;
+        y = y - lensSize / 2;
+
+        if (x > image.width - lensSize) x = image.width - lensSize;
+        if (x < 0) x = 0;
+        if (y > image.height - lensSize) y = image.height - lensSize;
+        if (y < 0) y = 0;
+
+        lens.style.left = x + "px";
+        lens.style.top = y + "px";
+
+        lens.style.backgroundImage = `url(${image.src})`;
+        lens.style.backgroundSize = (image.width * zoomLevel) + "px " + (image.height * zoomLevel) + "px";
+        lens.style.backgroundPosition = `-${x * zoomLevel}px -${y * zoomLevel}px`;
+    }
+
+    function formatDate(date) {
+        const options = { weekday: 'long', day: 'numeric', month: 'long' };
+        return date.toLocaleDateString('en-IN', options);
+    }
+
+    let today = new Date();
+
+    let freeDelivery = new Date();
+    freeDelivery.setDate(today.getDate() + 7);
+
+    document.getElementById("deliveryDate").innerText = formatDate(freeDelivery);
+
+    let tomorrow = new Date();
+    tomorrow.setDate(today.getDate() + 1);
+
+    document.getElementById("fastDelivery").innerText =
+        formatDate(tomorrow) + " 6 AM - 10 AM";
+
+    function startTimer(hours) {
+        let totalSeconds = hours * 60 * 60;
+
+        setInterval(() => {
+            let h = Math.floor(totalSeconds / 3600);
+            let m = Math.floor((totalSeconds % 3600) / 60);
+
+            document.getElementById("timer").innerText = `${h} hrs ${m} mins`;
+
+            totalSeconds--;
+            if (totalSeconds < 0) totalSeconds = 0;
+
+        }, 1000);
+    }
+    startTimer(12);
+
 </script>
+
+<div class="container mt-5">
+    <div class="card shadow-sm p-4 rounded-3">
+        <h4 class="fw-bold mb-3">About this item</h4>
+        <p class="text-muted">
+            {{ item.description|safe }}
+        </p>
+    </div>
+</div>
+
+<div class="container mt-5">
+    <h4 class="fw-bold mb-4">Related Products</h4>
+
+    {% if related_items %}
+    <div class="row g-4">
+        {% for item in related_items %}
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm product-card">
+
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" class="card-img-top product-img">
+                {% else %}
+                    <img src="https://via.placeholder.com/200" class="card-img-top product-img">
+                {% endif %}
+
+                <div class="card-body d-flex flex-column justify-content-between">
+
+                    <div>
+                        <h6 class="fw-bold text-dark mb-2">
+                            {{ item.title }}
+                        </h6>
+
+                        <p class="text-muted small mb-2">
+                            {{ item.description|striptags|truncatechars:60 }}
+                        </p>
+
+                        <p class="fw-bold text-dark mb-3">
+                            ₹{{ item.price }}
+                        </p>
+                    </div>
+
+                    <a href="{% url 'specific_item_detail' item.id %}"
+                       class="btn btn-outline-dark fw-bold rounded-3 w-100">
+                        View Item
+                    </a>
+
+                </div>
+
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    {% else %}
+        <div class="text-center text-muted mt-4">
+            <h6>Related products not available</h6>
+        </div>
+    {% endif %}
+</div>
 
 {% endblock %}
