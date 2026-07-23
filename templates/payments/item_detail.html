@@ -34,112 +34,116 @@
     <div class="row">
         <div class="col-md-5">
 
-        <div class="image-zoom-container">
-            {% if item.image %}
-                <img id="mainImage" src="{{ item.image.url }}" class="img-fluid rounded shadow mb-3">
-            {% else %}
-                <img id="mainImage" src="https://via.placeholder.com/400" class="img-fluid rounded shadow mb-3">
-            {% endif %}
+            <div class="image-zoom-wrapper d-flex position-relative">
 
-            <div id="zoomLens"></div>
-        </div>
+                <!-- LEFT IMAGE -->
+                <div class="image-zoom-container">
+                    <img id="mainImage" src="{{ item.image.url }}" class="img-fluid rounded shadow">
+                    <div id="zoomLens"></div>
+                </div>
 
-            <div class="d-flex gap-2 flex-wrap align-items-center">
-
-            {% if item.image %}
-                <img src="{{ item.image.url }}" class="thumb-img border">
-            {% endif %}
-
-            {% for img in item.images.all %}
-                <img src="{{ img.image.url }}" class="thumb-img border">
-            {% endfor %}
-
-        </div>
-
-    </div>
-
-    <div class="col-md-7">
-
-        <h2 class="fw-bold">{{ item.title }}</h2>
-
-        {% if item.quantity < 4 %}
-            <span class="badge bg-danger text-white mt-2 px-3 py-2">
-                Limited Time Deal
-            </span>
-        {% else %}
-            <span class="badge bg-success text-white mt-2 px-3 py-2">
-                In Stock
-            </span>
-        {% endif %}
-
-        <br><br>
-        <p class="text-muted">{{ item.brand }}</p>
-
-        <p><b>Category:</b> {{ item.category }}</p>
-        <p><b>Color:</b> {{ item.colors }}</p>
-        <p><b>Size:</b> {{ item.size }}</p>
-
-        <div class="mb-2">
-
-            <div class="d-flex align-items-center gap-2">
-
-                {% if item.mrp and item.price %}
-                    <span class="text-danger fw-bold fs-5">
-                        -{{ item.discount_percentage }}%
-                    </span>
-                {% endif %}
-
-                <span class="fw-bold text-dark fs-4">
-                    ₹{{ item.price }}
-                </span>
+                <!-- RIGHT ZOOM BOX -->
+                <div id="zoomResult"></div>
 
             </div>
 
-            {% if item.mrp %}
-                <div class="text-muted small">
-                    M.R.P:
-                    <span class="text-decoration-line-through">
-                        ₹{{ item.mrp }}
-                    </span>
-                </div>
+            <div class="d-flex gap-2 flex-wrap align-items-center mt-3">
+
+                {% if item.image %}
+                    <img src="{{ item.image.url }}" class="thumb-img border">
+                {% endif %}
+
+                {% for img in item.images.all %}
+                    <img src="{{ img.image.url }}" class="thumb-img border">
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        <div class="col-md-7">
+
+            <h2 class="fw-bold">{{ item.title }}</h2>
+
+            {% if item.quantity < 4 %}
+                <span class="badge bg-danger text-white mt-2 px-3 py-2">
+                    Limited Time Deal
+                </span>
+            {% else %}
+                <span class="badge bg-success text-white mt-2 px-3 py-2">
+                    In Stock
+                </span>
             {% endif %}
 
+            <br><br>
+            <p class="text-muted">{{ item.brand }}</p>
+
+            <p><b>Category:</b> {{ item.category }}</p>
+            <p><b>Color:</b> {{ item.colors }}</p>
+            <p><b>Size:</b> {{ item.size }}</p>
+
+            <div class="mb-2">
+
+                <div class="d-flex align-items-center gap-2">
+
+                    {% if item.mrp and item.price %}
+                        <span class="text-danger fw-bold fs-5">
+                            -{{ item.discount_percentage }}%
+                        </span>
+                    {% endif %}
+
+                    <span class="fw-bold text-dark fs-4">
+                        ₹{{ item.price }}
+                    </span>
+
+                </div>
+
+                {% if item.mrp %}
+                    <div class="text-muted small">
+                        M.R.P:
+                        <span class="text-decoration-line-through">
+                            ₹{{ item.mrp }}
+                        </span>
+                    </div>
+                {% endif %}
+
+            </div>
+
+            <a href="{% url 'add_to_cart' item.id %}"
+               class="btn btn-success mt-3 px-4 fw-bold rounded-3 px-3">
+                Add To Cart
+            </a>
+
+            <button class="btn btn-success mt-3 px-4 fw-bold rounded-3 px-3 shadow-s open-checkout"
+                data-url="{% url 'create_checkout_session' item.id %}"
+                data-title="{{ item.title }}"
+                data-price="{{ item.price }}"
+                data-image="{{ item.image.url }}"
+                data-brand="{{ item.brand }}"
+                data-color="{{ item.colors }}"
+                data-size="{{ item.size }}"
+                data-category="{{ item.category }}">
+                Checkout
+            </button>
+
+            <div class="mt-4 p-3 bg-light rounded shadow-sm">
+
+                <p class="mb-1 text-danger fw-bold">
+                    FREE delivery <span id="deliveryDate"></span>. Details
+                </p>
+
+                <p class="mb-0">
+                    Or fastest delivery <b id="fastDelivery"></b>.
+                    Order within <span id="timer"></span>
+                </p>
+
+            </div>
+
         </div>
-
-        <a href="{% url 'add_to_cart' item.id %}"
-           class="btn btn-success mt-3 px-4 fw-bold rounded-3 px-3">
-            Add To Cart
-        </a>
-
-        <button class="btn btn-success mt-3 px-4 fw-bold rounded-3 px-3 shadow-s open-checkout"
-            data-url="{% url 'create_checkout_session' item.id %}"
-            data-title="{{ item.title }}"
-            data-price="{{ item.price }}"
-            data-image="{{ item.image.url }}"
-            data-brand="{{ item.brand }}"
-            data-color="{{ item.colors }}"
-            data-size="{{ item.size }}"
-            data-category="{{ item.category }}">
-            Checkout
-        </button>
-
-        <div class="mt-4 p-3 bg-light rounded shadow-sm">
-
-            <p class="mb-1 text-danger fw-bold">
-                FREE delivery <span id="deliveryDate"></span>. Details
-            </p>
-
-            <p class="mb-0">
-                Or fastest delivery <b id="fastDelivery"></b>.
-                Order within <span id="timer"></span>
-            </p>
-
-        </div>
-
     </div>
-</div>
 
 </div>
+
 <style>
     body {
         background-color: #f8f9fa !important;
@@ -197,29 +201,53 @@
         background-color: #218838;
     }
 
+    /* ZOOM COMPONENT CSS STYLES */
+    .image-zoom-wrapper {
+        gap: 20px;
+        position: relative;
+    }
+
     .image-zoom-container {
-    position: relative;
-    overflow: hidden;
+        position: relative;
+        width: 100%;
+        max-width: 400px;
     }
 
     #mainImage {
         width: 100%;
         height: 400px;
         object-fit: contain;
+        display: block;
     }
 
     #zoomLens {
         position: absolute;
-        border: 2px solid #000;
+        border: 1px solid #000;
         width: 120px;
         height: 120px;
+        background-color: rgba(255, 255, 255, 0.4);
+        display: none;
+        cursor: crosshair;
+        pointer-events: none; /* Prevents lens flicker */
+    }
+
+    #zoomResult {
+        position: absolute;
+        left: 420px;
+        top: 0;
+        width: 400px;
+        height: 400px;
+        border: 1px solid #ccc;
         display: none;
         background-repeat: no-repeat;
-        pointer-events: none;
+        background-color: #fff;
+        z-index: 100;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.15);
     }
+
     .product-card {
-    transition: 0.3s ease;
-    border-radius: 10px;
+        transition: 0.3s ease;
+        border-radius: 10px;
     }
 
     .product-card:hover {
@@ -233,54 +261,55 @@
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
     }
-
 </style>
 
 <div id="checkoutSidebar" class="checkout-sidebar">
     <div class="p-3">
 
-    <div class="d-flex justify-content-end">
-        <button id="closeSidebar" style="background:none; border:none; color:white; font-size:22px;">
-            ✖
-        </button>
+        <div class="d-flex justify-content-end">
+            <button id="closeSidebar" style="background:none; border:none; color:white; font-size:22px;">
+                ✖
+            </button>
+        </div>
+
+        <img id="itemImage" height="20%" width="100%">
+        <br><br>
+        <p><b>Title:</b> <span id="itemTitle"></span></p>
+        <p><b>Brand:</b> <span id="itemBrand"></span></p>
+        <p><b>Category:</b> <span id="itemCategory"></span></p>
+        <p><b>Color:</b> <span id="itemColor"></span></p>
+        <p><b>Size:</b> <span id="itemSize"></span></p>
+
+        <p>Price: ₹<span id="itemPrice"></span></p>
+
+        <div class="d-flex align-items-center gap-2">
+            <button id="minus">-</button>
+            <span id="qty">1</span>
+            <button id="plus">+</button>
+        </div>
+
+        <h4>Total: ₹<span id="totalPrice"></span></h4>
+
+        <div class="sidebar-footer p-3">
+            <form method="POST" id="checkoutForm">
+                {% csrf_token %}
+                <input type="hidden" name="quantity" id="quantityInput">
+                <button class="btn pay-btn w-100 mt-3">Pay Now</button>
+            </form>
+        </div>
+
     </div>
-
-    <img id="itemImage" height="20%" width="100%">
-    <br><br>
-    <p><b>Title:</b> <span id="itemTitle"></span></p>
-    <p><b>Brand:</b> <span id="itemBrand"></span></p>
-    <p><b>Category:</b> <span id="itemCategory"></span></p>
-    <p><b>Color:</b> <span id="itemColor"></span></p>
-    <p><b>Size:</b> <span id="itemSize"></span></p>
-
-    <p>Price: ₹<span id="itemPrice"></span></p>
-
-    <div class="d-flex align-items-center gap-2">
-        <button id="minus">-</button>
-        <span id="qty">1</span>
-        <button id="plus">+</button>
-    </div>
-
-    <h4>Total: ₹<span id="totalPrice"></span></h4>
-
-    <div class="sidebar-footer p-3">
-        <form method="POST" id="checkoutForm">
-            {% csrf_token %}
-            <input type="hidden" name="quantity" id="quantityInput">
-            <button class="btn pay-btn w-100 mt-3">Pay Now</button>
-        </form>
-    </div>
-
-</div>
 </div>
 
 <script>
+    // Thumbnail Image Switcher
     document.querySelectorAll('.thumb-img').forEach(img => {
         img.addEventListener('click', function () {
             document.getElementById('mainImage').src = this.src;
         });
     });
 
+    // Checkout Sidebar Functionality
     let qty = 1;
     let price = 0;
 
@@ -294,7 +323,6 @@
             let priceVal = parseFloat(this.dataset.price);
             let image = this.dataset.image;
             let brand = this.dataset.brand;
-            let description = this.dataset.description;
             let color = this.dataset.color;
             let size = this.dataset.size;
             let category = this.dataset.category;
@@ -337,43 +365,64 @@
         document.getElementById('checkoutSidebar').style.right = "-400px";
     };
 
-    const image = document.getElementById("mainImage");
+    // --- FLIPKART/AMAZON STYLE ZOOM FUNCTIONALITY ---
+    const mainImg = document.getElementById("mainImage");
     const lens = document.getElementById("zoomLens");
+    const result = document.getElementById("zoomResult");
 
-    image.addEventListener("mousemove", moveLens);
-    image.addEventListener("mouseenter", () => {
+    const zoomFactor = 2.5; // Zoom Magnification Level
+
+    function initZoom() {
+        mainImg.addEventListener("mouseenter", showZoom);
+        mainImg.addEventListener("mouseleave", hideZoom);
+        mainImg.addEventListener("mousemove", moveLens);
+    }
+
+    function showZoom() {
         lens.style.display = "block";
-    });
-    image.addEventListener("mouseleave", () => {
-        lens.style.display = "none";
-    });
+        result.style.display = "block";
 
-    let zoomLevel = 1;
+        // Ensure image is loaded properly before calculating bounds
+        result.style.backgroundImage = `url('${mainImg.src}')`;
+    }
+
+    function hideZoom() {
+        lens.style.display = "none";
+        result.style.display = "none";
+    }
 
     function moveLens(e) {
-        const rect = image.getBoundingClientRect();
+        e.preventDefault();
+
+        const rect = mainImg.getBoundingClientRect();
 
         let x = e.clientX - rect.left;
         let y = e.clientY - rect.top;
 
-        let lensSize = lens.offsetWidth;
+        let lensWidth = lens.offsetWidth;
+        let lensHeight = lens.offsetHeight;
 
-        x = x - lensSize / 2;
-        y = y - lensSize / 2;
+        // Position lens centered under cursor
+        x = x - (lensWidth / 2);
+        y = y - (lensHeight / 2);
 
-        if (x > image.width - lensSize) x = image.width - lensSize;
+        // Boundary conditions to prevent lens going out of main image
         if (x < 0) x = 0;
-        if (y > image.height - lensSize) y = image.height - lensSize;
         if (y < 0) y = 0;
+        if (x > mainImg.clientWidth - lensWidth) x = mainImg.clientWidth - lensWidth;
+        if (y > mainImg.clientHeight - lensHeight) y = mainImg.clientHeight - lensHeight;
 
         lens.style.left = x + "px";
         lens.style.top = y + "px";
 
-        lens.style.backgroundImage = `url(${image.src})`;
-        lens.style.backgroundSize = (image.width * zoomLevel) + "px " + (image.height * zoomLevel) + "px";
-        lens.style.backgroundPosition = `-${x * zoomLevel}px -${y * zoomLevel}px`;
+        // Set background size and exact position for zoom result box
+        result.style.backgroundSize = `${mainImg.clientWidth * zoomFactor}px ${mainImg.clientHeight * zoomFactor}px`;
+        result.style.backgroundPosition = `-${x * zoomFactor}px -${y * zoomFactor}px`;
     }
 
+    initZoom();
+
+    // Delivery & Timer Calculations
     function formatDate(date) {
         const options = { weekday: 'long', day: 'numeric', month: 'long' };
         return date.toLocaleDateString('en-IN', options);
