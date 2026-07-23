@@ -5,9 +5,9 @@
 {% block content %}
 
 <div class="mb-4">
-        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
-            ← Back to Dashboard
-        </a>
+    <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+        ← Back to Dashboard
+    </a>
 </div>
 
 <div class="container py-4">
@@ -34,13 +34,17 @@
                 <div class="card-body p-4 d-flex flex-column justify-content-between">
 
                     <div>
-                        <span class="badge bg-dark mb-2 text-uppercase font-monospace">
-                            {{ item.category }}
-                        </span>
+                        <div class="d-flex justify-content-between align-items-center mb-2">
 
-                        <h4 class="fw-bold text-dark mb-2 fs-6 card-title-text">
-                            {{ item.title }}
-                        </h4>
+                            <h4 class="fw-bold text-dark fs-6 card-title-text m-0">
+                                {{ item.title }}
+                            </h4>
+
+                            <i class="{% if item.id in fav_items %}fa-solid text-danger{% else %}fa-regular{% endif %} fa-heart favourite-icon"
+                               data-url="{% url 'favourite_items' item.id %}">
+                            </i>
+
+                        </div>
 
                         <p class="card-text text-muted small mb-2">
                             {{ item.description|truncatechars:60 }}
@@ -51,14 +55,10 @@
                         </p>
                     </div>
 
-                    <a href="{% url 'create_checkout_session' item.id %}"
+                    <a href="{% url 'specific_item_detail' item.id %}"
                        class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">
-                       Checkout
+                        View Item
                     </a>
-<!--                    <a href="#"-->
-<!--                       class="btn btn-outline-dark fw-bold rounded-3 px-3 shadow-sm">-->
-<!--                       Checkout-->
-<!--                    </a>-->
 
                 </div>
 
@@ -106,5 +106,32 @@
         transform: scale(1.05);
     }
 </style>
+
+<script>
+document.querySelectorAll('.favourite-icon').forEach(icon => {
+    icon.addEventListener('click', function () {
+
+        let url = this.dataset.url;
+
+        fetch(url)
+        .then(res => res.json())
+        .then(data => {
+
+            if(data.status === 'added'){
+                this.classList.remove('fa-regular');
+                this.classList.add('fa-solid');
+                this.style.color = "red";
+            }
+            else if(data.status === 'removed'){
+                this.classList.remove('fa-solid');
+                this.classList.add('fa-regular');
+                this.style.color = "black";
+            }
+
+        });
+
+    });
+});
+</script>
 
 {% endblock %}
