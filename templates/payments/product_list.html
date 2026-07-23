@@ -4,10 +4,39 @@
 
 {% block content %}
 
-<div class="mb-4">
+<div class="d-flex justify-content-between align-items-center mb-4">
     <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
         ← Back to Dashboard
     </a>
+
+    <a href="{% url 'cart_page' %}"
+       class="d-flex flex-column align-items-center text-dark text-decoration-none position-relative">
+
+        <i class="fa-solid fa-cart-shopping fs-4"></i>
+
+        {% if cart_count > 0 %}
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                {{ cart_count }}
+            </span>
+        {% endif %}
+
+        <small style="font-size: 12px;">Cart</small>
+    </a>
+
+</div>
+
+<div class="container mb-4">
+    <form method="GET" class="d-flex w-100">
+
+        <input type="text" name="q" value="{{ request.GET.q }}"
+               class="form-control rounded-3 me-2"
+               placeholder="Search products...">
+
+        <button type="submit" class="btn btn-dark rounded-3 px-4">
+            <i class="fa fa-search"></i>
+        </button>
+
+    </form>
 </div>
 
 <div class="container py-4">
@@ -15,6 +44,7 @@
         <h1 class="fw-bold text-dark m-0 display-6">
             Products
         </h1>
+
     </div>
 
     <div class="row g-4 justify-content-center">
@@ -47,12 +77,35 @@
                         </div>
 
                         <p class="card-text text-muted small mb-2">
-                            {{ item.description|truncatechars:60 }}
+                            {{ item.description|striptags|truncatechars:60 }}
                         </p>
 
-                        <p class="fw-bold text-dark mb-3">
-                            ₹{{ item.price }}
-                        </p>
+                        <div class="mb-2">
+
+                            <div class="d-flex align-items-center gap-2">
+
+                                {% if item.mrp and item.price %}
+                                    <span class="text-danger fw-bold fs-5">
+                                        -{{ item.discount_percentage }}%
+                                    </span>
+                                {% endif %}
+
+                                <span class="fw-bold text-dark fs-4">
+                                    ₹{{ item.price }}
+                                </span>
+
+                            </div>
+
+                            {% if item.mrp %}
+                                <div class="text-muted small">
+                                    M.R.P:
+                                    <span class="text-decoration-line-through">
+                                        ₹{{ item.mrp }}
+                                    </span>
+                                </div>
+                            {% endif %}
+
+                        </div>
                     </div>
 
                     <a href="{% url 'specific_item_detail' item.id %}"
