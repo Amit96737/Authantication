@@ -8,4 +8,6 @@ urlpatterns = [
     path("webhook/", views.stripe_webhook, name="stripe_webhook"),
     path("success/", views.success, name="success"),
     path("cancel/", views.cancel, name="cancel"),
+    path("favourite-items/<uuid:id>/", views.favourite_items, name="favourite_items"),
+    path("item/<uuid:id>/", views.specific_item_detail, name="specific_item_detail"),
 ]

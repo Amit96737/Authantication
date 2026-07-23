@@ -1,0 +1,202 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="mb-4">
+        <a href="{% url 'item_detail' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back
+        </a>
+    </div>
+
+<div class="container py-5">
+    <div class="row">
+        <div class="col-md-5">
+            {% if item.image %}
+                <img src="{{ item.image.url }}" class="img-fluid rounded shadow">
+            {% else %}
+                <img src="https://via.placeholder.com/400" class="img-fluid rounded shadow">
+            {% endif %}
+        </div>
+
+        <div class="col-md-7">
+
+            <h2 class="fw-bold">{{ item.title }}</h2>
+
+            <p class="text-muted">{{ item.brand }}</p>
+
+            <p><b>Category:</b> {{ item.category }}</p>
+            <p><b>Color:</b> {{ item.colors }}</p>
+            <p><b>Size:</b> {{ item.size }}</p>
+
+            <p class="mt-3">{{ item.description }}</p>
+
+            <h4 class="fw-bold mt-3">₹{{ item.price }}</h4>
+
+            <button class=" btn btn-success mt-3 px-4 fw-bold rounded-3 px-3 shadow-s open-checkout">
+                            Add To Cart
+            </button>
+
+            <button class=" btn btn-success mt-3 px-4 fw-bold rounded-3 px-3 shadow-s open-checkout"
+                                data-url="{% url 'create_checkout_session' item.id %}"
+                                data-title="{{ item.title }}"
+                                data-price="{{ item.price }}"
+                                data-image="{{ item.image.url }}"
+                                data-brand="{{ item.brand }}"
+                                data-description="{{ item.description }}"
+                                data-color="{{ item.colors }}"
+                                data-size="{{ item.size }}"
+                                data-category="{{ item.category }}">
+                            Checkout
+            </button>
+
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<style>
+    body {
+        background-color: #f8f9fa !important;
+        color: #212529 !important;
+    }
+
+    .checkout-sidebar {
+    position: fixed;
+    top: 70px;
+    right: -400px;
+    width: 350px;
+    height: calc(100% - 70px);
+    background: #000;
+    color: #fff;
+    box-shadow: -5px 0 15px rgba(0,0,0,0.5);
+    transition: 0.3s;
+    z-index: 999;
+
+    overflow-y: auto;
+    }
+
+    .checkout-sidebar {
+    display: flex;
+    flex-direction: column;
+    }
+
+    .sidebar-footer {
+        background: #000;
+        position: sticky;
+        bottom: 0;
+    }
+    .pay-btn {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    }
+
+    .pay-btn:hover {
+        background-color: #218838;
+    }
+</style>
+
+<div id="checkoutSidebar" class="checkout-sidebar">
+    <div class="p-3">
+
+        <div class="d-flex justify-content-end">
+            <button id="closeSidebar" style="background:none; border:none; color:white; font-size:22px;">
+                ✖
+            </button>
+        </div>
+
+        <img id="itemImage" height="20%" width="100%">
+        <br><br>
+        <p><b>Title:</b> <span id="itemTitle"></span></p>
+        <p><b>Brand:</b> <span id="itemBrand"></span></p>
+        <p><b>Category:</b> <span id="itemCategory"></span></p>
+        <p><b>Color:</b> <span id="itemColor"></span></p>
+        <p><b>Size:</b> <span id="itemSize"></span></p>
+
+        <p id="itemDescription"></p>
+
+        <p>Price: ₹<span id="itemPrice"></span></p>
+
+        <div class="d-flex align-items-center gap-2">
+            <button id="minus">-</button>
+            <span id="qty">1</span>
+            <button id="plus">+</button>
+        </div>
+
+        <h4>Total: ₹<span id="totalPrice"></span></h4>
+
+    <div class="sidebar-footer p-3">
+        <form method="POST" id="checkoutForm">
+            {% csrf_token %}
+            <input type="hidden" name="quantity" id="quantityInput">
+            <button class="btn pay-btn w-100 mt-3">Pay Now</button>
+        </form>
+    </div>
+
+    </div>
+</div>
+
+<script>
+let qty = 1;
+let price = 0;
+
+document.querySelectorAll('.open-checkout').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        let url = this.dataset.url;
+
+        document.getElementById('checkoutForm').action = url;
+
+        let title = this.dataset.title;
+        let priceVal = parseFloat(this.dataset.price);
+        let image = this.dataset.image;
+        let brand = this.dataset.brand;
+        let description = this.dataset.description;
+        let color = this.dataset.color;
+        let size = this.dataset.size;
+        let category = this.dataset.category;
+
+        price = priceVal;
+
+        document.getElementById('itemTitle').innerText = title;
+        document.getElementById('itemPrice').innerText = price;
+        document.getElementById('itemImage').src = image;
+
+        document.getElementById('itemBrand').innerText = brand;
+        document.getElementById('itemDescription').innerText = description;
+        document.getElementById('itemColor').innerText = color;
+        document.getElementById('itemSize').innerText = size;
+        document.getElementById('itemCategory').innerText = category;
+
+        qty = 1;
+        updateTotal();
+
+        document.getElementById('checkoutSidebar').style.right = "0";
+    });
+});
+
+document.getElementById('plus').onclick = () => {
+    qty++;
+    updateTotal();
+};
+
+document.getElementById('minus').onclick = () => {
+    if(qty > 1) qty--;
+    updateTotal();
+};
+
+function updateTotal() {
+    document.getElementById('qty').innerText = qty;
+    document.getElementById('totalPrice').innerText = qty * price;
+    document.getElementById('quantityInput').value = qty;
+}
+
+document.getElementById('closeSidebar').onclick = function () {
+    document.getElementById('checkoutSidebar').style.right = "-400px";
+};
+</script>
+
+{% endblock %}

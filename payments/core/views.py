@@ -1,10 +1,11 @@
 from django.shortcuts import render, redirect
-from payments.models.product import Item
+from payments.models.product import Item, FavouriteItem
 import stripe
 from django.conf import settings
 from django.views.decorators.http import require_POST
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
+from django.http import JsonResponse
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -13,7 +14,10 @@ def stripe_about_page(request):
 
 def item_detail(request):
     items = Item.objects.filter(is_sold=False)
-    return render(request, "payments/product_list.html", {"items": items})
+    fav_items=[]
+    if request.user.is_authenticated:
+        fav_items = FavouriteItem.objects.filter(user=request.user).values_list('item_id', flat=True)
+    return render(request, "payments/product_list.html", {"items": items, 'fav_items': fav_items})
 
 
 def success(request):
@@ -24,6 +28,8 @@ def cancel(request):
 
 def create_checkout_session(request, id):
     item = Item.objects.get(id=id)
+
+    quantity = int(request.POST.get("quantity", 1))
 
     base_url = settings.BASE_URL
 
@@ -38,7 +44,7 @@ def create_checkout_session(request, id):
                 },
                 'unit_amount': int(item.price * 100),
             },
-            'quantity': 1,
+            'quantity': quantity,
         }],
         mode='payment',
         success_url=f'{base_url}/payments/success/',
@@ -94,3 +100,27 @@ def stripe_webhook(request):
             print("Stripe metadata: ", metadata)
 
     return HttpResponse(status=200)
+
+
+def favourite_items(request, id):
+    if not request.user.is_authenticated:
+        return redirect('user_login')
+
+    item = Item.objects.get(id=id)
+    fav_item = FavouriteItem.objects.filter(user=request.user, item=item)
+
+    if fav_item.exists():
+        fav_item.delete()
+        return JsonResponse({'status': 'removed'})
+    else:
+        FavouriteItem.objects.create(user=request.user, item=item)
+        return JsonResponse({'status': 'added'})
+
+
+def specific_item_detail(request, id):
+    item = Item.objects.get(id=id)
+    return render(request, "payments/item_detail.html",
+                  {
+                      "item": item
+                  }
+                  )

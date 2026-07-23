@@ -11,7 +11,7 @@ class SubscriptionPlan(CommonFields):
         ('Week', 'Week'),
         ('Day', 'Day'),
     )
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
