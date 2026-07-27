@@ -148,7 +148,6 @@ EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
 
 # Rest Framework
-
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework_simplejwt.authentication.JWTAuthentication',
@@ -157,7 +156,6 @@ REST_FRAMEWORK = {
 }
 
 # JWT
-
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60 * 9),
     'SLIDING_TOKEN_REFRESH_LIFETIME': timedelta(days=3),

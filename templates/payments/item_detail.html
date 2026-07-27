@@ -3,11 +3,54 @@
 {% block content %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <a href="{% url 'item_detail' %}" class="btn btn-outline-dark rounded-3 px-3">
-        ← Back
-    </a>
 
-    <a href="{% url 'cart_page' %}" class="d-flex flex-column align-items-center text-dark text-decoration-none position-relative">
+    <div class="d-flex align-items-center gap-3">
+
+        <div class="dropdown">
+            <button class="btn btn-outline-dark rounded-3 px-3"
+                    type="button"
+                    id="allDropdown"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
+
+                <i class="fa-solid fa-bars fs-5"></i>
+            </button>
+
+            <ul class="dropdown-menu shadow rounded-3">
+                <li>
+                    <a class="dropdown-item" href="{% url 'new_releases' %}">
+                        New Releases
+                    </a>
+                </li>
+                <li>
+                    <a class="dropdown-item" href="{% url 'cart_page' %}">
+                        Cart Items
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="{% url 'favourite_item_page' %}">
+                        Favourite Items
+                    </a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="{% url 'trending_items' %}">
+                        Trending Items
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <a href="{% url 'item_detail' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back
+        </a>
+
+
+    </div>
+
+    <a href="{% url 'cart_page' %}"
+       class="d-flex flex-column align-items-center text-dark text-decoration-none position-relative">
 
         <i class="fa-solid fa-cart-shopping fs-4"></i>
 
@@ -18,8 +61,8 @@
         {% endif %}
 
         <small style="font-size: 12px;">Cart</small>
-
     </a>
+
 </div>
 
 {% if messages %}
@@ -62,6 +105,37 @@
         <div class="col-md-7">
 
             <h2 class="fw-bold">{{ item.title }}</h2>
+
+            <form method="POST" action="{% url 'rating' item.id %}">
+                {% csrf_token %}
+
+                <div class="rating-stars">
+                    {% for i in "12345" %}
+                        <button type="submit"
+                                name="rating"
+                                value="{{ forloop.counter }}"
+                                class="star-btn">
+
+                            <span class="star
+                                {% if user_rating %}
+                                    {% if forloop.counter <= user_rating %}active{% endif %}
+                                {% else %}
+                                    {% if forloop.counter <= avg_rating %}active{% endif %}
+                                {% endif %}">
+                                ★
+                            </span>
+
+                        </button>
+                    {% endfor %}
+                </div>
+
+                <div class="product-rating-summary mt-2">
+                    <h5>
+                        ⭐ {{ avg_rating|floatformat:1 }} / 5
+                    </h5>
+                </div>
+
+            </form>
 
             {% if item.quantity < 4 %}
                 <span class="badge bg-danger text-white mt-2 px-3 py-2">
@@ -112,17 +186,22 @@
                 Add To Cart
             </a>
 
-            <button class="btn btn-success mt-3 px-4 fw-bold rounded-3 px-3 shadow-s open-checkout"
-                data-url="{% url 'create_checkout_session' item.id %}"
-                data-title="{{ item.title }}"
-                data-price="{{ item.price }}"
-                data-image="{{ item.image.url }}"
-                data-brand="{{ item.brand }}"
-                data-color="{{ item.colors }}"
-                data-size="{{ item.size }}"
-                data-category="{{ item.category }}">
-                Checkout
-            </button>
+<!--            <button class="btn btn-success mt-3 px-4 fw-bold rounded-3 px-3 shadow-s open-checkout"-->
+<!--                data-url="{% url 'create_checkout_session' item.id %}"-->
+<!--                data-title="{{ item.title }}"-->
+<!--                data-price="{{ item.price }}"-->
+<!--                data-image="{{ item.image.url }}"-->
+<!--                data-brand="{{ item.brand }}"-->
+<!--                data-color="{{ item.colors }}"-->
+<!--                data-size="{{ item.size }}"-->
+<!--                data-category="{{ item.category }}">-->
+<!--                Checkout-->
+<!--            </button>-->
+
+            <a href="{% url 'checkout_page' item.id %}"
+       class="btn btn-success mt-3 px-4 fw-bold rounded-3">
+       Checkout
+    </a>
 
             <div class="mt-4 p-3 bg-light rounded shadow-sm">
 
@@ -258,6 +337,23 @@
         border-top-left-radius: 10px;
         border-top-right-radius: 10px;
     }
+
+    .star {
+    font-size: 28px;
+    color: #ccc;
+    }
+
+    .star.active {
+        color: gold;
+    }
+
+    .star-btn {
+        border: none;
+        background: none;
+        padding: 0;
+        cursor: pointer;
+    }
+
 </style>
 
 <div id="checkoutSidebar" class="checkout-sidebar">

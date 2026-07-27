@@ -49,3 +49,11 @@ class Cart(CommonFields):
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     item = models.ForeignKey(Item, on_delete=models.CASCADE, null=True, blank=True)
     quantity = models.IntegerField(default=1)
+
+class Rating(CommonFields):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE, related_name="ratings")
+    rating = models.IntegerField()
+
+    class Meta:
+        unique_together = ['user', 'item']
