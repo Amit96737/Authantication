@@ -5,9 +5,44 @@
 {% block content %}
 
 <div class="d-flex justify-content-between align-items-center mb-4">
-    <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
-        ← Back to Dashboard
-    </a>
+
+    <div class="d-flex align-items-center gap-3">
+
+        <div class="dropdown">
+            <button class="btn btn-outline-dark rounded-3 px-3"
+                    type="button"
+                    data-bs-toggle="dropdown">
+
+                <i class="fa-solid fa-bars fs-5"></i>
+            </button>
+
+            <ul class="dropdown-menu shadow rounded-3">
+
+                <li>
+                    <a class="dropdown-item" href="{% url 'new_releases' %}">New Releases</a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="{% url 'cart_page' %}">Cart Items</a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="{% url 'favourite_item_page' %}">Favourite Items</a>
+                </li>
+
+                <li>
+                    <a class="dropdown-item" href="{% url 'trending_items' %}">Trending Items</a>
+                </li>
+
+            </ul>
+        </div>
+
+        <a href="{% url 'dashboard' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back to Dashboard
+        </a>
+
+
+    </div>
 
     <a href="{% url 'cart_page' %}"
        class="d-flex flex-column align-items-center text-dark text-decoration-none position-relative">
@@ -158,6 +193,15 @@
     .custom-hover-card:hover .custom-card-img {
         transform: scale(1.05);
     }
+
+    .dropdown button {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 45px;
+        height: 40px;
+    }
+
 </style>
 
 <script>

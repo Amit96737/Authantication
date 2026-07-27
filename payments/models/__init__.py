@@ -1,1 +1,1 @@
-from payments.models.product import Item, FavouriteItem, ItemImage,Cart
+from payments.models.product import Item, FavouriteItem, ItemImage,Cart, Rating

@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Trending{% endblock %}
+
+{% block content %}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <a href="{% url 'item_detail' %}" class="btn btn-outline-dark rounded-3 px-3">
+        ← Back
+    </a>
+
+</div>
+
+<div class="container mb-4">
+    <form method="GET" class="d-flex w-100">
+
+        <input type="text" name="q" value="{{ request.GET.q }}"
+               class="form-control rounded-3 me-2"
+               placeholder="Search......">
+
+        <button type="submit" class="btn btn-dark rounded-3 px-4">
+            <i class="fa fa-search"></i>
+        </button>
+
+    </form>
+</div>
+
+<div class="container py-4">
+
+    <div class="d-flex justify-content-between align-items-center border-bottom pb-3 mb-5">
+        <h2 class="fw-bold m-0">Trending Items</h2>
+    </div>
+
+    <div class="row">
+
+{% for item in trending_items %}
+<div class="col-12 mb-3">
+
+    <div class="card shadow-sm border-0 rounded-3 p-3 cart-card">
+
+        <div class="row align-items-center">
+
+            <div class="col-3 text-center">
+                <img src="{{ item.image.url }}"
+                     class="img-fluid rounded"
+                     style="height: 100px; object-fit: cover;">
+            </div>
+
+            <div class="col-6">
+                <h6 class="fw-bold mb-1">{{ item.title }}</h6>
+                <p class="text-muted small mb-1">{{ item.brand }}</p>
+                <p class="text-muted small mb-1">{{ item.description|safe }}</p>
+
+                <span class="fw-bold text-dark">
+                    ₹{{ item.price }}
+                </span>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+{% endfor %}
+
+</div>
+
+</div>
+
+{% endblock %}
