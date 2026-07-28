@@ -90,6 +90,11 @@
                     <span class="text-muted">{{ item.description|safe }}</span>
                 </p>
 
+                <p class="mb-3">
+                    <strong>Available Quantity:</strong><br>
+                    <span class="text-muted">{{ item.quantity }}</span>
+                </p>
+
                 <p>
                     <strong>Status:</strong>
                     {% if item.is_sold %}

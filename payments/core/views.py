@@ -12,6 +12,8 @@ from django.shortcuts import redirect, get_object_or_404
 from django.db.models import Count, Avg
 from django.utils import timezone
 from datetime import timedelta
+from users.models.users import User
+from payments.models.transaction import Transaction
 
 stripe.api_key = settings.STRIPE_SECRET_KEY
 
@@ -76,7 +78,8 @@ def create_checkout_session(request, id):
         success_url=f'{base_url}/payments/success/',
         cancel_url=f'{base_url}/payments/cancel/',
         metadata={
-            'item_id': str(item.id)
+            'item_id': str(item.id),
+            "user_id": str(request.user.id),
         }
     )
 
@@ -99,31 +102,46 @@ def stripe_webhook(request):
 
     if event['type'] == 'checkout.session.completed':
         session = event['data']['object']
+
         session_dict = session.to_dict()
 
         metadata = session_dict.get('metadata', {})
         item_id = metadata.get('item_id')
+        user_id = metadata.get('user_id')
 
-        if not item_id:
-            try:
-                line_items = session_dict.get('line_items', {}).get('data', [])
-                if line_items:
-                    item_id = line_items[0].get('price', {}).get('product', {}).get('metadata', {}).get('item_id')
-            except Exception:
-                pass
+        amount = session_dict.get('amount_total') / 100
+        currency = session_dict.get('currency')
 
-        if item_id:
-            from payments.models.product import Item
-            try:
-                item = Item.objects.get(id=item_id)
+        payment_intent_id = session_dict.get("payment_intent")
+
+        try:
+            item = Item.objects.get(id=item_id)
+            user = User.objects.get(id=user_id)
+
+            if not Transaction.objects.filter(stripe_session_id=session.id).exists():
+                Transaction.objects.create(
+                    user=user,
+                    item=item,
+                    stripe_session_id=session.id,
+                    amount=amount,
+                    currency=currency,
+                    status="success",
+                    payment_intent_id=payment_intent_id,
+                    webhook_data=session_dict
+                )
+
+            line_items = stripe.checkout.Session.list_line_items(session.id, limit=1)
+            qty = line_items.data[0].quantity if line_items.data else 1
+
+            item.quantity -= qty
+            if item.quantity <= 0:
+                item.quantity = 0
                 item.is_sold = True
-                item.save()
-                # print(f"Success: Item {item_id} marked as sold!")
-            except Item.DoesNotExist:
-                print(f"Error: Item ID {item_id} not present in database.")
-        else:
-            # print("Error: under Metadata not item_id")
-            print("Stripe metadata: ", metadata)
+
+            item.save()
+
+        except Exception as e:
+            print("Webhook DB Save Error:", e)
 
     return HttpResponse(status=200)
 

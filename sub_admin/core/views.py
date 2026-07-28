@@ -13,8 +13,11 @@ from django.http import JsonResponse
 from bank.models.identity_verification import Identification
 from bank.core.services import send_accept_verification_email, send_reject_verification_email
 from payments.core.forms import ItemForm
+from payments.models.transaction import Transaction
+from payments.models.product import ItemImage
 
 
+@sub_admin_required
 def approve_user(request, id):
     if request.method == "POST":
         user = User.objects.get(id=id)
@@ -25,6 +28,7 @@ def approve_user(request, id):
     return redirect('users_verification')
 
 
+@sub_admin_required
 def reject_user(request, id):
     if request.method == "POST":
         user = User.objects.get(id=id)
@@ -40,6 +44,7 @@ def reject_user(request, id):
     return redirect('users_verification')
 
 
+@sub_admin_required
 def sub_admin_user(request):
     query = request.GET.get('q')
     sub_admin = User.objects.filter(is_sub_admin=True).exclude(id=request.user.id).order_by('-id')
@@ -61,6 +66,7 @@ def sub_admin_user(request):
     return render(request, 'sub_admin/sub_admin.html', locals())
 
 
+@sub_admin_required
 def toggle_sub_admin(request, id):
     if request.method == "POST":
         user = get_object_or_404(User, id=id)
@@ -206,6 +212,7 @@ def crud_user_delete(request, id):
 
     return redirect('crud_management')
 
+
 @sub_admin_required
 def bank_management(request):
     query = request.GET.get('q')
@@ -239,6 +246,7 @@ def bank_management(request):
     return render(request, 'sub_admin/bank_management.html', locals())
 
 
+@sub_admin_required
 def identity_verification(request):
     query = request.GET.get('q')
     document = Identification.objects.filter(verification_status='Pending').exclude(id=request.user.id).order_by('-id')
@@ -257,6 +265,7 @@ def identity_verification(request):
     return render(request, 'sub_admin/identity_verification.html', {'page_obj': page_obj,})
 
 
+@sub_admin_required
 def approve_verification(request, id):
     if request.method == "POST":
         user = Identification.objects.get(id=id)
@@ -275,6 +284,7 @@ def approve_verification(request, id):
     return redirect('identity_verification')
 
 
+@sub_admin_required
 def reject_verification(request, id):
     if request.method == "POST":
         user = Identification.objects.get(id=id)
@@ -307,6 +317,7 @@ def bank_user_delete(request, id):
         return redirect('bank_management')
 
     return redirect('bank_management')
+
 
 @sub_admin_required
 def stripe_management(request):
@@ -341,6 +352,7 @@ def stripe_management(request):
 
     return render(request, 'sub_admin/stripe_management.html', locals())
 
+
 @sub_admin_required
 def update_item_detail(request, id):
     item = get_object_or_404(Item, id=id)
@@ -358,6 +370,8 @@ def update_item_detail(request, id):
         'item': item
     })
 
+
+@sub_admin_required
 def add_item(request):
     if request.method == "POST":
         form = ItemForm(request.POST, request.FILES)
@@ -381,7 +395,7 @@ def item_delete(request, id):
 
     return redirect('stripe_management')
 
-from payments.models.product import ItemImage
+
 @sub_admin_required
 def item_detail(request, id):
     item = get_object_or_404(Item, id=id)
@@ -414,6 +428,44 @@ def update_item_detail(request, id):
         'form': form,
         'item': item
     })
+
+
+@sub_admin_required
+def transaction_management(request):
+    query = request.GET.get('q')
+    detail = Transaction.objects.all().order_by('-created_at')
+
+    if query:
+        detail = detail.filter(
+            Q(item__title__icontains=query) |
+            Q(amount__icontains=query) |
+            Q(currency__icontains=query) |
+            Q(status__icontains=query) |
+            Q(user__username__icontains=query)
+        )
+
+    paginator = Paginator(detail, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'sub_admin/items_transaction.html', locals())
+
+
+@sub_admin_required
+def view_transaction(request, id):
+    txn = Transaction.objects.get(id=id)
+    return render(request, 'sub_admin/view_transaction.html', locals())
+
+
+@sub_admin_required
+def delete_transaction(request, id):
+    txn = Transaction.objects.get(id=id)
+
+    if request.method == "POST":
+        txn.delete()
+        return redirect('transaction_management')
+
+    return redirect('transaction_management')
 
 
 @sub_admin_required

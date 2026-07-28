@@ -28,7 +28,7 @@ urlpatterns = [
     path('reject-verification/<str:id>/', views.reject_verification, name='reject_verification'),
     path('bank-user-delete/<str:id>/', views.bank_user_delete, name="bank_user_delete"),
 
-    # Stripe Management Section
+    # E-Commerce Management
     path('stripe-management/', views.stripe_management, name="stripe_management"),
     path('download-item-csv/', services.download_items_csv, name='download_items_csv'),
     path('add-item', views.add_item, name="add_item"),
@@ -36,7 +36,11 @@ urlpatterns = [
     path('item-detail/<str:id>/', views.item_detail, name="item_detail"),
     path('update-item-detail/<str:id>/', views.update_item_detail, name="update_item_detail"),
 
-    # Paypal Management Section
+    path('transaction/', views.transaction_management, name="transaction_management"),
+    path('view-transaction/<str:id>/', views.view_transaction, name="view_transaction"),
+    path('delete-transaction/<str:id>/', views.delete_transaction, name="delete_transaction"),
+
+    # PayPal Management Section
     path('paypal-management/', views.paypal_management, name="paypal_management"),
 
     # Sub-Admin Section

@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %}View Transaction{% endblock %}
+
+{% block content %}
+
+<div class="mb-4">
+    <a href="{% url 'transaction_management' %}" class="btn btn-outline-dark rounded-3 px-3">
+        ← Back
+    </a>
+</div>
+
+<div class="container py-4">
+
+    <div class="card shadow-sm border-0 p-4">
+
+        <div class="row align-items-center">
+
+            <div class="col-md-5 text-center mb-3 mb-md-0">
+                <img src="{{ txn.item.image.url }}"
+                     class="img-fluid rounded-3"
+                     style="max-height: 300px; object-fit: cover;">
+            </div>
+
+            <div class="col-md-7">
+
+                <h4 class="fw-bold mb-3">
+                    {{ txn.item.title }}
+                </h4>
+
+                <p class="mb-2">
+                    <strong>User:</strong>
+                    {{ txn.user.first_name|title }} {{ txn.user.last_name|title }}
+                </p>
+
+                <p class="mb-2">
+                    <strong>Email:</strong>
+                    {{ txn.user.email }}
+                </p>
+
+                <p class="mb-2">
+                    <strong>Amount:</strong> ₹{{ txn.amount }}
+                </p>
+
+                <p class="mb-2">
+                    <strong>Currency:</strong> {{ txn.currency|upper }}
+                </p>
+
+                <p class="mb-2">
+                    <strong>Status:</strong>
+                    <span class="badge bg-success px-3 py-2">
+                        {{ txn.status }}
+                    </span>
+                </p>
+
+                <p class="mb-2">
+                    <strong>Session ID:</strong>
+                    <small>{{ txn.stripe_session_id }}</small>
+                </p>
+
+                <p class="mb-2">
+                    <strong>Payment ID:</strong>
+                    <small>{{ txn.payment_intent_id }}</small>
+                </p>
+
+                <p class="mb-2">
+                    <strong>Date:</strong>
+                    {{ txn.created_at|date:"d M Y, h:i A" }}
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
