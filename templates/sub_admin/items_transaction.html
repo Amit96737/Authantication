@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Transaction Management{% endblock %}
+
+{% load static %}
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="mb-4">
+        <a href="{% url 'stripe_management' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back
+        </a>
+    </div>
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2 class="fw-bold text-dark mb-0">Transaction History</h2>
+
+        <form method="GET" class="d-flex" style="width: 300px;">
+            <input type="text" name="q" value="{{ request.GET.q }}"
+                   class="form-control rounded-3 me-2"
+                   placeholder="Search transactions...">
+
+            <button type="submit" class="btn btn-dark rounded-3 px-3">
+                <i class="fa fa-search"></i>
+            </button>
+        </form>
+
+    </div>
+
+    <div class="card border-0 shadow-sm">
+
+        <div class="table-responsive">
+            <table class="table align-middle mb-0 custom-table">
+
+                <thead>
+                    <tr>
+                        <th>S.No</th>
+                        <th>Item</th>
+                        <th>Title</th>
+                        <th>User</th>
+                        <th>Status</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for txn in detail %}
+                    <tr>
+
+                        <td>{{ forloop.counter }}</td>
+
+                        <td>
+                            <img src="{{ txn.item.image.url }}" width="60" height="60" style="object-fit: cover; border-radius: 6px;">
+                        </td>
+
+                        <td class="fw-semibold">{{ txn.item.title}}</td>
+
+                        <td class="fw-semibold">
+                            {{ txn.user.first_name|title }} {{ txn.user.last_name|title }}
+                        </td>
+
+                        <td>
+                            {% if txn.status == "success" %}
+                                <span class="badge bg-light text-success px-3 py-2 rounded-pill">
+                                    Success
+                                </span>
+                            {% else %}
+                                <span class="badge bg-light text-danger px-3 py-2 rounded-pill">
+                                    Failed
+                                </span>
+                            {% endif %}
+                        </td>
+
+                        <td class="text-center">
+                            <div class="d-flex justify-content-center gap-3">
+
+                                <a href="{% url 'view_transaction' txn.id %}">
+                                    <img src="{% static 'images/table/eye.png' %}" width="18">
+                                </a>
+
+                                <a href=""
+                                   class="delete-btn"
+                                   data-id="{{ txn.id }}"
+                                   data-name="{{ txn.user.username }}"
+                                   data-bs-toggle="modal"
+                                   data-bs-target="#deleteConfirmModal">
+
+                                    <img src="{% static 'images/table/trash.png' %}" width="18">
+                                </a>
+
+                            </div>
+                        </td>
+
+                    </tr>
+
+                    {% empty %}
+                    <tr>
+                        <td colspan="9" class="text-center py-4">
+                            No transactions found
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+
+            <div class="d-flex justify-content-end mt-4">
+
+                <nav>
+                    <ul class="pagination">
+
+                        {% if page_obj.has_previous %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ request.GET.q }}">
+                                    Previous
+                                </a>
+                            </li>
+                        {% endif %}
+
+                        {% for num in page_obj.paginator.page_range %}
+                            <li class="page-item {% if page_obj.number == num %}active{% endif %}">
+                                <a class="page-link" href="?page={{ num }}&q={{ request.GET.q }}">
+                                    {{ num }}
+                                </a>
+                            </li>
+                        {% endfor %}
+
+                        {% if page_obj.has_next %}
+                            <li class="page-item">
+                                <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ request.GET.q }}">
+                                    Next
+                                </a>
+                            </li>
+                        {% endif %}
+
+                    </ul>
+                </nav>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="modal fade" id="deleteConfirmModal">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content p-3">
+
+            <div class="modal-header border-0">
+                <h5 class="modal-title">Confirm Delete</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                <p>
+                    Are you sure you want to delete
+                    <strong id="deleteUserName"></strong>?
+                </p>
+            </div>
+
+            <div class="modal-footer border-0">
+
+                <button class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+
+                <form method="POST" id="deleteForm">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">
+                        Yes, Delete
+                    </button>
+                </form>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.addEventListener('click', function () {
+
+        let txnId = this.getAttribute('data-id');
+        let userName = this.getAttribute('data-name');
+
+        document.getElementById('deleteUserName').innerText = userName;
+
+        document.getElementById('deleteForm').action = `/sub_admin/delete-transaction/${txnId}/`;
+    });
+});
+</script>
+
+{% endblock %}

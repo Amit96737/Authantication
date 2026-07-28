@@ -6,15 +6,19 @@
 
 {% block content %}
 
-<div class="mb-4 d-flex justify-content-end">
-    <a href="{% url 'download_items_csv' %}" class="btn btn-outline-dark rounded-3 px-3">
-        Download CSV
+<div class="mb-4 d-flex justify-content-end gap-3 flex-wrap">
+    <a href="{% url 'transaction_management' %}" class="btn btn-dark rounded-3 px-2">
+        Transaction Management
     </a>
-</div>
-<div class="mb-4 d-flex justify-content-end">
-    <a href="{% url 'add_item' %}" class="btn btn-dark rounded-3 px-4">
+
+    <a href="{% url 'add_item' %}" class="btn btn-dark rounded-3 px-2">
         Add Item
     </a>
+
+    <a href="{% url 'download_items_csv' %}" class="btn btn-dark rounded-3 px-2">
+        Download CSV
+    </a>
+
 </div>
 
 <div class="container py-5">
