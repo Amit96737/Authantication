@@ -31,6 +31,7 @@ urlpatterns = [
     # Stripe Management Section
     path('stripe-management/', views.stripe_management, name="stripe_management"),
     path('download-item-csv/', services.download_items_csv, name='download_items_csv'),
+    path('add-item', views.add_item, name="add_item"),
     path('item-delete/<str:id>/', views.item_delete, name="item_delete"),
     path('item-detail/<str:id>/', views.item_detail, name="item_detail"),
     path('update-item-detail/<str:id>/', views.update_item_detail, name="update_item_detail"),

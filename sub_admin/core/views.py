@@ -341,6 +341,35 @@ def stripe_management(request):
 
     return render(request, 'sub_admin/stripe_management.html', locals())
 
+@sub_admin_required
+def update_item_detail(request, id):
+    item = get_object_or_404(Item, id=id)
+
+    if request.method == "POST":
+        form = ItemForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('stripe_management')
+    else:
+        form = ItemForm(instance=item)
+
+    return render(request, 'sub_admin/update_item_detail.html', {
+        'form': form,
+        'item': item
+    })
+
+def add_item(request):
+    if request.method == "POST":
+        form = ItemForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Item add successfully")
+    else:
+        form = ItemForm()
+
+    return render(request, 'sub_admin/add_item.html', locals())
+
 
 @sub_admin_required
 def item_delete(request, id):
@@ -352,10 +381,18 @@ def item_delete(request, id):
 
     return redirect('stripe_management')
 
+from payments.models.product import ItemImage
 @sub_admin_required
 def item_detail(request, id):
     item = get_object_or_404(Item, id=id)
 
+    if request.method == "POST":
+        images = request.FILES.getlist('extra_images')
+
+        for img in images:
+            ItemImage.objects.create(item=item, image=img)
+
+        messages.success(request, "Image add successfully")
     return render(request, 'sub_admin/item_detail.html', {
         'item': item
     })
