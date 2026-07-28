@@ -14,8 +14,31 @@
         </a>
     </div>
 
+    <div class="d-flex justify-content-end align-items-center mb-3">
+        <h5 class="mb-0 me-3">Add Item Images</h5>
+
+        <form method="POST" enctype="multipart/form-data" class="d-flex gap-2">
+            {% csrf_token %}
+
+            <input type="file" name="extra_images" multiple
+                   class="form-control" style="max-width: 250px;">
+
+            <button type="submit" class="btn btn-dark">
+                Upload
+            </button>
+        </form>
+    </div>
+
     <div class="card border-0 shadow-sm p-4">
         <h3 class="fw-bold mb-4">View Item Details</h3>
+
+        {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} p-2" style="font-size: 14px;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+        {% endif %}
 
         <div class="row">
 
@@ -104,11 +127,16 @@
 </style>
 
 <script>
-document.querySelectorAll('.thumb-img').forEach(img => {
-    img.addEventListener('click', function () {
-        document.getElementById('mainImage').src = this.src;
+    document.querySelectorAll('.thumb-img').forEach(img => {
+        img.addEventListener('click', function () {
+            document.getElementById('mainImage').src = this.src;
+        });
     });
-});
+
+    document.querySelector('input[name="extra_images"]').addEventListener('change', function () {
+        console.log(this.files);
+    });
+
 </script>
 
 

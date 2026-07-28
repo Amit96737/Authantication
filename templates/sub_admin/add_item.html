@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="mb-4">
+        <a href="{% url 'stripe_management' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm p-4">
+
+        <h3 class="fw-bold mb-4">Add Item</h3>
+
+        {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} p-2" style="font-size: 14px;">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+        {% endif %}
+
+        {% if form.errors %}
+            <div class="alert alert-danger">
+                {{ form.errors }}
+            </div>
+        {% endif %}
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-semibold">Title</label>
+                    {{ form.title }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-semibold">Brand</label>
+                    {{ form.brand }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-semibold">Price</label>
+                    {{ form.price }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-semibold">MRP</label>
+                    {{ form.mrp }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-semibold">Quantity</label>
+                    {{ form.quantity }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-semibold">Category</label>
+                    {{ form.category }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-semibold">Colors</label>
+                    {{ form.colors }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-semibold">Size</label>
+                    {{ form.size }}
+                </div>
+
+                <div class="col-md-12 mb-3">
+                    <label class="fw-semibold">Description</label>
+                    {{ form.description }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label class="fw-semibold">Upload Image</label>
+                    {{ form.image }}
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-dark rounded-3 px-4">
+                Submit
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
