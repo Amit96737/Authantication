@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="mb-4">
+        <a href="{% url 'stripe_management' %}" class="btn btn-outline-dark rounded-3 px-3">
+            ← Back
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm p-4">
+
+        <h3 class="fw-bold mb-4">Update Item Details</h3>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="row">
+
+                <div class="col-md-6 mb-3">
+                    <label>Title</label>
+                    {{ form.title }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Brand</label>
+                    {{ form.brand }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Price</label>
+                    {{ form.price }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>MRP</label>
+                    {{ form.mrp }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Quantity</label>
+                    {{ form.quantity }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Category</label>
+                    {{ form.category }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Colors</label>
+                    {{ form.colors }}
+                </div>
+
+                <div class="col-md-6 mb-3">
+                    <label>Size</label>
+                    {{ form.size }}
+                </div>
+
+<!--                <div class="col-md-12 mb-3">-->
+<!--                    <label>Description</label>-->
+<!--                    {{ form.description|safe }}-->
+<!--                </div>-->
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+                        <label class="fw-semibold">Current Image</label><br>
+
+                        {% if item.image %}
+                            <img src="{{ item.image.url }}" width="120" class="mb-2 rounded shadow">
+                        {% endif %}
+
+                        {{ form.image }}
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button type="submit" class="btn btn-dark rounded-3 px-4">
+                Update Item
+            </button>
+
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}

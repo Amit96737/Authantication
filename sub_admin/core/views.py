@@ -12,6 +12,7 @@ from django.contrib import messages
 from django.http import JsonResponse
 from bank.models.identity_verification import Identification
 from bank.core.services import send_accept_verification_email, send_reject_verification_email
+from payments.core.forms import ItemForm
 
 
 def approve_user(request, id):
@@ -350,6 +351,32 @@ def item_delete(request, id):
         return redirect('stripe_management')
 
     return redirect('stripe_management')
+
+@sub_admin_required
+def item_detail(request, id):
+    item = get_object_or_404(Item, id=id)
+
+    return render(request, 'sub_admin/item_detail.html', {
+        'item': item
+    })
+
+
+@sub_admin_required
+def update_item_detail(request, id):
+    item = get_object_or_404(Item, id=id)
+
+    if request.method == "POST":
+        form = ItemForm(request.POST, request.FILES, instance=item)
+        if form.is_valid():
+            form.save()
+            return redirect('stripe_management')
+    else:
+        form = ItemForm(instance=item)
+
+    return render(request, 'sub_admin/update_item_detail.html', {
+        'form': form,
+        'item': item
+    })
 
 
 @sub_admin_required
