@@ -111,9 +111,29 @@
 
                         </div>
 
-                        <p class="card-text text-muted small mb-2">
+                        <p class="card-text text-muted small mb-1">
                             {{ item.description|striptags|truncatechars:60 }}
                         </p>
+
+                        <div class="d-flex align-items-center gap-1 mb-2">
+
+                            {% for i in "12345" %}
+                                {% if item.avg_rating >= forloop.counter %}
+                                    <i class="fa-solid fa-star text-warning"></i>
+
+                                {% elif item.avg_rating >= forloop.counter|add:"-0.5" %}
+                                    <i class="fa-solid fa-star-half-stroke text-warning"></i>
+
+                                {% else %}
+                                    <i class="fa-regular fa-star text-warning"></i>
+                                {% endif %}
+                            {% endfor %}
+
+                            <small class="text-muted ms-1">
+                                ({{ item.avg_rating|floatformat:1 }})
+                            </small>
+
+                        </div>
 
                         <div class="mb-2">
 
