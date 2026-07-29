@@ -74,10 +74,16 @@
             </div>
 
             <div class="col-3 text-end">
+                <a href="{% url 'checkout_page' cart.item.id %}"
+                   class="badge bg-success text-white mt-2 px-3 py-2">
+                    Buy
+                </a>
+
                 <a href="{% url 'delete_cart_item' cart.id %}"
                    class="btn btn-outline-danger btn-sm">
                     Delete
                 </a>
+
             </div>
 
         </div>
