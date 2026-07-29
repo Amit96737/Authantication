@@ -34,6 +34,9 @@ def item_detail(request):
             Q(category__icontains=query)
         )
 
+    for item in items:
+        item.avg_rating = item.ratings.aggregate(avg=Avg('rating'))['avg'] or 0
+
     fav_items = []
     if request.user.is_authenticated:
         fav_items = FavouriteItem.objects.filter(user=request.user)\
