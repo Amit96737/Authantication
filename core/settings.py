@@ -9,7 +9,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.getenv("SECRET_KEY")
 
-DEBUG = True
+DEBUG = False
 # DEBUG = True # never deploy a site into production with debug turned on
 
 # ALLOWED_HOSTS = ['*']
@@ -169,8 +169,8 @@ SIMPLE_JWT = {
 CELERY_TIMEZONE = 'UTC'
 CELERY_TASK_TRACK_STARTED = True
 CELERY_TASK_TIME_LIMIT = 30 * 60
-CELERY_BROKER_URL = "redis://127.0.0.1:6379/0"
-CELERY_RESULT_BACKEND = "redis://127.0.0.1:6379/0"
+CELERY_BROKER_URL = "redis://default:gQAAAAAAAVBHAAIgcDI5MWFhYzRkYzcyYTQ0M2I3YTM2ZDJiODkzNWViMzI2NQ@engaged-walrus-86087.upstash.io:6379"
+CELERY_RESULT_BACKEND = "redis://default:gQAAAAAAAVBHAAIgcDI5MWFhYzRkYzcyYTQ0M2I3YTM2ZDJiODkzNWViMzI2NQ@engaged-walrus-86087.upstash.io:6379"
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
@@ -184,10 +184,12 @@ TWILIO_AUTH_TOKEN = os.getenv('TWILIO_AUTH_TOKEN')
 TWILIO_PHONE_NUMBER = os.getenv('TWILIO_PHONE_NUMBER')
 OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
+REDIS_URL = os.getenv("REDIS_URL")
+
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        "LOCATION": "redis://127.0.0.1:6379",
+        "LOCATION": REDIS_URL
     }
 }
 
