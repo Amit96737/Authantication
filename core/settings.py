@@ -13,8 +13,8 @@ DEBUG = True
 # DEBUG = True # never deploy a site into production with debug turned on
 
 # ALLOWED_HOSTS = ['*']
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'bccd-14-97-132-58.ngrok-free.app', '192.168.11.146',]
-CSRF_TRUSTED_ORIGINS = ['https://bccd-14-97-132-58.ngrok-free.app']
+ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'authantication-hgjt.onrender.com', '192.168.11.146',]
+CSRF_TRUSTED_ORIGINS = ['https://authantication-hgjt.onrender.com']
 
 DJANGO_APPS = [
     'daphne',
