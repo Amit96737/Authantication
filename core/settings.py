@@ -189,10 +189,16 @@ OPENAI_API_KEY = os.getenv('OPENAI_API_KEY')
 
 REDIS_URL = os.getenv("REDIS_URL")
 
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+#         "LOCATION": REDIS_URL
+#     }
+# }
+
 CACHES = {
     'default': {
-        'BACKEND': 'django_redis.cache.RedisCache',
-        "LOCATION": REDIS_URL
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
     }
 }
 
